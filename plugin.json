@@ -1,0 +1,30 @@
+{
+    "unikey": "FresnsEngine",
+    "type": 3,
+    "name": "Fresns Engine",
+    "description": "Fresns officially developed website engine, integrated to run in the main application.",
+    "author": "Fresns",
+    "authorLink": "https://fresns.org",
+    "version": "1.0.2",
+    "scene": [
+        "apiKey",
+        "engine"
+    ],
+    "accessPath": "/",
+    "settingsPath": "/fresnsengine/settings/general",
+    "priority": 0,
+    "composer": {
+        "require": {
+            "mcamara/laravel-localization": "^1.7"
+        },
+        "require-dev": {}
+    },
+    "providers": [
+        "Plugins\\FresnsEngine\\Providers\\FresnsEngineServiceProvider",
+        "Plugins\\FresnsEngine\\Providers\\RouteServiceProvider",
+        "Plugins\\FresnsEngine\\Providers\\EventServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

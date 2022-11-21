@@ -1,0 +1,22 @@
+<?php
+
+/*
+ * Fresns (https://fresns.org)
+ * Copyright (C) 2021-Present Jarvis Tang
+ * Released under the Apache-2.0 License.
+ */
+
+namespace Plugins\FresnsEngine\Http\Controllers;
+
+use Illuminate\Contracts\View\View;
+
+class SearchController extends Controller
+{
+    /**
+     * @return View
+     */
+    public function index(): View
+    {
+        return view('search.index');
+    }
+}
