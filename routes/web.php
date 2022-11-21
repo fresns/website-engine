@@ -6,6 +6,10 @@
  * Released under the Apache-2.0 License.
  */
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Plugins\FresnsEngine\Http\Controllers\AccountController;
 use Plugins\FresnsEngine\Http\Controllers\CommentController;
 use Plugins\FresnsEngine\Http\Controllers\EditorController;
@@ -22,10 +26,6 @@ use Plugins\FresnsEngine\Http\Middleware\AccountAuthorize;
 use Plugins\FresnsEngine\Http\Middleware\CheckSiteModel;
 use Plugins\FresnsEngine\Http\Middleware\UserAuthorize;
 use Plugins\FresnsEngine\Http\Middleware\WebConfiguration;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 
 Route::prefix(LaravelLocalization::setLocale())
     ->middleware([

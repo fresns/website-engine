@@ -8,9 +8,9 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Illuminate\Http\Request;
 
 class FollowController extends Controller
 {

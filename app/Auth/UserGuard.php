@@ -8,12 +8,12 @@
 
 namespace Plugins\FresnsEngine\Auth;
 
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
+use Plugins\FresnsEngine\Helpers\ApiHelper;
 
 class UserGuard implements Guard
 {

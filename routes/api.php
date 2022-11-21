@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
+use Illuminate\Support\Facades\Route;
 use Plugins\FresnsEngine\Http\Controllers\ApiController;
 use Plugins\FresnsEngine\Http\Middleware\AccountAuthorize;
 use Plugins\FresnsEngine\Http\Middleware\CheckSiteModel;
 use Plugins\FresnsEngine\Http\Middleware\UserAuthorize;
-use Illuminate\Support\Facades\Route;
 
 Route::prefix('engine')
     ->middleware([

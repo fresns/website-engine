@@ -8,11 +8,11 @@
 
 namespace Plugins\FresnsEngine\Providers;
 
-use Plugins\FresnsEngine\Auth\AccountGuard;
-use Plugins\FresnsEngine\Auth\UserGuard;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
+use Plugins\FresnsEngine\Auth\AccountGuard;
+use Plugins\FresnsEngine\Auth\UserGuard;
 
 class FresnsEngineServiceProvider extends ServiceProvider
 {

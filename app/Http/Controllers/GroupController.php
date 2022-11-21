@@ -8,11 +8,11 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
+use App\Helpers\ConfigHelper;
+use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
-use App\Helpers\ConfigHelper;
-use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {

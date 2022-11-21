@@ -9,7 +9,6 @@
 namespace Plugins\FresnsEngine\Helpers;
 
 use App\Fresns\Client\Clientable;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
 use App\Helpers\ConfigHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
@@ -17,6 +16,7 @@ use App\Utilities\AppUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
+use Plugins\FresnsEngine\Exceptions\ErrorException;
 
 class ApiHelper
 {
