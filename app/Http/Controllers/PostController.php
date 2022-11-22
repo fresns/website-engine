@@ -12,6 +12,7 @@ use App\Helpers\CacheHelper;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
@@ -22,6 +23,11 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST, $request->all());
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         $client = ApiHelper::make();
 
@@ -54,6 +60,11 @@ class PostController extends Controller
     public function list(Request $request)
     {
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST_LIST, $request->all());
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         $client = ApiHelper::make();
 
@@ -91,6 +102,11 @@ class PostController extends Controller
         $query['mapLat'] = $request->mapLat ?? null;
         $query['unit'] = $request->unit ?? null;
         $query['length'] = $request->length ?? null;
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         if (empty($request->mapLng) || empty($request->mapLat)) {
             $result = [
@@ -160,6 +176,11 @@ class PostController extends Controller
         $query['mapLng'] = $longitude;
         $query['mapLat'] = $latitude;
         $query['unit'] = $post['detail']['location']['unit'] ?? null;
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         if ($type == 'posts') {
             $result = ApiHelper::make()->get('/api/v2/post/nearby', [
@@ -262,6 +283,11 @@ class PostController extends Controller
         $query = $request->all();
         $query['pid'] = $pid;
 
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
+
         $client = ApiHelper::make();
 
         $results = $client->unwrapRequests([
@@ -283,6 +309,12 @@ class PostController extends Controller
 
         $items = $results['post']['data']['items'];
         $post = $results['post']['data']['detail'];
+
+        if (! fs_db_config('website_status')) {
+            $websiteProportion = intval(fs_db_config('website_proportion')) / 100;
+            $websiteContentLength = intval($post['contentLength'] * $websiteProportion);
+            $post['content'] = Str::limit($post['content'], $websiteContentLength);
+        }
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],

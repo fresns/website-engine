@@ -12,6 +12,7 @@ use App\Helpers\CacheHelper;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
@@ -22,6 +23,11 @@ class CommentController extends Controller
     public function index(Request $request)
     {
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT, $request->all());
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         $result = ApiHelper::make()->get('/api/v2/comment/list', [
             'query' => $query,
@@ -44,6 +50,11 @@ class CommentController extends Controller
     {
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT_LIST, $request->all());
 
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
+
         $result = ApiHelper::make()->get('/api/v2/comment/list', [
             'query' => $query,
         ]);
@@ -65,6 +76,11 @@ class CommentController extends Controller
         $query['mapLat'] = $request->mapLat ?? null;
         $query['unit'] = $request->unit ?? null;
         $query['length'] = $request->length ?? null;
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         if (empty($request->mapLng) || empty($request->mapLat)) {
             $result = [
@@ -134,6 +150,11 @@ class CommentController extends Controller
         $query['mapLng'] = $longitude;
         $query['mapLat'] = $latitude;
         $query['unit'] = $comment['detail']['location']['unit'] ?? null;
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
 
         if ($type == 'comments') {
             $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
@@ -236,6 +257,11 @@ class CommentController extends Controller
         $query = $request->all();
         $query['cid'] = $cid;
 
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
+
         $client = ApiHelper::make();
 
         $results = $client->unwrapRequests([
@@ -251,6 +277,12 @@ class CommentController extends Controller
 
         $items = $results['comment']['data']['items'];
         $comment = $results['comment']['data']['detail'];
+
+        if (! fs_db_config('website_status')) {
+            $websiteProportion = intval(fs_db_config('website_proportion')) / 100;
+            $websiteContentLength = intval($comment['contentLength'] * $websiteProportion);
+            $comment['content'] = Str::limit($comment['content'], $websiteContentLength);
+        }
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
