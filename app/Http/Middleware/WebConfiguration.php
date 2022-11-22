@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class WebConfiguration
 {
@@ -68,6 +69,8 @@ class WebConfiguration
         $finder = app('view')->getFinder();
         $finder->prependLocation(base_path("extensions/themes/{$path}"));
         $this->webLangTag();
+
+        View::share('engineUnikey', 'FresnsEngine');
 
         $timezone = fs_user('detail.timezone') ?: ConfigHelper::fresnsConfigByItemKey('default_timezone');
         Cookie::queue('timezone', $timezone);
