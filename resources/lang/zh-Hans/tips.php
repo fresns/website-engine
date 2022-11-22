@@ -17,7 +17,7 @@ return [
     'errorKey' => '服务异常，密钥不存在',
 
     'errorApi' => '服务异常，获取不到完整的 API 配置信息。',
-    'errorPcTheme' => '配置异常，获取不到电脑端主题模板。',
+    'errorDesktopTheme' => '配置异常，获取不到电脑端主题模板。',
     'errorMobileTheme' => '配置异常，获取不到手机端主题模板。',
 
     'settingApiTip' => '设置位置: 控制面板 -> 客户端 -> 网站网页 -> 网站引擎配置',

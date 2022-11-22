@@ -17,7 +17,7 @@ return [
     'errorKey' => 'Service exception, key does not exist',
 
     'errorApi' => 'Service exception, can\'t get the complete API configuration information.',
-    'errorPcTheme' => 'Configuration exception, can\'t get the theme template on computer side.',
+    'errorDesktopTheme' => 'Configuration exception, can\'t get the theme template on computer side.',
     'errorMobileTheme' => 'Configuration exception, can\'t get the theme template for cell phone.',
 
     'settingApiTip' => 'Set Path: Control Panel -> Client -> Website -> Engine Config',
