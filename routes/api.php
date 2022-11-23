@@ -33,6 +33,8 @@ Route::prefix('engine')
             Route::post('reset-password', [ApiController::class, 'accountResetPassword'])->name('reset.password')->withoutMiddleware([AccountAuthorize::class]);
             Route::post('verify-identity', [ApiController::class, 'accountVerifyIdentity'])->name('verify.identity');
             Route::post('edit', [ApiController::class, 'accountEdit'])->name('edit');
+            Route::post('apply-delete', [ApiController::class, 'accountApplyDelete'])->name('apply.delete')->withoutMiddleware([UserAuthorize::class]);
+            Route::post('recall-delete', [ApiController::class, 'accountRecallDelete'])->name('recall.delete')->withoutMiddleware([UserAuthorize::class]);
         });
 
         Route::prefix('user')->name('user.')->group(function () {

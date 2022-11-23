@@ -312,6 +312,36 @@ class ApiController extends Controller
         return \response()->json($response);
     }
 
+    // account apply delete
+    public function accountApplyDelete(Request $request)
+    {
+        $result = ApiHelper::make()->post('/api/v2/account/apply-delete', [
+            'json' => [
+                'password' => $request->password ?? null,
+                'verifyCode' => $request->verifyCode ?? null,
+                'codeType' => $request->codeType ?? null,
+            ],
+        ]);
+
+        if ($result['code'] != 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        return \response()->json($result);
+    }
+
+    // account recall delete
+    public function accountRecallDelete(Request $request)
+    {
+        $result = ApiHelper::make()->post('/api/v2/account/recall-delete');
+
+        if ($result['code'] != 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        return \response()->json($result);
+    }
+
     // user auth
     public function userAuth(Request $request)
     {
