@@ -164,6 +164,12 @@ class ApiHelper
             ];
         });
 
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $fresnsAid = "{$cookiePrefix}aid";
+        $fresnsAidToken = "{$cookiePrefix}aid_token";
+        $fresnsUid = "{$cookiePrefix}uid";
+        $fresnsUidToken = "{$cookiePrefix}uid_token";
+
         $headers = [
             'Accept' => 'application/json',
             'platformId' => $keyConfig['platformId'],
@@ -172,10 +178,10 @@ class ApiHelper
             'timestamp' => now()->unix(),
             'sign' => null,
             'langTag' => current_lang_tag(),
-            'timezone' => Cookie::get('timezone') ?: ConfigHelper::fresnsConfigByItemKey('default_timezone'),
-            'aid' => Cookie::get('fs_aid', \request('fs_aid')),
-            'uid' => Cookie::get('fs_uid', \request('fs_uid')),
-            'token' => Cookie::get('fs_uid_token', \request('fs_uid_token')) ?? Cookie::get('fs_aid_token', \request('fs_aid_token')),
+            'timezone' => Cookie::get("{$cookiePrefix}timezone") ?: ConfigHelper::fresnsConfigByItemKey('default_timezone'),
+            'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),
+            'uid' => Cookie::get($fresnsUid, \request($fresnsUid)),
+            'token' => Cookie::get($fresnsUidToken, \request($fresnsUidToken)) ?? Cookie::get($fresnsAidToken, \request($fresnsAidToken)),
             'deviceInfo' => json_encode(AppUtility::getDeviceInfo()),
         ];
         $headers['sign'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);

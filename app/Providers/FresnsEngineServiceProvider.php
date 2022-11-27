@@ -38,7 +38,10 @@ class FresnsEngineServiceProvider extends ServiceProvider
                 $defaultLanguage = config('app.locale');
             }
         } catch (\Throwable $e) {
-            $defaultLanguage = \request()->header('langTag') ?? \request()->cookie('lang') ?? config('app.locale');
+            $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+            $langTag = "{$cookiePrefix}lang_tag";
+
+            $defaultLanguage = \request()->header('langTag') ?? \request()->cookie($langTag) ?? config('app.locale');
 
             $supportedLocales = [
                 $defaultLanguage => ['name' => $defaultLanguage],
