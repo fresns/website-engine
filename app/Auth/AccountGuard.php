@@ -8,12 +8,16 @@
 
 namespace Plugins\FresnsEngine\Auth;
 
+use App\Helpers\CacheHelper;
+use App\Models\File;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
+use Plugins\FresnsEngine\Helpers\DataHelper;
 
 class AccountGuard implements Guard
 {
@@ -120,16 +124,23 @@ class AccountGuard implements Guard
             return $key ? Arr::get($this->account, $key) : $this->account;
         }
 
-        $aid = Cookie::get('fs_aid');
-        $token = Cookie::get('fs_aid_token');
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        $aid = Cookie::get("{$cookiePrefix}aid");
+        $token = Cookie::get("{$cookiePrefix}aid_token");
+        $langTag = current_lang_tag();
 
         if ($aid && $token) {
             try {
-                $result = ApiHelper::make()->get('/api/v2/account/detail');
+                $cacheKey = "fresns_web_account_{$aid}_{$langTag}";
+                $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+
+                $result = Cache::remember($cacheKey, $cacheTime, function () {
+                    return ApiHelper::make()->get('/api/v2/account/detail');
+                });
 
                 $this->account = data_get($result, 'data');
             } catch (\Throwable $e) {
-                $this->logout();
                 throw $e;
             }
         }
@@ -146,11 +157,15 @@ class AccountGuard implements Guard
      */
     public function logout(): void
     {
-        Cookie::queue(Cookie::forget('fs_aid'));
-        Cookie::queue(Cookie::forget('fs_aid_token'));
-        Cookie::queue(Cookie::forget('fs_uid'));
-        Cookie::queue(Cookie::forget('fs_uid_token'));
-        Cookie::queue(Cookie::forget('timezone'));
+        DataHelper::cacheForgetAccountAndUser();
+
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        Cookie::queue(Cookie::forget("{$cookiePrefix}aid"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}aid_token"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}uid"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}uid_token"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}timezone"));
 
         $this->account = null;
         $this->loggedOut = true;

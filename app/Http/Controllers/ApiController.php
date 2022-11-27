@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
+use App\Helpers\CacheHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
+use Plugins\FresnsEngine\Helpers\DataHelper;
 
 class ApiController extends Controller
 {
@@ -164,8 +166,17 @@ class ApiController extends Controller
         $data = $result['data'];
 
         // Account Login
-        Cookie::queue('fs_aid', $data['detail']['aid']);
-        Cookie::queue('fs_aid_token', $data['sessionToken']['token']);
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $fresnsAid = "{$cookiePrefix}aid";
+        $fresnsAidToken = "{$cookiePrefix}aid_token";
+        $fresnsUid = "{$cookiePrefix}uid";
+        $fresnsUidToken = "{$cookiePrefix}uid_token";
+
+        $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours', null);
+        $accountTokenMinutes = $accountExpiredHours ? $accountExpiredHours * 60 : null;
+
+        Cookie::queue($fresnsAid, $data['detail']['aid'], $accountTokenMinutes);
+        Cookie::queue($fresnsAidToken, $data['sessionToken']['token'], $accountTokenMinutes);
 
         // Number of users under the account
         $users = $data['detail']['users'];
@@ -192,8 +203,8 @@ class ApiController extends Controller
                 return redirect()->intended(fs_route(route('fresns.account.login')));
             } else {
                 // User does not have a password
-                \request()->offsetSet('fs_aid', $data['detail']['aid']);
-                \request()->offsetSet('fs_aid_token', $data['sessionToken']['token']);
+                \request()->offsetSet($fresnsAid, $data['detail']['aid']);
+                \request()->offsetSet($fresnsAidToken, $data['sessionToken']['token']);
 
                 $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
                     'json' => [
@@ -203,9 +214,12 @@ class ApiController extends Controller
                     ],
                 ]);
 
-                Cookie::queue('fs_uid', data_get($userResult, 'data.detail.uid'));
-                Cookie::queue('fs_uid_token', data_get($userResult, 'data.sessionToken.token'));
-                Cookie::queue('timezone', data_get($userResult, 'data.detail.timezone'));
+                $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours', null);
+                $userTokenMinutes = $userExpiredHours ? $userExpiredHours * 60 : null;
+
+                Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
+                Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
+                Cookie::queue("{$cookiePrefix}timezone", data_get($userResult, 'data.detail.timezone'), $userTokenMinutes);
 
                 if ($request->wantsJson()) {
                     return \response()->json([
@@ -309,6 +323,8 @@ class ApiController extends Controller
             'json' => \request()->all(),
         ]);
 
+        DataHelper::cacheForgetAccountAndUser();
+
         return \response()->json($response);
     }
 
@@ -357,9 +373,14 @@ class ApiController extends Controller
             throw new ErrorException($result['message'], $result['code']);
         }
 
-        Cookie::queue('fs_uid', $result['data']['detail']['uid']);
-        Cookie::queue('fs_uid_token', $result['data']['sessionToken']['token']);
-        Cookie::queue('timezone', $result['data']['detail']['timezone']);
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours', null);
+        $userTokenMinutes = $userExpiredHours ? $userExpiredHours * 60 : null;
+
+        Cookie::queue("{$cookiePrefix}uid", data_get($result, 'data.detail.uid'), $userTokenMinutes);
+        Cookie::queue("{$cookiePrefix}uid_token", data_get($result, 'data.sessionToken.token'), $userTokenMinutes);
+        Cookie::queue("{$cookiePrefix}timezone", data_get($result, 'data.detail.timezone'), $userTokenMinutes);
 
         if ($request->wantsJson()) {
             return \response()->json([
@@ -381,6 +402,8 @@ class ApiController extends Controller
             'json' => \request()->all(),
         ]);
 
+        DataHelper::cacheForgetAccountAndUser();
+
         return \response()->json($response);
     }
 
@@ -400,6 +423,12 @@ class ApiController extends Controller
         $response = ApiHelper::make()->put("/api/v2/{$type}/mark-as-read", [
             'json' => \request()->all(),
         ]);
+
+        $langTag = current_lang_tag();
+        $uid = fs_user('detail.uid');
+        $cacheKey = "fresns_web_user_panel_{$uid}_{$langTag}";
+
+        CacheHelper::forgetFresnsKeys([$cacheKey]);
 
         return \response()->json($response);
     }
@@ -554,6 +583,8 @@ class ApiController extends Controller
             'multipart' => array_filter($multipart, fn ($val) => isset($val['contents'])),
         ]);
 
+        DataHelper::cacheForgetAccountAndUser();
+
         return Response::json($result);
     }
 
@@ -659,6 +690,8 @@ class ApiController extends Controller
         };
 
         $response = ApiHelper::make()->post("/api/v2/editor/{$type}/{$draftId}");
+
+        DataHelper::cacheForgetAccountAndUser();
 
         return \response()->json($response);
     }

@@ -206,6 +206,8 @@ class EditorController extends Controller
             throw new ErrorException($response['message'], $response['code']);
         }
 
+        DataHelper::cacheForgetAccountAndUser();
+
         return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
     }
 
@@ -235,6 +237,8 @@ class EditorController extends Controller
                 'deleteExtend' => $request->post('deleteExtend'),
             ],
         ]);
+
+        DataHelper::cacheForgetAccountAndUser();
 
         if ($response['code'] !== 0) {
             throw new ErrorException($response['message'], $response['code']);

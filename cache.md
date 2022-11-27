@@ -4,6 +4,8 @@
     'fresns_web_api_host'
     'fresns_web_api_key'
     "fresns_web_key_{$keyId}"
+    "fresns_web_account_{$aid}_{$langTag}"
+    "fresns_web_user_{$uid}_{$langTag}"
     "fresns_web_api_config_all_{$itemKey}_{$langTag}"
     "fresns_web_post_{$pid}_{$langTag}"
     "fresns_web_comment_{$cid}_{$langTag}"

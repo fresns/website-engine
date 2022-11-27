@@ -16,6 +16,7 @@ use App\Helpers\StrHelper;
 use App\Models\Config;
 use App\Models\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 
 class DataHelper
 {
@@ -310,5 +311,20 @@ class DataHelper
         });
 
         return $list;
+    }
+
+    // cache forget account and user
+    public static function cacheForgetAccountAndUser()
+    {
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        $aid = Cookie::get("{$cookiePrefix}aid");
+        $uid = Cookie::get("{$cookiePrefix}uid");
+        $langTag = current_lang_tag();
+
+        $accountCacheKey = "fresns_web_account_{$aid}_{$langTag}";
+        $userCacheKey = "fresns_web_user_{$uid}_{$langTag}";
+
+        CacheHelper::forgetFresnsKeys([$accountCacheKey, $userCacheKey]);
     }
 }

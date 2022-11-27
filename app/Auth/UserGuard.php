@@ -8,12 +8,16 @@
 
 namespace Plugins\FresnsEngine\Auth;
 
+use App\Helpers\CacheHelper;
+use App\Models\File;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
+use Plugins\FresnsEngine\Helpers\DataHelper;
 
 class UserGuard implements Guard
 {
@@ -119,16 +123,23 @@ class UserGuard implements Guard
             return $key ? Arr::get($this->user, $key) : $this->user;
         }
 
-        $uid = Cookie::get('fs_uid');
-        $token = Cookie::get('fs_uid_token');
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        $uid = Cookie::get("{$cookiePrefix}uid");
+        $token = Cookie::get("{$cookiePrefix}uid_token");
+        $langTag = current_lang_tag();
 
         if ($uid && $token) {
             try {
-                $result = ApiHelper::make()->get("/api/v2/user/{$uid}/detail");
+                $cacheKey = "fresns_web_user_{$uid}_{$langTag}";
+                $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+
+                $result = Cache::remember($cacheKey, $cacheTime, function () use ($uid) {
+                    return ApiHelper::make()->get("/api/v2/user/{$uid}/detail");
+                });
 
                 $this->user = data_get($result, 'data');
             } catch (\Throwable $e) {
-                $this->logout();
                 throw $e;
             }
         }
@@ -142,9 +153,13 @@ class UserGuard implements Guard
 
     public function logout(): void
     {
-        Cookie::queue(Cookie::forget('fs_uid'));
-        Cookie::queue(Cookie::forget('fs_uid_token'));
-        Cookie::queue(Cookie::forget('timezone'));
+        DataHelper::cacheForgetAccountAndUser();
+
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+
+        Cookie::queue(Cookie::forget("{$cookiePrefix}uid"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}uid_token"));
+        Cookie::queue(Cookie::forget("{$cookiePrefix}timezone"));
 
         $this->user = null;
         $this->loggedOut = true;
