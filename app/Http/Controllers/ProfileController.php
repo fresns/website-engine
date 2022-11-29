@@ -119,7 +119,7 @@ class ProfileController extends Controller
                     'page' => 1,
                 ],
             ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interactive/like", [
+            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/like", [
                 'query' => $query,
             ]),
         ]);
@@ -160,7 +160,7 @@ class ProfileController extends Controller
                     'page' => 1,
                 ],
             ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interactive/dislike", [
+            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/dislike", [
                 'query' => $query,
             ]),
         ]);
@@ -201,7 +201,7 @@ class ProfileController extends Controller
                     'page' => 1,
                 ],
             ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interactive/follow", [
+            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/follow", [
                 'query' => $query,
             ]),
         ]);
@@ -283,7 +283,7 @@ class ProfileController extends Controller
                     'page' => 1,
                 ],
             ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interactive/block", [
+            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/block", [
                 'query' => $query,
             ]),
         ]);
