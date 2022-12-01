@@ -29,31 +29,20 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'posts' => $client->getAsync('/api/v2/post/list', [
-                'query' => $query,
-            ]),
-            'stickies' => $client->getAsync('/api/v2/post/list', [
-                'query' => [
-                    'stickyState' => 3,
-                ],
-            ]),
+        $result = ApiHelper::make()->get('/api/v2/post/list', [
+            'query' => $query,
         ]);
 
-        if (data_get($results, 'posts.code') !== 0) {
-            throw new ErrorException($results['posts']['message'], $results['posts']['code']);
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
         }
 
         $posts = QueryHelper::convertApiDataToPaginate(
-            items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            items: $result['data']['list'],
+            paginate: $result['data']['paginate'],
         );
 
-        $stickies = data_get($results, 'stickies.data.list', []);
-
-        return view('posts.index', compact('posts', 'stickies'));
+        return view('posts.index', compact('posts'));
     }
 
     // list
@@ -66,31 +55,20 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'posts' => $client->getAsync('/api/v2/post/list', [
-                'query' => $query,
-            ]),
-            'stickies' => $client->getAsync('/api/v2/post/list', [
-                'query' => [
-                    'stickyState' => 3,
-                ],
-            ]),
+        $result = ApiHelper::make()->get('/api/v2/post/list', [
+            'query' => $query,
         ]);
 
-        if (data_get($results, 'posts.code') !== 0) {
-            throw new ErrorException($results['posts']['message'], $results['posts']['code']);
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
         }
 
         $posts = QueryHelper::convertApiDataToPaginate(
-            items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            items: $result['data']['list'],
+            paginate: $result['data']['paginate'],
         );
 
-        $stickies = data_get($results, 'stickies.data.list', []);
-
-        return view('posts.list', compact('posts', 'stickies'));
+        return view('posts.list', compact('posts'));
     }
 
     // nearby

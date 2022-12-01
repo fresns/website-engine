@@ -189,14 +189,26 @@ if (! function_exists('fs_list')) {
     }
 }
 
-// fs_stickies
-if (! function_exists('fs_stickies')) {
+// fs_sticky_posts
+if (! function_exists('fs_sticky_posts')) {
     /**
      * @param  string|null  $listKey
      * @return array
      */
-    function fs_stickies()
+    function fs_sticky_posts(?string $gid = null)
     {
-        return DataHelper::getFresnsStickies();
+        return DataHelper::getFresnsStickyPosts($gid);
+    }
+}
+
+// fs_sticky_comments
+if (! function_exists('fs_sticky_comments')) {
+    /**
+     * @param  string|null  $listKey
+     * @return array
+     */
+    function fs_sticky_comments(string $pid)
+    {
+        return DataHelper::getFresnsStickyComments($pid);
     }
 }
