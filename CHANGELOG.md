@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0-Beta.4 (2022-12-01)
+
+- `interactive` API modified to `interaction`
+- Get top content wrapped as `fs_sticky_posts` and `fs_sticky_comments`
+- Count when cache adds `null` results
+
+
 ## 2.0.0-Beta.3 (2022-11-28)
 
 - Support custom cookie prefix to avoid conflict with domain name
