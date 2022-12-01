@@ -26,6 +26,13 @@ class DataHelper
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_db_config_{$itemKey}_{$langTag}";
+        $nullCacheKey = CacheHelper::getNullCacheKey($cacheKey);
+
+        // null cache count
+        if (Cache::get($nullCacheKey) > CacheHelper::NULL_CACHE_COUNT) {
+            return null;
+        }
+
         $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
 
         $dbConfig = Cache::remember($cacheKey, $cacheTime, function () use ($itemKey, $langTag) {
@@ -57,8 +64,9 @@ class DataHelper
             return $itemValue;
         });
 
-        if (! $dbConfig) {
-            Cache::forget($cacheKey);
+        // null cache count
+        if (empty($dbConfig)) {
+            CacheHelper::nullCacheCount($cacheKey, $nullCacheKey);
         }
 
         return $dbConfig;
@@ -292,23 +300,74 @@ class DataHelper
         return $listArr;
     }
 
-    // get fresns stickies
-    public static function getFresnsStickies(): array
+    // get fresns sticky posts
+    public static function getFresnsStickyPosts(?string $gid = null): array
     {
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_stickies_{$langTag}";
+        if (empty($gid)) {
+            $cacheKey = "fresns_web_sticky_posts_{$langTag}";
+            $query = [
+                'stickyState' => 3,
+            ];
+        } else {
+            $cacheKey = "fresns_web_{$gid}_sticky_posts_{$langTag}";
+            $query = [
+                'gid' => $gid,
+                'stickyState' => 2,
+            ];
+        }
+        $nullCacheKey = CacheHelper::getNullCacheKey($cacheKey);
+
+        if (Cache::get($nullCacheKey) > CacheHelper::NULL_CACHE_COUNT) {
+            return [];
+        }
+
         $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
 
-        $list = Cache::remember($cacheKey, $cacheTime, function () {
+        $list = Cache::remember($cacheKey, $cacheTime, function () use ($query) {
             $result = ApiHelper::make()->get('/api/v2/post/list', [
+                'query' => $query,
+            ]);
+
+            return data_get($result, 'data.list', []);
+        });
+
+        // null cache count
+        if (empty($list)) {
+            CacheHelper::nullCacheCount($cacheKey, $nullCacheKey);
+        }
+
+        return $list;
+    }
+
+    // get fresns sticky comments
+    public static function getFresnsStickyComments(string $pid): array
+    {
+        $langTag = current_lang_tag();
+
+        $cacheKey = "fresns_web_{$pid}_sticky_comments_{$langTag}";
+        $nullCacheKey = CacheHelper::getNullCacheKey($cacheKey);
+
+        if (Cache::get($nullCacheKey) > CacheHelper::NULL_CACHE_COUNT) {
+            return [];
+        }
+
+        $list = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($pid) {
+            $result = ApiHelper::make()->get('/api/v2/comment/list', [
                 'query' => [
-                    'stickyState' => 3,
+                    'pid' => $pid,
+                    'sticky' => true,
                 ],
             ]);
 
             return data_get($result, 'data.list', []);
         });
+
+        // null cache count
+        if (empty($list)) {
+            CacheHelper::nullCacheCount($cacheKey, $nullCacheKey, 10);
+        }
 
         return $list;
     }
@@ -320,11 +379,8 @@ class DataHelper
 
         $aid = Cookie::get("{$cookiePrefix}aid");
         $uid = Cookie::get("{$cookiePrefix}uid");
-        $langTag = current_lang_tag();
 
-        $accountCacheKey = "fresns_web_account_{$aid}_{$langTag}";
-        $userCacheKey = "fresns_web_user_{$uid}_{$langTag}";
-
-        CacheHelper::forgetFresnsKeys([$accountCacheKey, $userCacheKey]);
+        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$aid}");
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$uid}");
     }
 }
