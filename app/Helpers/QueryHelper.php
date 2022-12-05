@@ -88,10 +88,10 @@ class QueryHelper
             items: $items,
             total: $total,
             perPage: $pageSize,
-            currentPage: \request('page', 1),
+            currentPage: request('page', 1),
         );
 
-        $paginate->withPath('/'.\request()->path())->withQueryString();
+        $paginate->withPath(request()->path())->withQueryString();
 
         return $paginate;
     }
