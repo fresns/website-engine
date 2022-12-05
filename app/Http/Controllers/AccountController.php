@@ -20,7 +20,7 @@ class AccountController extends Controller
     public function register(Request $request)
     {
         if (fs_account()->check() || fs_user()->check()) {
-            return redirect()->intended(fs_route(route('fresns.account.index')));
+            return redirect()->intended(fs_route(route('fresns.home')));
         }
 
         return view('account.register');
@@ -30,7 +30,7 @@ class AccountController extends Controller
     public function login(Request $request)
     {
         if (fs_account()->check() && fs_user()->check()) {
-            return redirect()->intended(fs_route(route('fresns.account.index')));
+            return redirect()->intended(fs_route(route('fresns.home')));
         }
 
         return view('account.login');
