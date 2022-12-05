@@ -9,7 +9,6 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
