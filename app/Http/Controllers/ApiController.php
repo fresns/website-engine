@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\DataHelper;
+use Plugins\FresnsEngine\Helpers\QueryHelper;
 
 class ApiController extends Controller
 {
@@ -37,6 +38,68 @@ class ApiController extends Controller
                 'sign' => $sign,
             ],
         ]);
+    }
+
+    // index list
+    public function indexList(string $type, Request $request): JsonResponse
+    {
+        $queryType = match ($type) {
+            'users' => QueryHelper::TYPE_USER,
+            'groups' => QueryHelper::TYPE_GROUP,
+            'hashtags' => QueryHelper::TYPE_HASHTAG,
+            'posts' => QueryHelper::TYPE_POST,
+            'comments' => QueryHelper::TYPE_COMMENT,
+        };
+
+        $query = QueryHelper::convertOptionToRequestParam($queryType, $request->all());
+
+        $result = ApiHelper::make()->get("/api/v2/{$queryType}/list", [
+            'query' => $query,
+        ]);
+
+        return Response::json($result);
+    }
+
+    // list
+    public function list(string $type, Request $request): JsonResponse
+    {
+        $queryType = match ($type) {
+            'users' => QueryHelper::TYPE_USER_LIST,
+            'groups' => QueryHelper::TYPE_GROUP_LIST,
+            'hashtags' => QueryHelper::TYPE_HASHTAG_LIST,
+            'posts' => QueryHelper::TYPE_POST_LIST,
+            'comments' => QueryHelper::TYPE_COMMENT_LIST,
+        };
+
+        $query = QueryHelper::convertOptionToRequestParam($queryType, $request->all());
+
+        $type = match ($type) {
+            'users' => 'user',
+            'groups' => 'group',
+            'hashtags' => 'hashtag',
+            'posts' => 'post',
+            'comments' => 'comment',
+        };
+
+        $result = ApiHelper::make()->get("/api/v2/{$type}/list", [
+            'query' => $query,
+        ]);
+
+        return Response::json($result);
+    }
+
+    // sub groups
+    public function subGroups(string $gid): JsonResponse
+    {
+        $response = ApiHelper::make()->get('/api/v2/group/list', [
+            'query' => [
+                'gid' => $gid,
+                'pageSize' => request()->get('pageSize'),
+                'page' => request()->get('page'),
+            ],
+        ]);
+
+        return Response::json(data_get($response, 'data', []));
     }
 
     // get input tips
@@ -501,25 +564,6 @@ class ApiController extends Controller
         $response = ApiHelper::make()->delete("/api/v2/{$type}/{$fsid}");
 
         return \response()->json($response);
-    }
-
-    /**
-     * @param  string  $gid
-     * @return JsonResponse
-     *
-     * @throws GuzzleException
-     */
-    public function groupList(string $gid): JsonResponse
-    {
-        $response = ApiHelper::make()->get('/api/v2/group/list', [
-            'query' => [
-                'gid' => $gid,
-                'pageSize' => request()->get('pageSize'),
-                'page' => request()->get('page'),
-            ],
-        ]);
-
-        return Response::json(data_get($response, 'data', []));
     }
 
     // quick publish

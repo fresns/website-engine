@@ -22,6 +22,14 @@ Route::prefix('engine')
     ->group(function () {
         Route::get('url-sign', [ApiController::class, 'urlSign'])->name('url.sign')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class, CheckSiteModel::class]);
 
+        // fresns.api.index.list /api/engine/index-list/posts
+        // fresns.api.list /api/engine/list/posts
+        Route::get('index-list/{type}', [ApiController::class, 'indexList'])->name('index.list');
+        Route::get('list/{type}', [ApiController::class, 'list'])->name('list');
+
+        // fresns.api.sub.groups /api/engine/sub-groups/gid
+        Route::get('sub-groups/{gid}', [ApiController::class, 'subGroups'])->name('sub.groups');
+
         Route::get('input-tips', [ApiController::class, 'getInputTips'])->name('input.tips')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
         Route::get('archives', [ApiController::class, 'getArchives'])->name('archives')->withoutMiddleware([UserAuthorize::class]);
         Route::post('send-verify-code', [ApiController::class, 'sendVerifyCode'])->name('send.verify.code')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
@@ -55,10 +63,6 @@ Route::prefix('engine')
             Route::get('file/{fid}/link', [ApiController::class, 'contentFileLink'])->name('file.link');
             Route::get('file/{fid}/users', [ApiController::class, 'contentFileUsers'])->name('file.users')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
             Route::delete('{type}/{fsid}', [ApiController::class, 'contentDelete'])->name('delete');
-        });
-
-        Route::prefix('group')->name('group.')->group(function () {
-            Route::get('list/{gid}', [ApiController::class, 'groupList'])->name('list');
         });
 
         Route::prefix('editor')->name('editor.')->group(function () {
