@@ -180,8 +180,9 @@ class ApiHelper
             'langTag' => current_lang_tag(),
             'timezone' => Cookie::get("{$cookiePrefix}timezone") ?: ConfigHelper::fresnsConfigByItemKey('default_timezone'),
             'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),
+            'aidToken' => Cookie::get($fresnsAidToken, \request($fresnsAidToken)),
             'uid' => Cookie::get($fresnsUid, \request($fresnsUid)),
-            'token' => Cookie::get($fresnsUidToken, \request($fresnsUidToken)) ?? Cookie::get($fresnsAidToken, \request($fresnsAidToken)),
+            'uidToken' => Cookie::get($fresnsUidToken, \request($fresnsUidToken)),
             'deviceInfo' => json_encode(AppUtility::getDeviceInfo()),
         ];
         $headers['sign'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);
