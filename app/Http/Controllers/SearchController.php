@@ -18,34 +18,44 @@ class SearchController extends Controller
     // index
     public function index(Request $request)
     {
-        $query = $request->all();
-        $client = ApiHelper::make();
+        $searchType = $request->get('searchType');
+        $searchKey = $request->get('searchKey');
 
-        $results = $client->unwrapRequests([
-            'users' => $client->getAsync('/api/v2/search/users', [
-                'query' => $query,
-            ]),
-            'groups' => $client->getAsync('/api/v2/search/groups', [
-                'query' => $query,
-            ]),
-            'hashtags' => $client->getAsync('/api/v2/search/hashtags', [
-                'query' => $query,
-            ]),
-            'posts' => $client->getAsync('/api/v2/search/posts', [
-                'query' => $query,
-            ]),
-            'comments' => $client->getAsync('/api/v2/search/comments', [
-                'query' => $query,
-            ]),
-        ]);
+        if (empty($searchType)) {
+            return view('search.index');
+        }
 
-        $data['users'] = $results['users']['data']['list'];
-        $data['groups'] = $results['groups']['data']['list'];
-        $data['hashtags'] = $results['hashtags']['data']['list'];
-        $data['posts'] = $results['posts']['data']['list'];
-        $data['comments'] = $results['comments']['data']['list'];
+        switch ($searchType) {
+            // user
+            case 'user':
+                return redirect()->to(fs_route(route('fresns.search.users', ['searchKey' => $searchKey])));
+            break;
 
-        return view('search.index', compact('data'));
+            // group
+            case 'group':
+                return redirect()->to(fs_route(route('fresns.search.groups', ['searchKey' => $searchKey])));
+            break;
+
+            // hashtag
+            case 'hashtag':
+                return redirect()->to(fs_route(route('fresns.search.hashtags', ['searchKey' => $searchKey])));
+            break;
+
+            // post
+            case 'post':
+                return redirect()->to(fs_route(route('fresns.search.posts', ['searchKey' => $searchKey])));
+            break;
+
+            // comment
+            case 'comment':
+                return redirect()->to(fs_route(route('fresns.search.comments', ['searchKey' => $searchKey])));
+            break;
+
+            // default
+            default:
+                return view('search.index');
+            break;
+        }
     }
 
     // users
