@@ -473,8 +473,15 @@ class ApiController extends Controller
     public function userMark(Request $request)
     {
         $response = ApiHelper::make()->post('/api/v2/user/mark', [
-            'json' => \request()->all(),
+            'json' => $request->all(),
         ]);
+
+        if ($request->get('forgetCache')) {
+            $uid = fs_user('detail.uid');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_groups");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_index_list");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_list");
+        }
 
         return \response()->json($response);
     }

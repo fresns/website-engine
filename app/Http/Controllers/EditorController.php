@@ -247,14 +247,14 @@ class EditorController extends Controller
         $response = ApiHelper::make()->post("/api/v2/editor/{$type}/{$draftId}");
 
         if ($response['code'] == 38200) {
-            return redirect()->to(fs_route(route('fresns.post.list')))->with('success', $response['message']);
+            return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);
         }
 
         if ($response['code'] !== 0) {
             throw new ErrorException($response['message'], $response['code']);
         }
 
-        return redirect()->to(fs_route(route('fresns.post.list')))->with('success', $response['message']);
+        return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);
     }
 
     // get draft
