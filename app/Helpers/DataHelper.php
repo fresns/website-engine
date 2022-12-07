@@ -146,7 +146,7 @@ class DataHelper
             $cacheKey = "fresns_web_guest_groups_{$langTag}";
         }
 
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
 
         $data = Cache::remember($cacheKey, $cacheTime, function () {
             $client = ApiHelper::make();
@@ -188,7 +188,7 @@ class DataHelper
             $cacheKey = "fresns_web_guest_index_list_{$langTag}";
         }
 
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
 
         $data = Cache::remember($cacheKey, $cacheTime, function () {
             $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER);
@@ -250,7 +250,7 @@ class DataHelper
             $cacheKey = "fresns_web_guest_list_{$langTag}";
         }
 
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
 
         $data = Cache::remember($cacheKey, $cacheTime, function () {
             $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER_LIST);
@@ -323,7 +323,7 @@ class DataHelper
             return [];
         }
 
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
 
         $list = Cache::remember($cacheKey, $cacheTime, function () use ($query) {
             $result = ApiHelper::make()->get('/api/v2/post/list', [
