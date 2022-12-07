@@ -20,4 +20,9 @@ class PortalController extends Controller
 
         return view('portal.index', compact('content'));
     }
+
+    public function policies()
+    {
+        return view('portal.policies');
+    }
 }
