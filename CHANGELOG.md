@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0-Beta.5 (2022-12-08)
+
+- Add API interface for home page and list page, for example, page flip without refresh.
+- Fix the redundant `/` symbols in pagination.
+- Jump to post homepage after successful posting.
+- Move private mode view file to `portal/private.blade.php` directory.
+- Add policy terms page `portal/policies.blade.php`
+- Adaptation of main program split `token` parameter
+
+
 ## 2.0.0-Beta.4 (2022-12-01)
 
 - `interactive` API modified to `interaction`
