@@ -212,3 +212,15 @@ if (! function_exists('fs_sticky_comments')) {
         return DataHelper::getFresnsStickyComments($pid);
     }
 }
+
+// fs_content_types
+if (! function_exists('fs_content_types')) {
+    /**
+     * @param  string|null  $listKey
+     * @return array
+     */
+    function fs_content_types(string $type)
+    {
+        return DataHelper::getFresnsContentTypes($type);
+    }
+}

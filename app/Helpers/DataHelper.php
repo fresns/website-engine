@@ -372,6 +372,32 @@ class DataHelper
         return $list;
     }
 
+    // get fresns content types
+    public static function getFresnsContentTypes(string $type): array
+    {
+        $langTag = current_lang_tag();
+
+        $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
+        $nullCacheKey = CacheHelper::getNullCacheKey($cacheKey);
+
+        if (Cache::get($nullCacheKey) > CacheHelper::NULL_CACHE_COUNT) {
+            return [];
+        }
+
+        $list = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($type) {
+            $result = ApiHelper::make()->get("/api/v2/global/{$type}/content-types");
+
+            return data_get($result, 'data', []);
+        });
+
+        // null cache count
+        if (empty($list)) {
+            CacheHelper::nullCacheCount($cacheKey, $nullCacheKey, 10);
+        }
+
+        return $list;
+    }
+
     // cache forget account and user
     public static function cacheForgetAccountAndUser()
     {
