@@ -192,7 +192,7 @@ if (! function_exists('fs_list')) {
 // fs_sticky_posts
 if (! function_exists('fs_sticky_posts')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string|null  $gid
      * @return array
      */
     function fs_sticky_posts(?string $gid = null)
@@ -204,7 +204,7 @@ if (! function_exists('fs_sticky_posts')) {
 // fs_sticky_comments
 if (! function_exists('fs_sticky_comments')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string  $pid
      * @return array
      */
     function fs_sticky_comments(string $pid)
@@ -216,7 +216,7 @@ if (! function_exists('fs_sticky_comments')) {
 // fs_content_types
 if (! function_exists('fs_content_types')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string  $type
      * @return array
      */
     function fs_content_types(string $type)
