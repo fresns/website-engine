@@ -19,8 +19,10 @@ class AccountController extends Controller
     // register
     public function register(Request $request)
     {
+        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+
         if (fs_account()->check() || fs_user()->check()) {
-            return redirect()->intended(fs_route(route('fresns.home')));
+            return redirect()->intended($redirectURL);
         }
 
         return view('account.register');
@@ -29,28 +31,34 @@ class AccountController extends Controller
     // login
     public function login(Request $request)
     {
+        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+
         if (fs_account()->check() && fs_user()->check()) {
-            return redirect()->intended(fs_route(route('fresns.home')));
+            return redirect()->intended($redirectURL);
         }
 
         return view('account.login');
     }
 
     // logout
-    public function logout()
+    public function logout(Request $request)
     {
+        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+
         fs_account()->logout();
 
         ApiHelper::make()->delete('/api/v2/account/logout');
 
-        return redirect()->intended(fs_route(route('fresns.home')));
+        return redirect()->intended($redirectURL);
     }
 
     // reset password
     public function resetPassword(Request $request)
     {
+        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+
         if (fs_account()->check() || fs_user()->check()) {
-            return redirect()->intended(fs_route(route('fresns.account.index')));
+            return redirect()->intended($redirectURL);
         }
 
         return view('account.reset-password');
