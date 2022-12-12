@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0-beta.6 (2022-12-12)
+
+- Content types use the wrapper function `fs_content_types('post')`
+- Automatic login after successful registration
+
+
 ## 2.0.0-beta.5 (2022-12-08)
 
 - Add API interface for home page and list page, for example, page flip without refresh.
