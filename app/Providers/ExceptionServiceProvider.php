@@ -9,9 +9,7 @@
 namespace Plugins\FresnsEngine\Providers;
 
 use App\Exceptions\Handler;
-use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
