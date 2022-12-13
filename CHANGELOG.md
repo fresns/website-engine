@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0-beta.7 (2022-12-13)
+
+- Refactor: providers
+
+
 ## 2.0.0-beta.6 (2022-12-12)
 
 - Content types use the wrapper function `fs_content_types('post')`
