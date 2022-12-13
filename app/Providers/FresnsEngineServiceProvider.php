@@ -61,8 +61,6 @@ class FresnsEngineServiceProvider extends ServiceProvider
     {
         $this->registerAuthenticator();
         $this->registerTranslations();
-
-        app(\Illuminate\Contracts\Debug\ExceptionHandler::class)->ignore(Plugins\FresnsEngine\Exceptions\ErrorException::class);
     }
 
     protected function registerAuthenticator(): void

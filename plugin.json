@@ -13,7 +13,8 @@
     "accessPath": null,
     "settingsPath": null,
     "providers": [
-        "Plugins\\FresnsEngine\\Providers\\FresnsEngineServiceProvider"
+        "Plugins\\FresnsEngine\\Providers\\FresnsEngineServiceProvider",
+        "Plugins\\FresnsEngine\\Providers\\ExceptionServiceProvider"
     ],
     "autoloadFiles": [
         "./function.php"
