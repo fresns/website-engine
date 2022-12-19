@@ -544,9 +544,10 @@ class ApiController extends Controller
 
         if ($request->get('forgetCache')) {
             $uid = fs_user('detail.uid');
-            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_groups");
-            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_index_list");
-            CacheHelper::forgetFresnsMultilingual("fresns_web_{$uid}_list");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_group_categories_by_{$uid}");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_group_tree_by_{$uid}");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_users_index_list_by_{$uid}");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_users_list_by_{$uid}");
         }
 
         return \response()->json($response);
@@ -559,11 +560,9 @@ class ApiController extends Controller
             'json' => \request()->all(),
         ]);
 
-        $langTag = current_lang_tag();
         $uid = fs_user('detail.uid');
-        $cacheKey = "fresns_web_user_panel_{$uid}_{$langTag}";
 
-        CacheHelper::forgetFresnsKeys([$cacheKey]);
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
 
         return \response()->json($response);
     }

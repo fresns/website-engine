@@ -31,20 +31,18 @@ if (! function_exists('fs_api_config')) {
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_api_config_all_{$langTag}";
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
 
-        $apiConfig = Cache::remember($cacheKey, $cacheTime, function () {
+        $apiConfig = Cache::get($cacheKey);
+
+        if (empty($apiConfig)) {
             $result = ApiHelper::make()->get('/api/v2/global/configs', [
                 'query' => [
                     'isAll' => true,
                 ],
             ]);
 
-            return $result;
-        });
-
-        if (! $apiConfig) {
-            Cache::forget($cacheKey);
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+            CacheHelper::put($result, $cacheKey, 'fresnsWebConfigs', null, $cacheTime);
         }
 
         return data_get($apiConfig, "data.list.{$itemKey}") ?? $default;
@@ -77,21 +75,18 @@ if (! function_exists('fs_code_message')) {
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_code_message_all_{$unikey}_{$langTag}";
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType();
 
-        $codeMessages = Cache::remember($cacheKey, $cacheTime, function () use ($unikey) {
-            $result = ApiHelper::make()->get('/api/v2/global/code-messages', [
+        $codeMessages = Cache::get($cacheKey);
+
+        if (empty($codeMessages)) {
+            $codeMessages = ApiHelper::make()->get('/api/v2/global/code-messages', [
                 'query' => [
                     'unikey' => $unikey,
                     'isAll' => true,
                 ],
             ]);
 
-            return $result;
-        });
-
-        if (! $codeMessages) {
-            Cache::forget($cacheKey);
+            CacheHelper::put($codeMessages, $cacheKey, 'fresnsWebConfigs');
         }
 
         return data_get($codeMessages, "data.{$code}") ?? $default;
@@ -156,10 +151,10 @@ if (! function_exists('fs_user_panel')) {
 // fs_groups
 if (! function_exists('fs_groups')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string  $listKey
      * @return array
      */
-    function fs_groups(?string $listKey = null)
+    function fs_groups(string $listKey)
     {
         return DataHelper::getFresnsGroups($listKey);
     }
@@ -168,10 +163,10 @@ if (! function_exists('fs_groups')) {
 // fs_index_list
 if (! function_exists('fs_index_list')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string  $listKey
      * @return array
      */
-    function fs_index_list(?string $listKey = null)
+    function fs_index_list(string $listKey)
     {
         return DataHelper::getFresnsIndexList($listKey);
     }
@@ -180,10 +175,10 @@ if (! function_exists('fs_index_list')) {
 // fs_list
 if (! function_exists('fs_list')) {
     /**
-     * @param  string|null  $listKey
+     * @param  string  $listKey
      * @return array
      */
-    function fs_list(?string $listKey = null)
+    function fs_list(string $listKey)
     {
         return DataHelper::getFresnsList($listKey);
     }

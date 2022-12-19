@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
+use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -72,6 +73,10 @@ class MessageController extends Controller
         if ($results['conversation']['code'] != 0) {
             throw new ErrorException($results['conversation']['message'], $results['conversation']['code']);
         }
+
+        $uid = fs_user('detail.uid');
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
 
         $conversation = $results['conversation']['data'];
 

@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Helpers;
 
 use App\Fresns\Client\Clientable;
+use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
@@ -81,9 +82,13 @@ class ApiHelper
 
     public function getOptions()
     {
-        $apiHost = Cache::rememberForever('fresns_web_api_host', function () {
-            return $this->getBaseUri();
-        });
+        $apiHost = Cache::get('fresns_web_api_host');
+
+        if (empty($apiHost)) {
+            $apiHost = $this->getBaseUri();
+
+            CacheHelper::put($apiHost, 'fresns_web_api_host', 'fresnsWebConfigs');
+        }
 
         return [
             'base_uri' => $apiHost,
@@ -141,7 +146,9 @@ class ApiHelper
 
     public static function getHeaders()
     {
-        $keyConfig = Cache::rememberForever('fresns_web_api_key', function () {
+        $keyConfig = Cache::get('fresns_web_api_key');
+
+        if (empty($keyConfig['platformId']) || empty($keyConfig['appId']) || empty($keyConfig['appSecret'])) {
             $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
 
             if ($engineApiType == 'local') {
@@ -157,12 +164,14 @@ class ApiHelper
                 $appSecret = ConfigHelper::fresnsConfigByItemKey('engine_api_app_secret');
             }
 
-            return [
+            $keyConfig = [
                 'platformId' => $platformId,
                 'appId' => $appId,
                 'appSecret' => $appSecret,
             ];
-        });
+
+            CacheHelper::put($keyConfig, 'fresns_web_api_key', 'fresnsWebConfigs');
+        }
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
@@ -179,6 +188,7 @@ class ApiHelper
             'sign' => null,
             'langTag' => current_lang_tag(),
             'timezone' => Cookie::get("{$cookiePrefix}timezone") ?: ConfigHelper::fresnsConfigByItemKey('default_timezone'),
+            'contentFormat' => null,
             'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),
             'aidToken' => Cookie::get($fresnsAidToken, \request($fresnsAidToken)),
             'uid' => Cookie::get($fresnsUid, \request($fresnsUid)),

@@ -133,11 +133,15 @@ class AccountGuard implements Guard
         if ($aid && $token) {
             try {
                 $cacheKey = "fresns_web_account_{$aid}_{$langTag}";
-                $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
 
-                $result = Cache::remember($cacheKey, $cacheTime, function () {
-                    return ApiHelper::make()->get('/api/v2/account/detail');
-                });
+                $result = Cache::get($cacheKey);
+
+                if (empty($result)) {
+                    $result = ApiHelper::make()->get('/api/v2/account/detail');
+
+                    $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+                    CacheHelper::put($result, $cacheKey, 'fresnsWebAccountData', null, $cacheTime);
+                }
 
                 $this->account = data_get($result, 'data');
             } catch (\Throwable $e) {

@@ -132,11 +132,15 @@ class UserGuard implements Guard
         if ($uid && $token) {
             try {
                 $cacheKey = "fresns_web_user_{$uid}_{$langTag}";
-                $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
 
-                $result = Cache::remember($cacheKey, $cacheTime, function () use ($uid) {
-                    return ApiHelper::make()->get("/api/v2/user/{$uid}/detail");
-                });
+                $result = Cache::get($cacheKey);
+
+                if (empty($result)) {
+                    $result = ApiHelper::make()->get("/api/v2/user/{$uid}/detail");
+
+                    $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+                    CacheHelper::put($result, $cacheKey, 'fresnsWebUserData', null, $cacheTime);
+                }
 
                 $this->user = data_get($result, 'data');
             } catch (\Throwable $e) {

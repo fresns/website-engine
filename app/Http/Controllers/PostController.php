@@ -117,12 +117,16 @@ class PostController extends Controller
     {
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_post_{$pid}_{$langTag}";
-        $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+        $cacheKey = "fresns_web_post_{$pid}";
 
-        $post = Cache::remember($cacheKey, $cacheTime, function () use ($pid) {
-            return ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
-        });
+        $post = Cache::get($cacheKey);
+
+        if (empty($post)) {
+            $post = ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+            CacheHelper::put($post, $cacheKey, 'fresnsWebPostData', null, $cacheTime);
+        }
 
         if ($post['code'] != 0) {
             Cache::forget($cacheKey);
