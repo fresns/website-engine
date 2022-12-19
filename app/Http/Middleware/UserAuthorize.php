@@ -25,7 +25,7 @@ class UserAuthorize
 
                 $userLoginTip = ConfigUtility::getCodeMessage(31601, 'Fresns', \request()->cookie($langTag));
 
-                return redirect()->to(fs_route(route('fresns.account.index')))->withErrors($userLoginTip); //FsLang
+                return redirect()->to(fs_route(route('fresns.home')))->withErrors($userLoginTip); //FsLang
             }
         } catch (\Exception $exception) {
             return redirect()->to(fs_route(route('fresns.account.login')))->withErrors($exception->getMessage());

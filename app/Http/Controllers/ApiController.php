@@ -251,12 +251,12 @@ class ApiController extends Controller
                 'code' => 0,
                 'message' => data_get($userResult, 'message', 'success'),
                 'data' => [
-                    'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.index')),
+                    'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                 ],
             ]);
         }
 
-        return redirect()->intended(fs_route(route('fresns.account.index')));
+        return redirect()->intended(fs_route(route('fresns.home')));
     }
 
     // account login
@@ -354,12 +354,12 @@ class ApiController extends Controller
                         'code' => 0,
                         'message' => data_get($result, 'message', 'success'),
                         'data' => [
-                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.index')),
+                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                         ],
                     ]);
                 }
 
-                return redirect()->intended(fs_route(route('fresns.account.index')));
+                return redirect()->intended(fs_route(route('fresns.home')));
             }
         } elseif ($userCount > 1) {
             // There are more than one user
@@ -515,12 +515,12 @@ class ApiController extends Controller
                 'code' => 0,
                 'message' => 'success',
                 'data' => [
-                    'prev_url' => fs_route(route('fresns.account.index')),
+                    'prev_url' => fs_route(route('fresns.home')),
                 ],
             ]);
         }
 
-        return redirect()->intended(fs_route(route('fresns.account.index')));
+        return redirect()->intended(fs_route(route('fresns.home')));
     }
 
     // user edit
