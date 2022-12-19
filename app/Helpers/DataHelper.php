@@ -180,7 +180,7 @@ class DataHelper
 
                     $listArr = data_get($result, 'data.list', []);
                 break;
-    
+
                 // tree
                 case 'tree':
                     $result = ApiHelper::make()->get('/api/v2/group/tree');
@@ -240,7 +240,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebUserData';
                 break;
-    
+
                 // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP);
@@ -250,7 +250,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebGroupData';
                 break;
-    
+
                 // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG);
@@ -260,7 +260,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebHashtagData';
                 break;
-    
+
                 // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST);
@@ -270,7 +270,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebPostData';
                 break;
-    
+
                 // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT);
@@ -335,7 +335,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebUserData';
                 break;
-    
+
                 // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP_LIST);
@@ -345,7 +345,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebGroupData';
                 break;
-    
+
                 // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG_LIST);
@@ -355,7 +355,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebHashtagData';
                 break;
-    
+
                 // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST_LIST);
@@ -365,7 +365,7 @@ class DataHelper
 
                     $cacheTag = 'fresnsWebPostData';
                 break;
-    
+
                 // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT_LIST);
