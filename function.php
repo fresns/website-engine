@@ -42,7 +42,7 @@ if (! function_exists('fs_api_config')) {
             ]);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($result, $cacheKey, 'fresnsWebConfigs', null, $cacheTime);
+            CacheHelper::put($result, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
         }
 
         return data_get($apiConfig, "data.list.{$itemKey}") ?? $default;
@@ -86,7 +86,7 @@ if (! function_exists('fs_code_message')) {
                 ],
             ]);
 
-            CacheHelper::put($codeMessages, $cacheKey, 'fresnsWebConfigs');
+            CacheHelper::put($codeMessages, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
         }
 
         return data_get($codeMessages, "data.{$code}") ?? $default;

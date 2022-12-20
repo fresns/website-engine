@@ -48,7 +48,7 @@ class WebConfiguration
             if (empty($keyInfo)) {
                 $keyInfo = SessionKey::find($keyId);
 
-                CacheHelper::put($keyInfo, $cacheKey, 'fresnsWebConfigs');
+                CacheHelper::put($keyInfo, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
             }
 
             if (! $keyInfo) {

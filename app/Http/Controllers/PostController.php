@@ -125,7 +125,7 @@ class PostController extends Controller
             $post = ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($post, $cacheKey, 'fresnsWebPostData', null, $cacheTime);
+            CacheHelper::put($post, $cacheKey, ['fresnsWeb', 'fresnsWebPostData'], null, $cacheTime);
         }
 
         if ($post['code'] != 0) {

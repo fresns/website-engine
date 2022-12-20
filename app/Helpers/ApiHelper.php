@@ -87,7 +87,7 @@ class ApiHelper
         if (empty($apiHost)) {
             $apiHost = $this->getBaseUri();
 
-            CacheHelper::put($apiHost, 'fresns_web_api_host', 'fresnsWebConfigs');
+            CacheHelper::put($apiHost, 'fresns_web_api_host', ['fresnsWeb', 'fresnsWebConfigs']);
         }
 
         return [
@@ -170,7 +170,7 @@ class ApiHelper
                 'appSecret' => $appSecret,
             ];
 
-            CacheHelper::put($keyConfig, 'fresns_web_api_key', 'fresnsWebConfigs');
+            CacheHelper::put($keyConfig, 'fresns_web_api_key', ['fresnsWeb', 'fresnsWebConfigs']);
         }
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');

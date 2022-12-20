@@ -65,7 +65,7 @@ class DataHelper
             $dbConfig = $itemValue;
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($dbConfig, $cacheKey, 'fresnsWebConfigs', null, $cacheTime);
+            CacheHelper::put($dbConfig, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
         }
 
         return $dbConfig;
@@ -131,7 +131,7 @@ class DataHelper
 
             $userPanel = data_get($result, 'data', null);
 
-            CacheHelper::put($userPanel, $cacheKey, 'fresnsWebUserData', null, now()->addMinutes());
+            CacheHelper::put($userPanel, $cacheKey, ['fresnsWeb', 'fresnsWebUserData'], null, now()->addMinutes());
         }
 
         return data_get($userPanel, $key, null);
@@ -153,9 +153,9 @@ class DataHelper
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
-            $cacheKey = "fresns_web_group_{$listKeyArr}_by_{$uid}_{$langTag}";
+            $cacheKey = "fresns_web_group_{$listKey}_by_{$uid}_{$langTag}";
         } else {
-            $cacheKey = "fresns_web_group_{$listKeyArr}_by_guest_{$langTag}";
+            $cacheKey = "fresns_web_group_{$listKey}_by_guest_{$langTag}";
         }
 
         // is known to be empty
@@ -190,7 +190,7 @@ class DataHelper
             }
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
-            CacheHelper::put($listArr, $cacheKey, 'fresnsWebGroupData', null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebGroupData'], null, $cacheTime);
         }
 
         return $listArr;
@@ -238,7 +238,7 @@ class DataHelper
                         'query' => $userQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebUserData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebUserData'];
                 break;
 
                 // groups
@@ -248,7 +248,7 @@ class DataHelper
                         'query' => $groupQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebGroupData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebGroupData'];
                 break;
 
                 // hashtags
@@ -258,7 +258,7 @@ class DataHelper
                         'query' => $hashtagQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebHashtagData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebHashtagData'];
                 break;
 
                 // posts
@@ -268,7 +268,7 @@ class DataHelper
                         'query' => $postQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebPostData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebPostData'];
                 break;
 
                 // comments
@@ -278,7 +278,7 @@ class DataHelper
                         'query' => $commentQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebCommentData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebCommentData'];
                 break;
             }
 
@@ -333,7 +333,7 @@ class DataHelper
                         'query' => $userQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebUserData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebUserData'];
                 break;
 
                 // groups
@@ -343,7 +343,7 @@ class DataHelper
                         'query' => $groupQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebGroupData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebGroupData'];
                 break;
 
                 // hashtags
@@ -353,7 +353,7 @@ class DataHelper
                         'query' => $hashtagQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebHashtagData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebHashtagData'];
                 break;
 
                 // posts
@@ -363,7 +363,7 @@ class DataHelper
                         'query' => $postQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebPostData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebPostData'];
                 break;
 
                 // comments
@@ -373,7 +373,7 @@ class DataHelper
                         'query' => $commentQuery,
                     ]);
 
-                    $cacheTag = 'fresnsWebCommentData';
+                    $cacheTag = ['fresnsWeb', 'fresnsWebCommentData'];
                 break;
             }
 
@@ -421,7 +421,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, 'fresnsWebPostData', null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebPostData'], null, $cacheTime);
         }
 
         return $listArr;
@@ -454,7 +454,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, 'fresnsWebCommentData', null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebCommentData'], null, $cacheTime);
         }
 
         return $listArr;
@@ -481,7 +481,7 @@ class DataHelper
 
             $listArr = data_get($result, 'data', []);
 
-            CacheHelper::put($listArr, $cacheKey, 'fresnsWebConfigs');
+            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
         }
 
         return $listArr;

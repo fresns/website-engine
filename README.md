@@ -69,6 +69,8 @@ If you discover a security vulnerability within Fresns, please send an e-mail to
 
 ## Cache Key List
 
+- tag: `fresnsWeb`
+
 ```php
 'fresns_web_api_host'                                   // tag: fresnsWebConfigs
 'fresns_web_api_key'                                    // tag: fresnsWebConfigs

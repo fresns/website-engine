@@ -121,7 +121,7 @@ class CommentController extends Controller
             $comment = ApiHelper::make()->get("/api/v2/comment/{$cid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($comment, $cacheKey, 'fresnsWebCommentData', null, $cacheTime);
+            CacheHelper::put($comment, $cacheKey, ['fresnsWeb', 'fresnsWebCommentData'], null, $cacheTime);
         }
 
         if ($comment['code'] != 0) {

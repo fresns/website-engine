@@ -140,7 +140,7 @@ class AccountGuard implements Guard
                     $result = ApiHelper::make()->get('/api/v2/account/detail');
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-                    CacheHelper::put($result, $cacheKey, 'fresnsWebAccountData', null, $cacheTime);
+                    CacheHelper::put($result, $cacheKey, ['fresnsWeb', 'fresnsWebAccountData'], null, $cacheTime);
                 }
 
                 $this->account = data_get($result, 'data');
