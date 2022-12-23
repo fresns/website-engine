@@ -84,16 +84,23 @@ class WebConfiguration
 
     public function loadLanguages()
     {
-        $menus = fs_api_config('language_menus') ?? [];
+        $supportedLocales = Cache::get('fresns_web_languages');
 
-        $supportedLocales = [];
-        foreach ($menus as $menu) {
-            $supportedLocales[$menu['langTag']] = ['name' => $menu['langName']];
+        if (empty($supportedLocales)) {
+            $menus = fs_api_config('language_menus') ?? [];
+
+            $supportedLocales = [];
+            foreach ($menus as $menu) {
+                if (! $menu['isEnable']) {
+                    continue;
+                }
+                $supportedLocales[$menu['langTag']] = ['name' => $menu['langName']];
+            }
+
+            CacheHelper::put($supportedLocales, 'fresns_web_languages', ['fresnsWeb', 'fresnsWebConfigs']);
         }
 
         app()->get('laravellocalization')->setSupportedLocales($supportedLocales);
-
-        fs_api_config('language_status') ? Cache::put('supportedLocales', $supportedLocales) : Cache::forget('supportedLocales');
     }
 
     public function webLangTag()
