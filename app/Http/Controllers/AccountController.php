@@ -92,15 +92,7 @@ class AccountController extends Controller
     // users
     public function users()
     {
-        $multiUserStatus = false;
-
-        if (fs_api_config('multi_user_status')) {
-            $roleIds = Arr::pluck(fs_user()->get('detail.users.roles'), 'rid');
-
-            $multiUserStatus = in_array($roleIds, fs_api_config('multi_user_roles'));
-        }
-
-        return view('account.users', compact('multiUserStatus'));
+        return view('account.users');
     }
 
     // settings
