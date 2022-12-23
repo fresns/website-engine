@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0-beta.8 (2022-12-24)
+
+- Refactoring the cache mechanism
+- Default return to home page after registration and login
+- Optimize multi-language support
+
+
 ## 2.0.0-beta.7 (2022-12-13)
 
 - Refactor: providers
