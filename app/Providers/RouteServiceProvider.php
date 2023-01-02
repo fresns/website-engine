@@ -42,11 +42,11 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapApiRoutes()
     {
-        Route::prefix('api')->name('fresns.api.')->group(__DIR__.'/../../routes/api.php');
+        Route::prefix('api')->name('fresns.api.')->group(dirname(__DIR__, 2).'/routes/api.php');
     }
 
     protected function mapWebRoutes()
     {
-        Route::name('fresns.')->group(__DIR__.'/../../routes/web.php');
+        Route::name('fresns.')->group(dirname(__DIR__, 2).'/routes/web.php');
     }
 }
