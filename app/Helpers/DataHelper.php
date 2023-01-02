@@ -129,12 +129,12 @@ class DataHelper
         if (empty($userPanel)) {
             $result = ApiHelper::make()->get('/api/v2/user/panel');
 
-            $userPanel = data_get($result, 'data', null);
+            $userPanel = data_get($result, 'data');
 
             CacheHelper::put($userPanel, $cacheKey, ['fresnsWeb', 'fresnsWebUserData'], null, now()->addMinutes());
         }
 
-        return data_get($userPanel, $key, null);
+        return data_get($userPanel, $key);
     }
 
     // get fresns groups

@@ -41,11 +41,13 @@ if (! function_exists('fs_api_config')) {
                 ],
             ]);
 
+            $apiConfig = data_get($result, "data.list");
+
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($result, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
+            CacheHelper::put($apiConfig, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
         }
 
-        return data_get($apiConfig, "data.list.{$itemKey}") ?? $default;
+        return $apiConfig[$itemKey] ?? $default;
     }
 }
 

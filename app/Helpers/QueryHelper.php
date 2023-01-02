@@ -70,8 +70,8 @@ class QueryHelper
         if (! empty($queryConfig)) {
             $urlInfo = parse_url($queryConfig);
 
-            if (! empty($urlInfo['query'])) {
-                parse_str($urlInfo['query'], $params);
+            if (! empty($urlInfo['path'])) {
+                parse_str($urlInfo['path'], $params);
             }
         }
 

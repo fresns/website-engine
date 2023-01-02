@@ -264,6 +264,7 @@ class PostController extends Controller
     {
         $query = $request->all();
         $query['pid'] = $pid;
+        $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
         if (! fs_db_config('website_status')) {
             $query['pageSize'] = fs_db_config('website_number');
