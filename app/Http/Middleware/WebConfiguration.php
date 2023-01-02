@@ -75,10 +75,6 @@ class WebConfiguration
 
         View::share('engineUnikey', 'FresnsEngine');
 
-        $timezone = fs_user('detail.timezone') ?: ConfigHelper::fresnsConfigByItemKey('default_timezone');
-        $timezoneCookieName = fs_db_config('engine_cookie_prefix', 'fresns_').'timezone';
-        Cookie::queue($timezoneCookieName, $timezone);
-
         return $next($request);
     }
 

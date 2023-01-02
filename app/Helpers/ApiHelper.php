@@ -187,7 +187,7 @@ class ApiHelper
             'timestamp' => now()->unix(),
             'sign' => null,
             'langTag' => current_lang_tag(),
-            'timezone' => Cookie::get("{$cookiePrefix}timezone") ?: ConfigHelper::fresnsConfigByItemKey('default_timezone'),
+            'timezone' => null,
             'contentFormat' => null,
             'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),
             'aidToken' => Cookie::get($fresnsAidToken, \request($fresnsAidToken)),

@@ -163,7 +163,6 @@ class UserGuard implements Guard
 
         Cookie::queue(Cookie::forget("{$cookiePrefix}uid"));
         Cookie::queue(Cookie::forget("{$cookiePrefix}uid_token"));
-        Cookie::queue(Cookie::forget("{$cookiePrefix}timezone"));
 
         $this->user = null;
         $this->loggedOut = true;
