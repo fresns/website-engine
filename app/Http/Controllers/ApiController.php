@@ -216,8 +216,8 @@ class ApiController extends Controller
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
-        $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours', null);
-        $accountTokenMinutes = $accountExpiredHours ? $accountExpiredHours * 60 : null;
+        $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
+        $accountTokenMinutes = $accountExpiredHours * 60;
 
         Cookie::queue($fresnsAid, $data['detail']['aid'], $accountTokenMinutes);
         Cookie::queue($fresnsAidToken, $data['sessionToken']['token'], $accountTokenMinutes);
@@ -235,12 +235,11 @@ class ApiController extends Controller
             ],
         ]);
 
-        $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours', null);
-        $userTokenMinutes = $userExpiredHours ? $userExpiredHours * 60 : null;
+        $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
+        $userTokenMinutes = $userExpiredHours * 60;
 
         Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
         Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
-        Cookie::queue("{$cookiePrefix}timezone", data_get($userResult, 'data.detail.timezone'), $userTokenMinutes);
 
         if ($userResult['code'] != 0) {
             return \response()->json($userResult);
@@ -291,8 +290,8 @@ class ApiController extends Controller
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
-        $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours', null);
-        $accountTokenMinutes = $accountExpiredHours ? $accountExpiredHours * 60 : null;
+        $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
+        $accountTokenMinutes = $accountExpiredHours * 60;
 
         Cookie::queue($fresnsAid, $data['detail']['aid'], $accountTokenMinutes);
         Cookie::queue($fresnsAidToken, $data['sessionToken']['token'], $accountTokenMinutes);
@@ -342,12 +341,11 @@ class ApiController extends Controller
                     ]);
                 }
 
-                $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours', null);
-                $userTokenMinutes = $userExpiredHours ? $userExpiredHours * 60 : null;
+                $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
+                $userTokenMinutes = $userExpiredHours * 60;
 
                 Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
                 Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
-                Cookie::queue("{$cookiePrefix}timezone", data_get($userResult, 'data.detail.timezone'), $userTokenMinutes);
 
                 if ($request->wantsJson()) {
                     return \response()->json([
@@ -503,12 +501,11 @@ class ApiController extends Controller
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
 
-        $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours', null);
-        $userTokenMinutes = $userExpiredHours ? $userExpiredHours * 60 : null;
+        $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
+        $userTokenMinutes = $userExpiredHours * 60;
 
         Cookie::queue("{$cookiePrefix}uid", data_get($result, 'data.detail.uid'), $userTokenMinutes);
         Cookie::queue("{$cookiePrefix}uid_token", data_get($result, 'data.sessionToken.token'), $userTokenMinutes);
-        Cookie::queue("{$cookiePrefix}timezone", data_get($result, 'data.detail.timezone'), $userTokenMinutes);
 
         if ($request->wantsJson()) {
             return \response()->json([
