@@ -17,54 +17,55 @@ use Plugins\FresnsEngine\Auth\UserGuard;
 
 class FresnsEngineServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function register()
     {
         config()->set('laravellocalization.useAcceptLanguageHeader', false);
 
         config()->set('laravellocalization.hideDefaultLocaleInURL', true);
 
-        $supportedLocales = Cache::get('fresns_web_languages');
+        // Keep the default configuration if you can't query data from the database
+        try {
+            $defaultLangTag = ConfigHelper::fresnsConfigDefaultLangTag();
+            $supportedLocales = Cache::get('fresns_web_languages');
 
-        if (empty($supportedLocales)) {
-            $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [];
+            if (empty($supportedLocales)) {
+                $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [];
 
-            $localeMenus = [];
-            foreach ($langMenus as $menu) {
-                if (! $menu['isEnable']) {
-                    continue;
+                $localeMenus = [];
+                foreach ($langMenus as $menu) {
+                    if (! $menu['isEnable']) {
+                        continue;
+                    }
+
+                    $localeMenus[$menu['langTag']] = ['name' => $menu['langName']];
                 }
 
-                $localeMenus[$menu['langTag']] = ['name' => $menu['langName']];
+                $supportedLocales = $localeMenus;
             }
+        } catch (\Throwable $e) {
+            $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('engine_cookie_prefix') ?? 'fresns_';
+            $langCookie = "{$cookiePrefix}lang_tag";
 
-            if (empty($localeMenus)) {
-                $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('engine_cookie_prefix') ?? 'fresns_';
-                $langCookie = "{$cookiePrefix}lang_tag";
+            $defaultLangTag = \request()->header('langTag') ?? \request()->cookie($langCookie) ?? ConfigHelper::fresnsConfigDefaultLangTag();
 
-                $defaultLanguage = \request()->header('langTag') ?? \request()->cookie($langCookie) ?? ConfigHelper::fresnsConfigDefaultLangTag();
-
-                $localeMenus = [
-                    $defaultLanguage => ['name' => $defaultLanguage],
-                ];
-            }
-
-            $supportedLocales = $localeMenus;
+            $supportedLocales = [
+                $defaultLangTag => ['name' => $defaultLangTag],
+            ];
         }
 
         config()->set('laravellocalization.supportedLocales', $supportedLocales);
 
-        $defaultLangTag = ConfigHelper::fresnsConfigDefaultLangTag();
         config()->set('app.locale', $defaultLangTag);
 
+        $this->registerAuthenticator();
+        $this->registerTranslations();
+    }
+
+    public function boot()
+    {
         $this->app->register(RouteServiceProvider::class);
 
         Paginator::useBootstrap();
-    }
-
-    public function register()
-    {
-        $this->registerAuthenticator();
-        $this->registerTranslations();
     }
 
     protected function registerAuthenticator(): void
@@ -80,6 +81,6 @@ class FresnsEngineServiceProvider extends ServiceProvider
 
     protected function registerTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'FsWeb');
+        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'FsWeb');
     }
 }
