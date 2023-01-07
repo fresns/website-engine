@@ -178,6 +178,7 @@ class ApiHelper
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
+        $fresnsLangTag = "{$cookiePrefix}lang_tag";
 
         $headers = [
             'Accept' => 'application/json',
@@ -186,7 +187,7 @@ class ApiHelper
             'appId' => $keyConfig['appId'],
             'timestamp' => now()->unix(),
             'sign' => null,
-            'langTag' => current_lang_tag(),
+            'langTag' => Cookie::get($fresnsLangTag, \request($fresnsLangTag)) ?? current_lang_tag(),
             'timezone' => null,
             'contentFormat' => null,
             'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),

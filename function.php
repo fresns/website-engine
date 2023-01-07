@@ -11,7 +11,6 @@ use App\Helpers\ConfigHelper;
 use App\Models\File;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Cookie;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Plugins\FresnsEngine\Auth\UserGuard;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -21,9 +20,7 @@ use Plugins\FresnsEngine\Helpers\DataHelper;
 if (! function_exists('current_lang_tag')) {
     function current_lang_tag()
     {
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('engine_cookie_prefix') ?? 'fresns_';
-
-        return Cookie::get("{$cookiePrefix}lang_tag") ?? App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language');
+        return App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language');
     }
 }
 
