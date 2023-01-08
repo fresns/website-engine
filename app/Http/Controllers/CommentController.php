@@ -260,6 +260,7 @@ class CommentController extends Controller
     {
         $query = $request->all();
         $query['cid'] = $cid;
+        $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
         if (! fs_db_config('website_status')) {
             $query['pageSize'] = fs_db_config('website_number');
