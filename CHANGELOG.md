@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.0.0 (2023-01-09)
+
+- Set token validity to one year by default
+- The list of comments on the post page is arranged in positive chronological order
+- Fix configToQuery
+- Remove timezone configuration and let API handle timezone
+
+
 ## 2.0.0-beta.8 (2022-12-24)
 
 - Refactoring the cache mechanism
