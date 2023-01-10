@@ -16,6 +16,7 @@ use App\Models\SessionKey;
 use App\Utilities\AppUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 
 class ApiHelper
@@ -56,7 +57,7 @@ class ApiHelper
         );
 
         $paginate
-            ->withPath('/'.\request()->path())
+            ->withPath(Str::of(request()->path())->start('/'))
             ->withQueryString();
 
         return $paginate;

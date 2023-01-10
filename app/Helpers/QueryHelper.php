@@ -10,6 +10,7 @@ namespace Plugins\FresnsEngine\Helpers;
 
 use App\Helpers\ConfigHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class QueryHelper
 {
@@ -91,7 +92,7 @@ class QueryHelper
             currentPage: request('page', 1),
         );
 
-        $paginate->withPath(request()->path())->withQueryString();
+        $paginate->withPath(Str::of(request()->path())->start('/'))->withQueryString();
 
         return $paginate;
     }
