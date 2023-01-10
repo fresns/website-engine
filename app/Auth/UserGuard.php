@@ -14,7 +14,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\DataHelper;
@@ -132,14 +131,15 @@ class UserGuard implements Guard
         if ($uid && $token) {
             try {
                 $cacheKey = "fresns_web_user_{$uid}_{$langTag}";
+                $cacheTags = ['fresnsWeb', 'fresnsWebUserData'];
 
-                $result = Cache::get($cacheKey);
+                $result = CacheHelper::get($cacheKey, $cacheTags);
 
                 if (empty($result)) {
                     $result = ApiHelper::make()->get("/api/v2/user/{$uid}/detail");
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-                    CacheHelper::put($result, $cacheKey, ['fresnsWeb', 'fresnsWebUserData'], null, $cacheTime);
+                    CacheHelper::put($result, $cacheKey, $cacheTags, null, $cacheTime);
                 }
 
                 $this->user = data_get($result, 'data');

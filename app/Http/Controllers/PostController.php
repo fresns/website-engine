@@ -118,14 +118,15 @@ class PostController extends Controller
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_post_{$pid}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebPostData'];
 
-        $post = Cache::get($cacheKey);
+        $post = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($post)) {
             $post = ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($post, $cacheKey, ['fresnsWeb', 'fresnsWebPostData'], null, $cacheTime);
+            CacheHelper::put($post, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         if ($post['code'] != 0) {

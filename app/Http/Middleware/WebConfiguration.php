@@ -14,7 +14,6 @@ use App\Models\SessionKey;
 use Browser;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
@@ -42,13 +41,14 @@ class WebConfiguration
 
             $keyId = fs_db_config('engine_key_id');
             $cacheKey = "fresns_web_key_{$keyId}";
+            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-            $keyInfo = Cache::get($cacheKey);
+            $keyInfo = CacheHelper::get($cacheKey, $cacheTags);
 
             if (empty($keyInfo)) {
                 $keyInfo = SessionKey::find($keyId);
 
-                CacheHelper::put($keyInfo, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
+                CacheHelper::put($keyInfo, $cacheKey, $cacheTags);
             }
 
             if (! $keyInfo) {
@@ -80,7 +80,10 @@ class WebConfiguration
 
     public function loadLanguages()
     {
-        $supportedLocales = Cache::get('fresns_web_languages');
+        $cacheKey = 'fresns_web_languages';
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($supportedLocales)) {
             $menus = fs_api_config('language_menus') ?? [];
@@ -93,7 +96,7 @@ class WebConfiguration
                 $supportedLocales[$menu['langTag']] = ['name' => $menu['langName']];
             }
 
-            CacheHelper::put($supportedLocales, 'fresns_web_languages', ['fresnsWeb', 'fresnsWebConfigs']);
+            CacheHelper::put($supportedLocales, $cacheKey, $cacheTags);
         }
 
         app()->get('laravellocalization')->setSupportedLocales($supportedLocales);

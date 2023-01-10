@@ -15,7 +15,6 @@ use App\Helpers\SignHelper;
 use App\Models\SessionKey;
 use App\Utilities\AppUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 
@@ -82,12 +81,15 @@ class ApiHelper
 
     public function getOptions()
     {
-        $apiHost = Cache::get('fresns_web_api_host');
+        $cacheKey = 'fresns_web_api_host';
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        $apiHost = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($apiHost)) {
             $apiHost = $this->getBaseUri();
 
-            CacheHelper::put($apiHost, 'fresns_web_api_host', ['fresnsWeb', 'fresnsWebConfigs']);
+            CacheHelper::put($apiHost, $cacheKey, $cacheTags);
         }
 
         return [
@@ -146,7 +148,10 @@ class ApiHelper
 
     public static function getHeaders()
     {
-        $keyConfig = Cache::get('fresns_web_api_key');
+        $cacheKey = 'fresns_web_api_key';
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        $keyConfig = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($keyConfig['platformId']) || empty($keyConfig['appId']) || empty($keyConfig['appSecret'])) {
             $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
@@ -170,7 +175,7 @@ class ApiHelper
                 'appSecret' => $appSecret,
             ];
 
-            CacheHelper::put($keyConfig, 'fresns_web_api_key', ['fresnsWeb', 'fresnsWebConfigs']);
+            CacheHelper::put($keyConfig, $cacheKey, $cacheTags);
         }
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');

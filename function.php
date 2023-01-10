@@ -10,7 +10,6 @@ use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Models\File;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Plugins\FresnsEngine\Auth\UserGuard;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -31,8 +30,9 @@ if (! function_exists('fs_api_config')) {
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_api_config_all_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-        $apiConfig = Cache::get($cacheKey);
+        $apiConfig = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($apiConfig)) {
             $result = ApiHelper::make()->get('/api/v2/global/configs', [
@@ -44,7 +44,7 @@ if (! function_exists('fs_api_config')) {
             $apiConfig = data_get($result, 'data.list');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($apiConfig, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
+            CacheHelper::put($apiConfig, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $apiConfig[$itemKey] ?? $default;
@@ -77,8 +77,9 @@ if (! function_exists('fs_code_message')) {
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_code_message_all_{$unikey}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-        $codeMessages = Cache::get($cacheKey);
+        $codeMessages = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($codeMessages)) {
             $codeMessages = ApiHelper::make()->get('/api/v2/global/code-messages', [
@@ -88,7 +89,7 @@ if (! function_exists('fs_code_message')) {
                 ],
             ]);
 
-            CacheHelper::put($codeMessages, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
+            CacheHelper::put($codeMessages, $cacheKey, $cacheTags);
         }
 
         return data_get($codeMessages, "data.{$code}") ?? $default;

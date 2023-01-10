@@ -114,14 +114,15 @@ class CommentController extends Controller
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_comment_{$cid}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebCommentData'];
 
-        $comment = Cache::get($cacheKey);
+        $comment = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($comment)) {
             $comment = ApiHelper::make()->get("/api/v2/comment/{$cid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($comment, $cacheKey, ['fresnsWeb', 'fresnsWebCommentData'], null, $cacheTime);
+            CacheHelper::put($comment, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         if ($comment['code'] != 0) {

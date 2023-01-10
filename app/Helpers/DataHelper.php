@@ -15,7 +15,6 @@ use App\Helpers\PluginHelper;
 use App\Helpers\StrHelper;
 use App\Models\Config;
 use App\Models\File;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 
 class DataHelper
@@ -26,6 +25,7 @@ class DataHelper
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_db_config_{$itemKey}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
         // is known to be empty
         $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
@@ -34,7 +34,7 @@ class DataHelper
         }
 
         // get cache
-        $dbConfig = Cache::get($cacheKey);
+        $dbConfig = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($dbConfig)) {
             $config = Config::where('item_key', $itemKey)->first();
@@ -65,7 +65,7 @@ class DataHelper
             $dbConfig = $itemValue;
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($dbConfig, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs'], null, $cacheTime);
+            CacheHelper::put($dbConfig, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $dbConfig;
@@ -123,15 +123,16 @@ class DataHelper
         $uid = fs_user('detail.uid');
 
         $cacheKey = "fresns_web_user_panel_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebUserData'];
 
-        $userPanel = Cache::get($cacheKey);
+        $userPanel = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($userPanel)) {
             $result = ApiHelper::make()->get('/api/v2/user/panel');
 
             $userPanel = data_get($result, 'data');
 
-            CacheHelper::put($userPanel, $cacheKey, ['fresnsWeb', 'fresnsWebUserData'], null, now()->addMinutes());
+            CacheHelper::put($userPanel, $cacheKey, $cacheTags, null, now()->addMinutes());
         }
 
         return data_get($userPanel, $key);
@@ -158,6 +159,8 @@ class DataHelper
             $cacheKey = "fresns_web_group_{$listKey}_by_guest_{$langTag}";
         }
 
+        $cacheTags = ['fresnsWeb', 'fresnsWebGroupData'];
+
         // is known to be empty
         $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
         if ($isKnownEmpty) {
@@ -165,7 +168,7 @@ class DataHelper
         }
 
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             switch ($listKey) {
@@ -190,7 +193,7 @@ class DataHelper
             }
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
-            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebGroupData'], null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $listArr;
@@ -226,8 +229,17 @@ class DataHelper
             return [];
         }
 
+        $cacheTags = match ($listKey) {
+            'users' => ['fresnsWeb', 'fresnsWebUserData'],
+            'groups' => ['fresnsWeb', 'fresnsWebGroupData'],
+            'hashtags' => ['fresnsWeb', 'fresnsWebHashtagData'],
+            'posts' => ['fresnsWeb', 'fresnsWebPostData'],
+            'comments' => ['fresnsWeb', 'fresnsWebCommentData'],
+            default => 'fresnsWeb',
+        };
+
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             switch ($listKey) {
@@ -237,8 +249,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/user/list', [
                         'query' => $userQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebUserData'];
                 break;
 
                 // groups
@@ -247,8 +257,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/group/list', [
                         'query' => $groupQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebGroupData'];
                 break;
 
                 // hashtags
@@ -257,8 +265,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebHashtagData'];
                 break;
 
                 // posts
@@ -267,8 +273,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/post/list', [
                         'query' => $postQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebPostData'];
                 break;
 
                 // comments
@@ -277,15 +281,13 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/comment/list', [
                         'query' => $commentQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebCommentData'];
                 break;
             }
 
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $listArr;
@@ -321,8 +323,17 @@ class DataHelper
             return [];
         }
 
+        $cacheTags = match ($listKey) {
+            'users' => ['fresnsWeb', 'fresnsWebUserData'],
+            'groups' => ['fresnsWeb', 'fresnsWebGroupData'],
+            'hashtags' => ['fresnsWeb', 'fresnsWebHashtagData'],
+            'posts' => ['fresnsWeb', 'fresnsWebPostData'],
+            'comments' => ['fresnsWeb', 'fresnsWebCommentData'],
+            default => 'fresnsWeb',
+        };
+
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             switch ($listKey) {
@@ -332,8 +343,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/user/list', [
                         'query' => $userQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebUserData'];
                 break;
 
                 // groups
@@ -342,8 +351,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/group/list', [
                         'query' => $groupQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebGroupData'];
                 break;
 
                 // hashtags
@@ -352,8 +359,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebHashtagData'];
                 break;
 
                 // posts
@@ -362,8 +367,6 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/post/list', [
                         'query' => $postQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebPostData'];
                 break;
 
                 // comments
@@ -372,15 +375,13 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/comment/list', [
                         'query' => $commentQuery,
                     ]);
-
-                    $cacheTag = ['fresnsWeb', 'fresnsWebCommentData'];
                 break;
             }
 
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $listArr;
@@ -410,8 +411,10 @@ class DataHelper
             return [];
         }
 
+        $cacheTags = ['fresnsWeb', 'fresnsWebPostData'];
+
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             $result = ApiHelper::make()->get('/api/v2/post/list', [
@@ -421,7 +424,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebPostData'], null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $listArr;
@@ -433,6 +436,7 @@ class DataHelper
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_post_{$pid}_sticky_comments_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebCommentData'];
 
         // is known to be empty
         $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
@@ -441,7 +445,7 @@ class DataHelper
         }
 
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             $result = ApiHelper::make()->get('/api/v2/comment/list', [
@@ -454,7 +458,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebCommentData'], null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         return $listArr;
@@ -466,6 +470,7 @@ class DataHelper
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
         // is known to be empty
         $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
@@ -474,14 +479,14 @@ class DataHelper
         }
 
         // get cache
-        $listArr = Cache::get($cacheKey);
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
             $result = ApiHelper::make()->get("/api/v2/global/{$type}/content-types");
 
             $listArr = data_get($result, 'data', []);
 
-            CacheHelper::put($listArr, $cacheKey, ['fresnsWeb', 'fresnsWebConfigs']);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags);
         }
 
         return $listArr;

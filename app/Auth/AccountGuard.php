@@ -14,7 +14,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\DataHelper;
@@ -133,14 +132,15 @@ class AccountGuard implements Guard
         if ($aid && $token) {
             try {
                 $cacheKey = "fresns_web_account_{$aid}_{$langTag}";
+                $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
 
-                $result = Cache::get($cacheKey);
+                $result = CacheHelper::get($cacheKey, $cacheTags);
 
                 if (empty($result)) {
                     $result = ApiHelper::make()->get('/api/v2/account/detail');
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-                    CacheHelper::put($result, $cacheKey, ['fresnsWeb', 'fresnsWebAccountData'], null, $cacheTime);
+                    CacheHelper::put($result, $cacheKey, $cacheTags, null, $cacheTime);
                 }
 
                 $this->account = data_get($result, 'data');

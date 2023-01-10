@@ -8,9 +8,9 @@
 
 namespace Plugins\FresnsEngine\Providers;
 
+use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use Plugins\FresnsEngine\Auth\AccountGuard;
 use Plugins\FresnsEngine\Auth\UserGuard;
@@ -26,7 +26,11 @@ class FresnsEngineServiceProvider extends ServiceProvider
         // Keep the default configuration if you can't query data from the database
         try {
             $defaultLangTag = ConfigHelper::fresnsConfigDefaultLangTag();
-            $supportedLocales = Cache::get('fresns_web_languages');
+
+            $cacheKey = 'fresns_web_languages';
+            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+    
+            $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
 
             if (empty($supportedLocales)) {
                 $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [];
