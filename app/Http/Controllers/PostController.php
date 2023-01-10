@@ -11,7 +11,6 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 use App\Helpers\CacheHelper;
 use App\Models\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -130,7 +129,7 @@ class PostController extends Controller
         }
 
         if ($post['code'] != 0) {
-            Cache::forget($cacheKey);
+            CacheHelper::forgetFresnsKey($cacheKey);
 
             throw new ErrorException($post['message'], $post['code']);
         }
