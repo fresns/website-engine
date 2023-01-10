@@ -29,7 +29,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
 
             $cacheKey = 'fresns_web_languages';
             $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-    
+
             $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
 
             if (empty($supportedLocales)) {
