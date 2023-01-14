@@ -14,6 +14,7 @@ use App\Helpers\ConfigHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
 use App\Utilities\AppUtility;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class ApiHelper
 
     public function caseForwardCallResult($result)
     {
-        if ($result instanceof \Illuminate\Http\RedirectResponse) {
+        if ($result instanceof RedirectResponse) {
             throw new ErrorException(session('failure'), session('code'));
         }
 
@@ -36,7 +37,7 @@ class ApiHelper
 
     public function caseUnwrapRequests(array $results)
     {
-        if ($results instanceof \Illuminate\Http\RedirectResponse) {
+        if ($results instanceof RedirectResponse) {
             throw new ErrorException(session('failure'), (int) session('code'));
         }
 
@@ -56,9 +57,7 @@ class ApiHelper
             currentPage: data_get($this->result, 'data.paginate.currentPage'),
         );
 
-        $paginate
-            ->withPath(Str::of(request()->path())->start('/'))
-            ->withQueryString();
+        $paginate->withPath(Str::of(request()->path())->start('/'))->withQueryString();
 
         return $paginate;
     }
@@ -180,11 +179,11 @@ class ApiHelper
         }
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $fresnsLangTag = "{$cookiePrefix}lang_tag";
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
-        $fresnsLangTag = "{$cookiePrefix}lang_tag";
 
         $headers = [
             'Accept' => 'application/json',
@@ -193,13 +192,13 @@ class ApiHelper
             'appId' => $keyConfig['appId'],
             'timestamp' => now()->unix(),
             'sign' => null,
-            'langTag' => Cookie::get($fresnsLangTag, \request($fresnsLangTag)) ?? current_lang_tag(),
+            'langTag' => Cookie::get($fresnsLangTag) ?? current_lang_tag(),
             'timezone' => null,
             'contentFormat' => null,
-            'aid' => Cookie::get($fresnsAid, \request($fresnsAid)),
-            'aidToken' => Cookie::get($fresnsAidToken, \request($fresnsAidToken)),
-            'uid' => Cookie::get($fresnsUid, \request($fresnsUid)),
-            'uidToken' => Cookie::get($fresnsUidToken, \request($fresnsUidToken)),
+            'aid' => Cookie::get($fresnsAid),
+            'aidToken' => Cookie::get($fresnsAidToken),
+            'uid' => Cookie::get($fresnsUid),
+            'uidToken' => Cookie::get($fresnsUidToken),
             'deviceInfo' => json_encode(AppUtility::getDeviceInfo()),
         ];
         $headers['sign'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);

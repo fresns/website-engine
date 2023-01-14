@@ -10,6 +10,7 @@ namespace Plugins\FresnsEngine\Providers;
 
 use App\Exceptions\Handler;
 use Illuminate\Support\ServiceProvider;
+use Plugins\FresnsEngine\Exceptions\ErrorException;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -34,8 +35,8 @@ class ExceptionServiceProvider extends ServiceProvider
      */
     public function reportable()
     {
-        return function (Throwable $e) {
-            if ($e instanceof \Plugins\FresnsEngine\Exceptions\ErrorException) {
+        return function (\Throwable $e) {
+            if ($e instanceof ErrorException) {
                 return;
             }
         };
