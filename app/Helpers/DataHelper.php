@@ -196,7 +196,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns index list
