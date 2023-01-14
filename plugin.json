@@ -17,7 +17,7 @@
         "Plugins\\FresnsEngine\\Providers\\ExceptionServiceProvider"
     ],
     "autoloadFiles": [
-        "./function.php"
+        "app/Http/Function.php"
     ],
     "aliases": {}
 }
