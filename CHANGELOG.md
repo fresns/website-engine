@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.1.0 (2023-01-18)
+
+- Compatible with the / symbol for paging paths
+- Group-compatible empty arrays
+- Move wrapper function file location
+
+
 ## 2.0.1 (2023-01-11)
 
 - Optimize cache tags
