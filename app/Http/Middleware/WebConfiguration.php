@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 
 class WebConfiguration
 {
@@ -118,5 +119,11 @@ class WebConfiguration
 
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
+
+        // uuid
+        $uuid = Cookie::get("{$cookiePrefix}uuid");
+        if (empty($uuid)) {
+            Cookie::queue("{$cookiePrefix}uuid", Str::uuid());
+        }
     }
 }
