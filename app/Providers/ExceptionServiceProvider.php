@@ -9,9 +9,9 @@
 namespace Plugins\FresnsEngine\Providers;
 
 use Browser;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionServiceProvider extends ServiceProvider
