@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.2.0 (2023-01-20)
+
+- Take over the custom 404 page
+- Repair the problem that the account credentials of headers cannot be obtained when logging in
+- Modify headers parameter name
+- Change plugin path signature to path credentials `urlAuthorization`
+
+
 ## 2.1.0 (2023-01-18)
 
 - Compatible with the / symbol for paging paths
