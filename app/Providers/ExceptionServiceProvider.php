@@ -8,9 +8,11 @@
 
 namespace Plugins\FresnsEngine\Providers;
 
-use App\Exceptions\Handler;
+use Browser;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -21,10 +23,15 @@ class ExceptionServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->resolving(Handler::class, function ($handler) {
-            $handler->reportable([$this, 'reportable']);
-            $handler->renderable([$this, 'renderable']);
-        });
+        $handler = resolve(ExceptionHandler::class);
+
+        if (method_exists($handler, 'reportable')) {
+            $handler->reportable($this->reportable());
+        }
+
+        if (method_exists($handler, 'renderable')) {
+            $handler->renderable($this->renderable());
+        }
     }
 
     /**
@@ -36,9 +43,7 @@ class ExceptionServiceProvider extends ServiceProvider
     public function reportable()
     {
         return function (\Throwable $e) {
-            if ($e instanceof ErrorException) {
-                return;
-            }
+            //
         };
     }
 
@@ -51,7 +56,18 @@ class ExceptionServiceProvider extends ServiceProvider
     public function renderable()
     {
         return function (\Throwable $e) {
-            //
+            // 404 page
+            if ($e instanceof NotFoundHttpException) {
+                $theme = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+
+                $finder = app('view')->getFinder();
+                $finder->prependLocation(base_path("extensions/themes/{$theme}"));
+
+                return Response::view(404, [
+                    'engineUnikey' => 'FresnsEngine',
+                    'themeUnikey' => $theme,
+                ], 404);
+            }
         };
     }
 }
