@@ -185,23 +185,29 @@ class ApiHelper
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
+        $uuid = Cookie::get("{$cookiePrefix}uuid");
+        $aidAndToken = [];
+        if ($uuid) {
+            $aidAndToken = CacheHelper::get($uuid, ['fresnsWeb', 'fresnsWebAccountData']);
+        }
+
         $headers = [
             'Accept' => 'application/json',
-            'platformId' => $keyConfig['platformId'],
-            'version' => '2.0.0',
-            'appId' => $keyConfig['appId'],
-            'timestamp' => now()->unix(),
-            'sign' => null,
-            'langTag' => Cookie::get($fresnsLangTag) ?? current_lang_tag(),
-            'timezone' => null,
-            'contentFormat' => null,
-            'aid' => Cookie::get($fresnsAid),
-            'aidToken' => Cookie::get($fresnsAidToken),
-            'uid' => Cookie::get($fresnsUid),
-            'uidToken' => Cookie::get($fresnsUidToken),
-            'deviceInfo' => json_encode(AppUtility::getDeviceInfo()),
+            'X-Fresns-App-Id' => $keyConfig['appId'],
+            'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
+            'X-Fresns-Client-Version' => '2.2.0',
+            'X-Fresns-Client-Device-Info' => json_encode(AppUtility::getDeviceInfo()),
+            'X-Fresns-Client-Lang-Tag' => Cookie::get($fresnsLangTag) ?? current_lang_tag(),
+            'X-Fresns-Client-Timezone' => null,
+            'X-Fresns-Client-Content-Format' => null,
+            'X-Fresns-Aid' => Cookie::get($fresnsAid) ?? $aidAndToken['aid'] ?? null,
+            'X-Fresns-Aid-Token' => Cookie::get($fresnsAidToken) ?? $aidAndToken['aidToken'] ?? null,
+            'X-Fresns-Uid' => Cookie::get($fresnsUid),
+            'X-Fresns-Uid-Token' => Cookie::get($fresnsUidToken),
+            'X-Fresns-Signature' => null,
+            'X-Fresns-Signature-Timestamp' => now()->unix(),
         ];
-        $headers['sign'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);
+        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);
 
         return $headers;
     }

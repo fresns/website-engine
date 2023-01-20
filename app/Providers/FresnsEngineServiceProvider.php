@@ -50,7 +50,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
             $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('engine_cookie_prefix') ?? 'fresns_';
             $langCookie = "{$cookiePrefix}lang_tag";
 
-            $defaultLangTag = \request()->header('langTag') ?? \request()->cookie($langCookie) ?? ConfigHelper::fresnsConfigDefaultLangTag();
+            $defaultLangTag = \request()->header('X-Fresns-Client-Lang-Tag') ?? \request()->cookie($langCookie) ?? ConfigHelper::fresnsConfigDefaultLangTag();
 
             $supportedLocales = [
                 $defaultLangTag => ['name' => $defaultLangTag],
