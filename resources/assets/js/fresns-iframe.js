@@ -4,15 +4,15 @@
  * Licensed under the Apache-2.0 license
  */
 
-function sign() {
-    let sign;
+function authorization() {
+    let authorization;
     $.ajaxSettings.async = false;
-    $.get('/api/engine/url-sign', false, function (res) {
-        sign = res.data.sign;
+    $.get('/api/engine/url-authorization', false, function (res) {
+        authorization = res.data.authorization;
     });
     $.ajaxSettings.async = true;
 
-    return sign;
+    return authorization;
 }
 
 (function ($) {
@@ -30,8 +30,8 @@ function sign() {
                 if (replaceJson[attr]) {
                     url = url.replace(v, replaceJson[attr]);
                 } else {
-                    if (v === '{sign}') {
-                        url = url.replace('{sign}', sign());
+                    if (v === '{authorization}') {
+                        url = url.replace('{authorization}', authorization());
                     } else {
                         url = url.replace(v, '');
                     }

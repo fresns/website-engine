@@ -20,7 +20,7 @@ Route::prefix('engine')
         CheckSiteModel::class,
     ])
     ->group(function () {
-        Route::get('url-sign', [ApiController::class, 'urlSign'])->name('url.sign')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class, CheckSiteModel::class]);
+        Route::get('url-authorization', [ApiController::class, 'urlAuthorization'])->name('url.authorization')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class, CheckSiteModel::class]);
 
         // fresns.api.index.list /api/engine/index-list/posts
         // fresns.api.list /api/engine/list/posts

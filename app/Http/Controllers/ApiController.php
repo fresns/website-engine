@@ -23,18 +23,18 @@ use Plugins\FresnsEngine\Helpers\QueryHelper;
 
 class ApiController extends Controller
 {
-    // url sign
-    public function urlSign()
+    // url authorization
+    public function urlAuthorization()
     {
         $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
 
-        $sign = urlencode(base64_encode(json_encode($headers)));
+        $authorization = urlencode(base64_encode(json_encode($headers)));
 
         return \response()->json([
             'code' => 0,
             'message' => 'ok',
             'data' => [
-                'sign' => $sign,
+                'authorization' => $authorization,
             ],
         ]);
     }
@@ -207,7 +207,6 @@ class ApiController extends Controller
         // api data
         $data = $result['data'];
         $user = $data['detail']['users'][0];
-        $redirectURL = $request->redirectURL;
 
         // Account Login
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
@@ -245,17 +244,19 @@ class ApiController extends Controller
             return \response()->json($userResult);
         }
 
+        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+
         if ($request->wantsJson()) {
             return \response()->json([
                 'code' => 0,
                 'message' => data_get($userResult, 'message', 'success'),
                 'data' => [
-                    'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
+                    'redirectURL' => $redirectURL,
                 ],
             ]);
         }
 
-        return redirect()->intended(fs_route(route('fresns.home')));
+        return redirect()->intended($redirectURL);
     }
 
     // account login
@@ -290,14 +291,25 @@ class ApiController extends Controller
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
+        // aid and token
+        $cacheKey = Cookie::get("{$cookiePrefix}uuid");
+        if ($cacheKey) {
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheData = [
+                'aid' => data_get($result, 'data.detail.aid'),
+                'aidToken' => data_get($result, 'data.sessionToken.token'),
+            ];
+            CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
+        }
+
         $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
-        Cookie::queue($fresnsAid, $data['detail']['aid'], $accountTokenMinutes);
-        Cookie::queue($fresnsAidToken, $data['sessionToken']['token'], $accountTokenMinutes);
+        Cookie::queue($fresnsAid, data_get($result, 'data.detail.aid'), $accountTokenMinutes);
+        Cookie::queue($fresnsAidToken, data_get($result, 'data.sessionToken.token'), $accountTokenMinutes);
 
         // Number of users under the account
-        $users = $data['detail']['users'];
+        $users = data_get($result, 'data.detail.users', []);
         $userCount = count($users);
 
         // Only one user and no password
@@ -357,7 +369,7 @@ class ApiController extends Controller
                     ]);
                 }
 
-                return redirect()->intended(fs_route(route('fresns.home')));
+                return redirect()->intended($redirectURL ?? fs_route(route('fresns.home')));
             }
         } elseif ($userCount > 1) {
             // There are more than one user
@@ -507,17 +519,19 @@ class ApiController extends Controller
         Cookie::queue("{$cookiePrefix}uid", data_get($result, 'data.detail.uid'), $userTokenMinutes);
         Cookie::queue("{$cookiePrefix}uid_token", data_get($result, 'data.sessionToken.token'), $userTokenMinutes);
 
+        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+
         if ($request->wantsJson()) {
             return \response()->json([
                 'code' => 0,
                 'message' => 'success',
                 'data' => [
-                    'prev_url' => fs_route(route('fresns.home')),
+                    'redirectURL' => $redirectURL,
                 ],
             ]);
         }
 
-        return redirect()->intended(fs_route(route('fresns.home')));
+        return redirect()->intended($redirectURL);
     }
 
     // user edit
