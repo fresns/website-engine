@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
+use App\Models\FileUsage;
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -126,7 +127,6 @@ class EditorController extends Controller
         $draftInfo = self::getDraft($type, $draftId);
 
         $config = $draftInfo['config'];
-        $stickers = $draftInfo['stickers'];
         $draft = $draftInfo['draft'];
         $group = data_get($draftInfo, 'group.detail') ?? data_get($draft, 'detail.group.0');
 
@@ -139,10 +139,10 @@ class EditorController extends Controller
         }
 
         $usageType = match ($type) {
-            'posts' => 7,
-            'comments' => 8,
-            'post' => 7,
-            'comment' => 8,
+            'posts' => FileUsage::TYPE_POST,
+            'comments' => FileUsage::TYPE_COMMENT,
+            'post' => FileUsage::TYPE_POST,
+            'comment' => FileUsage::TYPE_COMMENT,
         };
 
         $tableName = match ($type) {
@@ -154,7 +154,7 @@ class EditorController extends Controller
 
         $uploadInfo = DataHelper::getUploadInfo($usageType, $tableName, 'id', $draftId, null);
 
-        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'stickers', 'draft', 'group', 'uploadInfo'));
+        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft', 'group', 'uploadInfo'));
     }
 
     // request: create or edit
@@ -195,7 +195,7 @@ class EditorController extends Controller
                     'postIsCommentPublic' => $request->input('postIsCommentPublic'),
                     'content' => $request->input('content'),
                     'isMarkdown' => $request->input('isMarkdown'),
-                    'isAnonymous' => $request->input('anonymous'),
+                    'isAnonymous' => $request->input('isAnonymous'),
                     'mapJson' => $request->input('mapJson'),
                     'eid' => $request->input('eid'),
                 ],
@@ -230,7 +230,7 @@ class EditorController extends Controller
                 'postIsCommentPublic' => $request->post('postIsCommentPublic'),
                 'content' => $request->post('content'),
                 'isMarkdown' => $request->post('isMarkdown'),
-                'isAnonymous' => $request->post('anonymous'),
+                'isAnonymous' => $request->post('isAnonymous'),
                 'mapJson' => $request->post('mapJson'),
                 'deleteMap' => $request->post('deleteMap'),
                 'deleteFile' => $request->post('deleteFile'),
@@ -262,10 +262,7 @@ class EditorController extends Controller
     {
         $client = ApiHelper::make();
 
-        $params = [
-            'config' => $client->getAsync("/api/v2/editor/{$type}/config"),
-            'stickers' => $client->getAsync('/api/v2/global/stickers'),
-        ];
+        $params['config'] = $client->getAsync("/api/v2/editor/{$type}/config");
 
         if ($draftId) {
             $params['draft'] = $client->getAsync("/api/v2/editor/{$type}/{$draftId}");
@@ -278,7 +275,6 @@ class EditorController extends Controller
         $results = $client->unwrapRequests($params);
 
         $draftInfo['config'] = data_get($results, 'config.data');
-        $draftInfo['stickers'] = data_get($results, 'stickers.data');
         $draftInfo['draft'] = data_get($results, 'draft.data');
         $draftInfo['group'] = data_get($results, 'group.data');
 

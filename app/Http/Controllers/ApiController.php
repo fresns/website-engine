@@ -292,7 +292,7 @@ class ApiController extends Controller
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
         // aid and token
-        $cacheKey = Cookie::get("{$cookiePrefix}uuid");
+        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
             $cacheData = [
@@ -673,9 +673,14 @@ class ApiController extends Controller
                 'contents' => $request->post('content'),
             ],
             [
+                'name' => 'isMarkdown',
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'contents' => (bool) $request->post('isMarkdown', false),
+            ],
+            [
                 'name' => 'isAnonymous',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'contents' => (bool) $request->post('anonymous', false),
+                'contents' => (bool) $request->post('isAnonymous', false),
             ],
             [
                 'name' => 'commentPid',
@@ -711,14 +716,14 @@ class ApiController extends Controller
     {
         $multipart = [
             [
-                'name' => 'type',
+                'name' => 'tableName',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'contents' => $request->post('type'),
+                'contents' => $request->post('tableName'),
             ],
             [
-                'name' => 'usageType',
+                'name' => 'tableColumn',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'contents' => $request->post('usageType'),
+                'contents' => $request->post('tableColumn', 'id'),
             ],
             [
                 'name' => 'tableId',
@@ -731,14 +736,9 @@ class ApiController extends Controller
                 'contents' => $request->post('uploadMode'),
             ],
             [
-                'name' => 'tableName',
+                'name' => 'type',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'contents' => $request->post('tableName'),
-            ],
-            [
-                'name' => 'tableColumn',
-                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'contents' => $request->post('tableColumn', 'id'),
+                'contents' => $request->post('type'),
             ],
         ];
 
