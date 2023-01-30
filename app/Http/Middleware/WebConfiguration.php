@@ -120,10 +120,10 @@ class WebConfiguration
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
 
-        // uuid
-        $uuid = Cookie::get("{$cookiePrefix}uuid");
-        if (empty($uuid)) {
-            Cookie::queue("{$cookiePrefix}uuid", Str::uuid());
+        // ulid
+        $ulid = Cookie::get("{$cookiePrefix}ulid");
+        if (empty($ulid)) {
+            Cookie::queue("{$cookiePrefix}ulid", Str::ulid());
         }
     }
 }
