@@ -222,3 +222,14 @@ if (! function_exists('fs_content_types')) {
         return DataHelper::getFresnsContentTypes($type);
     }
 }
+
+// fs_stickers
+if (! function_exists('fs_stickers')) {
+    /**
+     * @return array
+     */
+    function fs_stickers()
+    {
+        return DataHelper::getFresnsStickers();
+    }
+}

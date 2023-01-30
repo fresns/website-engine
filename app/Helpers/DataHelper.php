@@ -492,6 +492,35 @@ class DataHelper
         return $listArr;
     }
 
+    // get fresns stickers
+    public static function getFresnsStickers(): array
+    {
+        $langTag = current_lang_tag();
+
+        $cacheKey = "fresns_web_stickers_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        // get cache
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($listArr)) {
+            $result = ApiHelper::make()->get('/api/v2/global/stickers');
+
+            $listArr = data_get($result, 'data', []);
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
+        }
+
+        return $listArr;
+    }
+
     // cache forget account and user
     public static function cacheForgetAccountAndUser()
     {
