@@ -215,6 +215,18 @@ class ApiController extends Controller
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
+        // aid and token put to cache
+        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
+        if ($cacheKey) {
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheData = [
+                'aid' => data_get($result, 'data.detail.aid'),
+                'aidToken' => data_get($result, 'data.sessionToken.token'),
+            ];
+            CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
+        }
+
+        // aid and token put to cookie
         $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
@@ -224,8 +236,10 @@ class ApiController extends Controller
         \request()->offsetSet($fresnsAid, $data['detail']['aid']);
         \request()->offsetSet($fresnsAidToken, $data['sessionToken']['token']);
 
+        // forget cache
         DataHelper::cacheForgetAccountAndUser();
 
+        // user login
         $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
             'json' => [
                 'uidOrUsername' => strval($user['uid']),
@@ -291,7 +305,7 @@ class ApiController extends Controller
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
-        // aid and token
+        // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
@@ -302,6 +316,7 @@ class ApiController extends Controller
             CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
         }
 
+        // aid and token put to cookie
         $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
