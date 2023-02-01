@@ -81,6 +81,7 @@ If you discover a security vulnerability within Fresns, please send an e-mail to
 "fresns_web_code_message_all_{$unikey}_{$langTag}"      // tag: fresnsWebConfigs
 "fresns_web_post_content_types_{$langTag}"              // tag: fresnsWebConfigs
 "fresns_web_comment_content_types_{$langTag}"           // tag: fresnsWebConfigs
+"fresns_web_stickers_{$langTag}"                        // tag: fresnsWebConfigs
 
 "fresns_web_account_{$aid}_{$langTag}"                  // tag: fresnsWebAccountData
 "fresns_web_user_{$uid}_{$langTag}"                     // tag: fresnsWebUserData

@@ -178,6 +178,7 @@ class ApiHelper
             CacheHelper::put($keyConfig, $cacheKey, $cacheTags);
         }
 
+        // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         $fresnsLangTag = "{$cookiePrefix}lang_tag";
         $fresnsAid = "{$cookiePrefix}aid";
@@ -191,6 +192,7 @@ class ApiHelper
             $aidAndToken = CacheHelper::get($ulid, ['fresnsWeb', 'fresnsWebAccountData']);
         }
 
+        // headers
         $headers = [
             'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
