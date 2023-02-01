@@ -405,8 +405,8 @@ class ApiController extends Controller
     }
 
     /**
-     * account connect login
-     * 
+     * account connect login.
+     *
      * @param  array  $apiData
      * @param  string  $redirectURL
      * @return array
