@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.3.0 (2023-02-01)
+
+- New `fs_stickers` wrapper function
+- New composite login interface
+- Drop uuid and use ulid
+- Optimise editor parameters
+- Fix problem requesting account credentials during login
+- Fix problem with user panel cache not being cleared after drafts are deleted
+
+
 ## 2.2.0 (2023-01-20)
 
 - Take over the custom 404 page
