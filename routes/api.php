@@ -38,6 +38,7 @@ Route::prefix('engine')
         Route::prefix('account')->name('account.')->withoutMiddleware([UserAuthorize::class, CheckSiteModel::class])->group(function () {
             Route::post('register', [ApiController::class, 'accountRegister'])->name('register')->withoutMiddleware([AccountAuthorize::class]);
             Route::post('login', [ApiController::class, 'accountLogin'])->name('login')->withoutMiddleware([AccountAuthorize::class]);
+            Route::post('connect-login', [ApiController::class, 'accountConnectLogin'])->name('connect.login')->withoutMiddleware([AccountAuthorize::class]);
             Route::post('reset-password', [ApiController::class, 'accountResetPassword'])->name('reset.password')->withoutMiddleware([AccountAuthorize::class]);
             Route::post('verify-identity', [ApiController::class, 'accountVerifyIdentity'])->name('verify.identity');
             Route::post('edit', [ApiController::class, 'accountEdit'])->name('edit');

@@ -208,7 +208,7 @@ class ApiController extends Controller
         $data = $result['data'];
         $user = $data['detail']['users'][0];
 
-        // Account Login
+        // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
@@ -298,7 +298,7 @@ class ApiController extends Controller
         $data = $result['data'];
         $redirectURL = $request->redirectURL;
 
-        // Account Login
+        // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
@@ -363,8 +363,8 @@ class ApiController extends Controller
 
                 if ($userResult['code'] != 0) {
                     return back()->with([
-                        'code' => $result['code'],
-                        'failure' => $result['message'],
+                        'code' => $userResult['code'],
+                        'failure' => $userResult['message'],
                     ]);
                 }
 
@@ -377,7 +377,7 @@ class ApiController extends Controller
                 if ($request->wantsJson()) {
                     return \response()->json([
                         'code' => 0,
-                        'message' => data_get($result, 'message', 'success'),
+                        'message' => data_get($userResult, 'message', 'success'),
                         'data' => [
                             'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                         ],
@@ -394,6 +394,136 @@ class ApiController extends Controller
                 return \response()->json([
                     'code' => 0,
                     'message' => data_get($result, 'message', 'success'),
+                    'data' => [
+                        'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                    ],
+                ]);
+            }
+
+            return redirect()->intended($redirectURL ?? fs_route(route('fresns.account.login')));
+        }
+    }
+
+    /**
+     * account connect login
+     * 
+     * @param  array  $apiData
+     * @param  string  $redirectURL
+     * @return array
+     */
+    public function accountConnectLogin(Request $request)
+    {
+        // api data
+        $accountCode = $request->apiData['code'] ?? 30004;
+        $accountMessage = $request->apiData['message'] ?? 0;
+        $accountData = $request->apiData['data'] ?? null;
+
+        $redirectURL = $request->redirectURL;
+
+        // check api code
+        if ($accountCode != 0 || empty(data_get($accountData, 'detail.aid')) || empty(data_get($accountData, 'sessionToken.token'))) {
+            return back()->with([
+                'code' => $accountCode,
+                'failure' => $accountMessage,
+            ]);
+        }
+
+        // cookie key name
+        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $fresnsAid = "{$cookiePrefix}aid";
+        $fresnsAidToken = "{$cookiePrefix}aid_token";
+        $fresnsUid = "{$cookiePrefix}uid";
+        $fresnsUidToken = "{$cookiePrefix}uid_token";
+
+        // aid and token put to cache
+        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
+        if ($cacheKey) {
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheData = [
+                'aid' => data_get($accountData, 'detail.aid'),
+                'aidToken' => data_get($accountData, 'sessionToken.token'),
+            ];
+            CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
+        }
+
+        // aid and token put to cookie
+        $accountExpiredHours = data_get($accountData, 'sessionToken.expiredHours') ?? 8760;
+        $accountTokenMinutes = $accountExpiredHours * 60;
+
+        Cookie::queue($fresnsAid, data_get($accountData, 'detail.aid'), $accountTokenMinutes);
+        Cookie::queue($fresnsAidToken, data_get($accountData, 'sessionToken.token'), $accountTokenMinutes);
+
+        // Number of users under the account
+        $users = data_get($accountData, 'detail.users', []);
+        $userCount = count($users);
+
+        // Only one user and no password
+        if ($userCount == 1) {
+            $user = $users[0];
+
+            if ($user['hasPassword']) {
+                // User has password
+                // user-auth.blade.php
+
+                if ($request->wantsJson()) {
+                    return \response()->json([
+                        'code' => 0,
+                        'message' => $accountMessage,
+                        'data' => [
+                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                        ],
+                    ]);
+                }
+
+                return redirect()->intended(fs_route(route('fresns.account.login')));
+            } else {
+                // User does not have a password
+                \request()->offsetSet($fresnsAid, $accountData['detail']['aid']);
+                \request()->offsetSet($fresnsAidToken, $accountData['sessionToken']['token']);
+
+                DataHelper::cacheForgetAccountAndUser();
+
+                $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
+                    'json' => [
+                        'uidOrUsername' => strval($user['uid']),
+                        'password' => null,
+                        'deviceToken' => $request->deviceToken ?? null,
+                    ],
+                ]);
+
+                if ($userResult['code'] != 0) {
+                    return back()->with([
+                        'code' => $userResult['code'],
+                        'failure' => $userResult['message'],
+                    ]);
+                }
+
+                $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
+                $userTokenMinutes = $userExpiredHours * 60;
+
+                Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
+                Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
+
+                if ($request->wantsJson()) {
+                    return \response()->json([
+                        'code' => 0,
+                        'message' => data_get($userResult, 'message', 'success'),
+                        'data' => [
+                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
+                        ],
+                    ]);
+                }
+
+                return redirect()->intended($redirectURL ?? fs_route(route('fresns.home')));
+            }
+        } elseif ($userCount > 1) {
+            // There are more than one user
+            // user-auth.blade.php
+
+            if ($request->wantsJson()) {
+                return \response()->json([
+                    'code' => 0,
+                    'message' => $accountMessage,
                     'data' => [
                         'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
                     ],
@@ -857,6 +987,10 @@ class ApiController extends Controller
         };
 
         $response = ApiHelper::make()->delete("/api/v2/editor/{$type}/{$draftId}");
+
+        $uid = fs_user('detail.uid');
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
 
         return \response()->json($response);
     }
