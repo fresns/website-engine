@@ -730,6 +730,10 @@ class ApiController extends Controller
             'json' => \request()->all(),
         ]);
 
+        $uid = fs_user('detail.uid');
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
+
         return \response()->json($response);
     }
 
