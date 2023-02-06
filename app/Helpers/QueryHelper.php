@@ -50,8 +50,8 @@ class QueryHelper
         // Allow page flip parameters only
         if ($queryState == 2) {
             $clientQuery = [
-                'pageSize' => $requestQuery['pageSize'] ?? 15,
-                'page' => $requestQuery['page'] ?? 1,
+                'pageSize' => $requestQuery['pageSize'] ?? $params['pageSize'] ?? 15,
+                'page' => $requestQuery['page'] ?? $params['page'] ?? 1,
             ];
         }
 

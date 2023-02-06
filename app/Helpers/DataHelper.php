@@ -12,7 +12,6 @@ use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\LanguageHelper;
 use App\Helpers\PluginHelper;
-use App\Helpers\StrHelper;
 use App\Models\Config;
 use App\Models\File;
 use Illuminate\Support\Facades\Cookie;
@@ -47,8 +46,8 @@ class DataHelper
 
             if ($config->is_multilingual == 1) {
                 $itemValue = LanguageHelper::fresnsLanguageByTableKey($config->item_key, $config->item_type, $langTag);
-            } elseif ($config->item_type == 'file' && StrHelper::isPureInt($config->item_value)) {
-                $itemValue = ConfigHelper::fresnsConfigFileUrlByItemKey($config->item_value);
+            } elseif ($config->item_type == 'file') {
+                $itemValue = ConfigHelper::fresnsConfigFileUrlByItemKey($config->item_key);
             } elseif ($config->item_type == 'plugin') {
                 $itemValue = PluginHelper::fresnsPluginUrlByUnikey($config->item_value);
             } elseif ($config->item_type == 'plugins') {
