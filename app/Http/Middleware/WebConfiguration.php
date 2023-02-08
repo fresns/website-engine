@@ -10,6 +10,7 @@ namespace Plugins\FresnsEngine\Http\Middleware;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
+use App\Helpers\PluginHelper;
 use App\Models\SessionKey;
 use Browser;
 use Closure;
@@ -23,9 +24,9 @@ class WebConfiguration
 {
     public function handle(Request $request, Closure $next)
     {
-        $path = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+        $themeUnikey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
 
-        if (! $path) {
+        if (! $themeUnikey) {
             return Response::view('error', [
                 'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
                 'code' => 500,
@@ -71,10 +72,14 @@ class WebConfiguration
 
         $this->loadLanguages();
         $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("extensions/themes/{$path}"));
+        $finder->prependLocation(base_path("extensions/themes/{$themeUnikey}"));
         $this->webLangTag();
 
+        $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey);
+
         View::share('engineUnikey', 'FresnsEngine');
+        View::share('themeUnikey', $themeUnikey);
+        View::share('themeVersion', $themeVersion);
 
         return $next($request);
     }
