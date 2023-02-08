@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.3.1 (2023-02-09)
+
+- Clear user panel cache after deleting a message
+- Fix the number of pages in the query parameter
+- Output topic version number
+
+
 ## 2.3.0 (2023-02-01)
 
 - New `fs_stickers` wrapper function
