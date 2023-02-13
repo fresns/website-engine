@@ -75,9 +75,11 @@ class WebConfiguration
         $finder->prependLocation(base_path("extensions/themes/{$themeUnikey}"));
         $this->webLangTag();
 
-        $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey);
+        $engineVersion = PluginHelper::fresnsPluginVersionByUnikey('FresnsEngine') ?? 'null';
+        $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
 
         View::share('engineUnikey', 'FresnsEngine');
+        View::share('engineVersion', $engineVersion);
         View::share('themeUnikey', $themeUnikey);
         View::share('themeVersion', $themeVersion);
 

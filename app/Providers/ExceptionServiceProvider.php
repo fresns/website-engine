@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Providers;
 
+use App\Helpers\PluginHelper;
 use Browser;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
@@ -58,14 +59,19 @@ class ExceptionServiceProvider extends ServiceProvider
         return function (\Throwable $e) {
             // 404 page
             if ($e instanceof NotFoundHttpException) {
-                $theme = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+                $themeUnikey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
 
                 $finder = app('view')->getFinder();
-                $finder->prependLocation(base_path("extensions/themes/{$theme}"));
+                $finder->prependLocation(base_path("extensions/themes/{$themeUnikey}"));
+
+                $engineVersion = PluginHelper::fresnsPluginVersionByUnikey('FresnsEngine') ?? 'null';
+                $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
 
                 return Response::view(404, [
                     'engineUnikey' => 'FresnsEngine',
-                    'themeUnikey' => $theme,
+                    'engineVersion' => $engineVersion,
+                    'themeUnikey' => $themeUnikey,
+                    'themeVersion' => $themeVersion,
                 ], 404);
             }
         };
