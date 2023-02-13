@@ -289,7 +289,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns list
@@ -383,7 +383,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns sticky posts
@@ -426,7 +426,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns sticky comments
@@ -460,7 +460,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns content types
@@ -488,7 +488,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // get fresns stickers
@@ -517,7 +517,7 @@ class DataHelper
             CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $listArr;
+        return $listArr ?? [];
     }
 
     // cache forget account and user

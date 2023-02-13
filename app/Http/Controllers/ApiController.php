@@ -98,7 +98,7 @@ class ApiController extends Controller
             ],
         ]);
 
-        return Response::json(data_get($response, 'data', []));
+        return Response::json(data_get($response, 'data', []) ?? []);
     }
 
     // get input tips
@@ -324,7 +324,7 @@ class ApiController extends Controller
         Cookie::queue($fresnsAidToken, data_get($result, 'data.sessionToken.token'), $accountTokenMinutes);
 
         // Number of users under the account
-        $users = data_get($result, 'data.detail.users', []);
+        $users = data_get($result, 'data.detail.users', []) ?? [];
         $userCount = count($users);
 
         // Only one user and no password
@@ -454,7 +454,7 @@ class ApiController extends Controller
         Cookie::queue($fresnsAidToken, data_get($accountData, 'sessionToken.token'), $accountTokenMinutes);
 
         // Number of users under the account
-        $users = data_get($accountData, 'detail.users', []);
+        $users = data_get($accountData, 'detail.users', []) ?? [];
         $userCount = count($users);
 
         // Only one user and no password

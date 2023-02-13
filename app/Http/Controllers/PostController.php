@@ -304,7 +304,7 @@ class PostController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
-        $stickies = data_get($results, 'stickies.data.list', []);
+        $stickies = data_get($results, 'stickies.data.list', []) ?? [];
 
         return view('posts.detail', compact('items', 'post', 'comments', 'stickies'));
     }
