@@ -54,6 +54,7 @@ class MessageController extends Controller
     public function conversation(Request $request, int $conversationId)
     {
         $query = $request->all();
+        $query['pageListDirection'] = 'oldest';
 
         $client = ApiHelper::make();
 
