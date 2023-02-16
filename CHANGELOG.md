@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.3.2 (2023-02-16)
+
+- Add conversation message list API
+- Add `engineVersion` parameter
+- Fix problem with `themeVersion` parameter
+- Fix default data if `data_get` is empty
+
+
 ## 2.3.1 (2023-02-09)
 
 - Clear user panel cache after deleting a message
