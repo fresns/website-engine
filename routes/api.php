@@ -57,6 +57,7 @@ Route::prefix('engine')
             Route::put('{type}', [ApiController::class, 'messageMarkAsRead'])->name('mark.as.read');
             Route::delete('{type}', [ApiController::class, 'messageDelete'])->name('delete');
             Route::post('send', [ApiController::class, 'messageSend'])->name('send');
+            Route::get('list/{conversationId}', [ApiController::class, 'messages'])->name('list');
         });
 
         Route::prefix('content')->name('content.')->group(function () {

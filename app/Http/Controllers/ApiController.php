@@ -747,6 +747,21 @@ class ApiController extends Controller
         return \response()->json($response);
     }
 
+    // messages
+    public function messages(Request $request, $conversationId)
+    {
+        $response = ApiHelper::make()->get("/api/v2/conversation/{$conversationId}/messages", [
+            'query' => [
+                'orderDirection' => $request->get('orderDirection'),
+                'pageListDirection' => $request->get('pageListDirection'),
+                'pageSize' => $request->get('pageSize'),
+                'page' => $request->get('page'),
+            ],
+        ]);
+
+        return \response()->json($response);
+    }
+
     // content download file
     public function contentFileLink(Request $request, $fid)
     {
