@@ -105,8 +105,8 @@ Route::prefix(LaravelLocalization::setLocale())
 
         // detail
         Route::withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
-            Route::get(fs_db_config('website_group_detail_path').'/{gid}', [GroupController::class, 'detail'])->name('group.detail');
-            Route::get(fs_db_config('website_hashtag_detail_path').'/{hid}', [HashtagController::class, 'detail'])->name('hashtag.detail');
+            Route::get(fs_db_config('website_group_detail_path').'/{gid}/{type?}', [GroupController::class, 'detail'])->name('group.detail');
+            Route::get(fs_db_config('website_hashtag_detail_path').'/{hid}/{type?}', [HashtagController::class, 'detail'])->name('hashtag.detail');
             Route::get(fs_db_config('website_post_detail_path').'/{pid}', [PostController::class, 'detail'])->name('post.detail');
             Route::get(fs_db_config('website_comment_detail_path').'/{cid}', [CommentController::class, 'detail'])->name('comment.detail');
         });
