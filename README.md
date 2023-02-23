@@ -83,41 +83,41 @@ If you discover a security vulnerability within Fresns, please send an e-mail to
 "fresns_web_comment_content_types_{$langTag}"           // tag: fresnsWebConfigs
 "fresns_web_stickers_{$langTag}"                        // tag: fresnsWebConfigs
 
-"fresns_web_account_{$aid}_{$langTag}"                  // tag: fresnsWebAccountData
-"fresns_web_user_{$uid}_{$langTag}"                     // tag: fresnsWebUserData
-"fresns_web_user_panel_{$uid}_{$langTag}"               // tag: fresnsWebUserData
-"fresns_web_post_{$pid}"                                // tag: fresnsWebPostData
-"fresns_web_comment_{$cid}"                             // tag: fresnsWebCommentData
-"fresns_web_group_categories_by_{$uid}_{$langTag}"      // tag: fresnsWebGroupData
-"fresns_web_group_tree_by_{$uid}_{$langTag}"            // tag: fresnsWebGroupData
+"fresns_web_account_{$aid}_{$langTag}"
+"fresns_web_user_{$uid}_{$langTag}"
+"fresns_web_user_panel_{$uid}_{$langTag}"
+"fresns_web_post_{$pid}"
+"fresns_web_comment_{$cid}"
+"fresns_web_group_categories_by_{$uid}_{$langTag}"
+"fresns_web_group_tree_by_{$uid}_{$langTag}"
 
-"fresns_web_users_index_list_by_{$uid}_{$langTag}"      // tag: fresnsWebUserData
-"fresns_web_groups_index_list_by_{$uid}_{$langTag}"     // tag: fresnsWebGroupData
-"fresns_web_hashtags_index_list_by_{$uid}_{$langTag}"   // tag: fresnsWebHashtagData
-"fresns_web_posts_index_list_by_{$uid}_{$langTag}"      // tag: fresnsWebPostData
-"fresns_web_comments_index_list_by_{$uid}_{$langTag}"   // tag: fresnsWebCommentData
+"fresns_web_users_index_list_by_{$uid}_{$langTag}"
+"fresns_web_groups_index_list_by_{$uid}_{$langTag}"
+"fresns_web_hashtags_index_list_by_{$uid}_{$langTag}"
+"fresns_web_posts_index_list_by_{$uid}_{$langTag}"
+"fresns_web_comments_index_list_by_{$uid}_{$langTag}"
 
-"fresns_web_users_index_list_by_guest_{$langTag}"       // tag: fresnsWebUserData
-"fresns_web_groups_index_list_by_guest_{$langTag}"      // tag: fresnsWebGroupData
-"fresns_web_hashtags_index_list_by_guest_{$langTag}"    // tag: fresnsWebHashtagData
-"fresns_web_posts_index_list_by_guest_{$langTag}"       // tag: fresnsWebPostData
-"fresns_web_comments_index_list_by_guest_{$langTag}"    // tag: fresnsWebCommentData
+"fresns_web_users_index_list_by_guest_{$langTag}"
+"fresns_web_groups_index_list_by_guest_{$langTag}"
+"fresns_web_hashtags_index_list_by_guest_{$langTag}"
+"fresns_web_posts_index_list_by_guest_{$langTag}"
+"fresns_web_comments_index_list_by_guest_{$langTag}"
 
-"fresns_web_users_list_by_{$uid}_{$langTag}"            // tag: fresnsWebUserData
-"fresns_web_groups_list_by_{$uid}_{$langTag}"           // tag: fresnsWebGroupData
-"fresns_web_hashtags_list_by_{$uid}_{$langTag}"         // tag: fresnsWebHashtagData
-"fresns_web_posts_list_by_{$uid}_{$langTag}"            // tag: fresnsWebPostData
-"fresns_web_comments_list_by_{$uid}_{$langTag}"         // tag: fresnsWebCommentData
+"fresns_web_users_list_by_{$uid}_{$langTag}"
+"fresns_web_groups_list_by_{$uid}_{$langTag}"
+"fresns_web_hashtags_list_by_{$uid}_{$langTag}"
+"fresns_web_posts_list_by_{$uid}_{$langTag}"
+"fresns_web_comments_list_by_{$uid}_{$langTag}"
 
-"fresns_web_users_list_by_guest_{$langTag}"             // tag: fresnsWebUserData
-"fresns_web_groups_list_by_guest_{$langTag}"            // tag: fresnsWebGroupData
-"fresns_web_hashtags_list_by_guest_{$langTag}"          // tag: fresnsWebHashtagData
-"fresns_web_posts_list_by_guest_{$langTag}"             // tag: fresnsWebPostData
-"fresns_web_comments_list_by_guest_{$langTag}"          // tag: fresnsWebCommentData
+"fresns_web_users_list_by_guest_{$langTag}"
+"fresns_web_groups_list_by_guest_{$langTag}"
+"fresns_web_hashtags_list_by_guest_{$langTag}"
+"fresns_web_posts_list_by_guest_{$langTag}"
+"fresns_web_comments_list_by_guest_{$langTag}"
 
-"fresns_web_sticky_posts_{$langTag}"                    // tag: fresnsWebPostData
-"fresns_web_group_{$gid}_sticky_posts_{$langTag}"       // tag: fresnsWebPostData
-"fresns_web_post_{$pid}_sticky_comments_{$langTag}"     // tag: fresnsWebCommentData
+"fresns_web_sticky_posts_{$langTag}"
+"fresns_web_group_{$gid}_sticky_posts_{$langTag}"
+"fresns_web_post_{$pid}_sticky_comments_{$langTag}"
 ```
 
 ## License

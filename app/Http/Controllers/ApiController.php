@@ -218,7 +218,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
             $cacheData = [
                 'aid' => data_get($result, 'data.detail.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
@@ -308,7 +308,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
             $cacheData = [
                 'aid' => data_get($result, 'data.detail.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
@@ -438,7 +438,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebAccountData'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
             $cacheData = [
                 'aid' => data_get($accountData, 'detail.aid'),
                 'aidToken' => data_get($accountData, 'sessionToken.token'),
@@ -700,10 +700,10 @@ class ApiController extends Controller
 
         if ($request->get('forgetCache')) {
             $uid = fs_user('detail.uid');
-            CacheHelper::forgetFresnsMultilingual("fresns_web_group_categories_by_{$uid}");
-            CacheHelper::forgetFresnsMultilingual("fresns_web_group_tree_by_{$uid}");
-            CacheHelper::forgetFresnsMultilingual("fresns_web_users_index_list_by_{$uid}");
-            CacheHelper::forgetFresnsMultilingual("fresns_web_users_list_by_{$uid}");
+            CacheHelper::forgetFresnsMultilingual("fresns_web_group_categories_by_{$uid}", 'fresnsWeb');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_group_tree_by_{$uid}", 'fresnsWeb');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_users_index_list_by_{$uid}", 'fresnsWeb');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_users_list_by_{$uid}", 'fresnsWeb');
         }
 
         return \response()->json($response);
@@ -718,7 +718,7 @@ class ApiController extends Controller
 
         $uid = fs_user('detail.uid');
 
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}", 'fresnsWeb');
 
         return \response()->json($response);
     }
@@ -732,7 +732,7 @@ class ApiController extends Controller
 
         $uid = fs_user('detail.uid');
 
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}", 'fresnsWeb');
 
         return \response()->json($response);
     }
@@ -780,8 +780,8 @@ class ApiController extends Controller
     {
         $response = ApiHelper::make()->get("/api/v2/common/file/{$fid}/users", [
             'query' => [
-                'pageSize' => 30,
-                'page' => 1,
+                'pageSize' => $request->get('pageSize') ?? 30,
+                'page' => $request->get('page') ?? 1,
             ],
         ]);
 
@@ -1009,7 +1009,7 @@ class ApiController extends Controller
 
         $uid = fs_user('detail.uid');
 
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}", 'fresnsWeb');
 
         return \response()->json($response);
     }
