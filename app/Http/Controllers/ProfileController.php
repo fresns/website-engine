@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
@@ -54,6 +55,20 @@ class ProfileController extends Controller
             paginate: $results['posts']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['posts']['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['posts']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
@@ -96,6 +111,20 @@ class ProfileController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
@@ -137,6 +166,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -178,6 +221,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -219,6 +276,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.followers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -260,6 +331,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.followers-you-follow', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -301,6 +386,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blockers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -346,6 +445,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likes.users', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -387,6 +500,20 @@ class ProfileController extends Controller
             paginate: $results['groups']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['groups']['data']['list'] as $group) {
+                $html .= View::make('components.group.list', compact('group'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['groups']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likes.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
@@ -428,6 +555,20 @@ class ProfileController extends Controller
             paginate: $results['hashtags']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['hashtags']['data']['list'] as $hashtag) {
+                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['hashtags']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likes.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
@@ -469,6 +610,20 @@ class ProfileController extends Controller
             paginate: $results['posts']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['posts']['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['posts']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likes.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
@@ -510,6 +665,20 @@ class ProfileController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.likes.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
@@ -555,6 +724,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikes.users', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -596,6 +779,20 @@ class ProfileController extends Controller
             paginate: $results['groups']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['groups']['data']['list'] as $group) {
+                $html .= View::make('components.group.list', compact('group'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['groups']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikes.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
@@ -637,6 +834,20 @@ class ProfileController extends Controller
             paginate: $results['hashtags']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['hashtags']['data']['list'] as $hashtag) {
+                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['hashtags']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikes.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
@@ -678,6 +889,20 @@ class ProfileController extends Controller
             paginate: $results['posts']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['posts']['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['posts']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikes.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
@@ -719,6 +944,20 @@ class ProfileController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.dislikes.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
@@ -764,6 +1003,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.following.users', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -805,6 +1058,20 @@ class ProfileController extends Controller
             paginate: $results['groups']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['groups']['data']['list'] as $group) {
+                $html .= View::make('components.group.list', compact('group'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['groups']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.following.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
@@ -846,6 +1113,20 @@ class ProfileController extends Controller
             paginate: $results['hashtags']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['hashtags']['data']['list'] as $hashtag) {
+                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['hashtags']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.following.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
@@ -887,6 +1168,20 @@ class ProfileController extends Controller
             paginate: $results['posts']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['posts']['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['posts']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.following.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
@@ -928,6 +1223,20 @@ class ProfileController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.following.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
@@ -973,6 +1282,20 @@ class ProfileController extends Controller
             paginate: $results['users']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blocking.users', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
@@ -1014,6 +1337,20 @@ class ProfileController extends Controller
             paginate: $results['groups']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['groups']['data']['list'] as $group) {
+                $html .= View::make('components.group.list', compact('group'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['groups']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blocking.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
@@ -1055,6 +1392,20 @@ class ProfileController extends Controller
             paginate: $results['hashtags']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['hashtags']['data']['list'] as $hashtag) {
+                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['hashtags']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blocking.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
@@ -1096,6 +1447,20 @@ class ProfileController extends Controller
             paginate: $results['posts']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['posts']['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['posts']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blocking.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
@@ -1137,6 +1502,20 @@ class ProfileController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('profile.blocking.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 }

@@ -11,6 +11,7 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 use App\Helpers\CacheHelper;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -41,6 +42,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.index', compact('comments'));
     }
 
@@ -63,6 +78,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.list', compact('comments'));
     }
 
@@ -104,6 +133,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.nearby', compact('comments'));
     }
 
@@ -113,19 +156,19 @@ class CommentController extends Controller
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_comment_{$cid}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebCommentData'];
+        $cacheTag = 'fresnsWeb';
 
-        $comment = CacheHelper::get($cacheKey, $cacheTags);
+        $comment = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($comment)) {
             $comment = ApiHelper::make()->get("/api/v2/comment/{$cid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($comment, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($comment, $cacheKey, $cacheTag, null, $cacheTime);
         }
 
         if ($comment['code'] != 0) {
-            CacheHelper::forgetFresnsKey($cacheKey);
+            CacheHelper::forgetFresnsKey($cacheKey, $cacheTag);
 
             throw new ErrorException($comment['message'], $comment['code']);
         }
@@ -160,30 +203,63 @@ class CommentController extends Controller
             $query['page'] = 1;
         }
 
-        if ($type == 'comments') {
-            $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-                'query' => $query,
-            ]);
+        switch ($type) {
+            // comments
+            case 'comments':
+                $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
+                    'query' => $query,
+                ]);
 
-            $comments = QueryHelper::convertApiDataToPaginate(
-                items: $result['data']['list'],
-                paginate: $result['data']['paginate'],
-            );
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $result['data']['list'],
+                    paginate: $result['data']['paginate'],
+                );
 
-            $posts = [];
-        } else {
-            $result = ApiHelper::make()->get('/api/v2/post/nearby', [
-                'query' => $query,
-            ]);
+                $posts = [];
+            break;
 
-            $posts = QueryHelper::convertApiDataToPaginate(
-                items: $result['data']['list'],
-                paginate: $result['data']['paginate'],
-            );
+            // posts
+            case 'posts':
+                $result = ApiHelper::make()->get('/api/v2/post/nearby', [
+                    'query' => $query,
+                ]);
 
-            $comments = [];
+                $posts = QueryHelper::convertApiDataToPaginate(
+                    items: $result['data']['list'],
+                    paginate: $result['data']['paginate'],
+                );
+
+                $comments = [];
+            break;
         }
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+
+            switch ($type) {
+                // comments
+                case 'comments':
+                    foreach ($result['data']['list'] as $comment) {
+                        $html .= View::make('components.comment.list', compact('comment'))->render();
+                    }
+                break;
+
+                // posts
+                case 'posts':
+                    foreach ($result['data']['list'] as $post) {
+                        $html .= View::make('components.post.list', compact('post'))->render();
+                    }
+                break;
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.location', compact('archive', 'type', 'comments', 'posts'));
     }
 
@@ -201,6 +277,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.likes', compact('comments'));
     }
 
@@ -218,6 +308,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.dislikes', compact('comments'));
     }
 
@@ -235,6 +339,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.following', compact('comments'));
     }
 
@@ -252,6 +370,20 @@ class CommentController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.blocking', compact('comments'));
     }
 
@@ -294,6 +426,20 @@ class CommentController extends Controller
             paginate: $results['comments']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comment']['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comment']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('comments.detail', compact('items', 'comment', 'comments'));
     }
 }

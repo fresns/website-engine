@@ -11,6 +11,7 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 use App\Helpers\CacheHelper;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -41,6 +42,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.index', compact('posts'));
     }
 
@@ -67,6 +82,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.list', compact('posts'));
     }
 
@@ -108,6 +137,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.nearby', compact('posts'));
     }
 
@@ -117,19 +160,19 @@ class PostController extends Controller
         $langTag = current_lang_tag();
 
         $cacheKey = "fresns_web_post_{$pid}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebPostData'];
+        $cacheTag = 'fresnsWeb';
 
-        $post = CacheHelper::get($cacheKey, $cacheTags);
+        $post = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($post)) {
             $post = ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($post, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($post, $cacheKey, $cacheTag, null, $cacheTime);
         }
 
         if ($post['code'] != 0) {
-            CacheHelper::forgetFresnsKey($cacheKey);
+            CacheHelper::forgetFresnsKey($cacheKey, $cacheTag);
 
             throw new ErrorException($post['message'], $post['code']);
         }
@@ -164,30 +207,63 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        if ($type == 'posts') {
-            $result = ApiHelper::make()->get('/api/v2/post/nearby', [
-                'query' => $query,
-            ]);
+        switch ($type) {
+            // posts
+            case 'posts':
+                $result = ApiHelper::make()->get('/api/v2/post/nearby', [
+                    'query' => $query,
+                ]);
 
-            $posts = QueryHelper::convertApiDataToPaginate(
-                items: $result['data']['list'],
-                paginate: $result['data']['paginate'],
-            );
+                $posts = QueryHelper::convertApiDataToPaginate(
+                    items: $result['data']['list'],
+                    paginate: $result['data']['paginate'],
+                );
 
-            $comments = [];
-        } else {
-            $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-                'query' => $query,
-            ]);
+                $comments = [];
+            break;
 
-            $comments = QueryHelper::convertApiDataToPaginate(
-                items: $result['data']['list'],
-                paginate: $result['data']['paginate'],
-            );
+            // comments
+            case 'comments':
+                $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
+                    'query' => $query,
+                ]);
 
-            $posts = [];
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $result['data']['list'],
+                    paginate: $result['data']['paginate'],
+                );
+
+                $posts = [];
+            break;
         }
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+
+            switch ($type) {
+                // posts
+                case 'posts':
+                    foreach ($result['data']['list'] as $post) {
+                        $html .= View::make('components.post.list', compact('post'))->render();
+                    }
+                break;
+
+                // comments
+                case 'comments':
+                    foreach ($result['data']['list'] as $comment) {
+                        $html .= View::make('components.comment.list', compact('comment'))->render();
+                    }
+                break;
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.location', compact('archive', 'type', 'posts', 'comments'));
     }
 
@@ -205,6 +281,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.likes', compact('posts'));
     }
 
@@ -222,6 +312,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.dislikes', compact('posts'));
     }
 
@@ -239,6 +343,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.following', compact('posts'));
     }
 
@@ -256,6 +374,20 @@ class PostController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.blocking', compact('posts'));
     }
 
@@ -306,6 +438,20 @@ class PostController extends Controller
 
         $stickies = data_get($results, 'stickies.data.list', []) ?? [];
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['comments']['data']['list'] as $post) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['comments']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('posts.detail', compact('items', 'post', 'comments', 'stickies'));
     }
 }

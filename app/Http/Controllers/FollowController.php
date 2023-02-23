@@ -9,6 +9,8 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
 
@@ -23,11 +25,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.all-posts', compact('posts'));
     }
 
@@ -40,11 +60,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.user-posts', compact('posts'));
     }
 
@@ -57,11 +95,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.group-posts', compact('posts'));
     }
 
@@ -74,11 +130,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.hashtag-posts', compact('posts'));
     }
 
@@ -91,11 +165,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.all-comments', compact('comments'));
     }
 
@@ -108,11 +200,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.user-comments', compact('comments'));
     }
 
@@ -125,11 +235,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.group-comments', compact('comments'));
     }
 
@@ -142,11 +270,29 @@ class FollowController extends Controller
             'query' => $query,
         ]);
 
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('follows.hashtag-comments', compact('comments'));
     }
 }

@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
@@ -33,6 +34,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.index', compact('users'));
     }
 
@@ -54,6 +69,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.list', compact('users'));
     }
 
@@ -75,6 +104,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.likes', compact('users'));
     }
 
@@ -96,6 +139,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.dislikes', compact('users'));
     }
 
@@ -117,6 +174,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.following', compact('users'));
     }
 
@@ -134,6 +205,20 @@ class UserController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('users.blocking', compact('users'));
     }
 }

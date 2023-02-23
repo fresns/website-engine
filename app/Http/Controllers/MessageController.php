@@ -10,6 +10,7 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
@@ -40,6 +41,10 @@ class MessageController extends Controller
             throw new ErrorException($results['conversations']['message'], $results['conversations']['code']);
         }
 
+        if (data_get($results, 'pinConversations.code') !== 0) {
+            throw new ErrorException($results['pinConversations']['message'], $results['pinConversations']['code']);
+        }
+
         $conversations = QueryHelper::convertApiDataToPaginate(
             items: $results['conversations']['data']['list'],
             paginate: $results['conversations']['data']['paginate'],
@@ -47,6 +52,20 @@ class MessageController extends Controller
 
         $pinConversations = $results['pinConversations']['data']['list'];
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['conversations']['data']['list'] as $conversation) {
+                $html .= View::make('components.message.conversation', compact('conversation'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['conversations']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('messages.index', compact('conversations', 'pinConversations'));
     }
 
@@ -71,13 +90,17 @@ class MessageController extends Controller
             ]),
         ]);
 
-        if ($results['conversation']['code'] != 0) {
+        if (data_get($results, 'conversation.code') !== 0) {
             throw new ErrorException($results['conversation']['message'], $results['conversation']['code']);
+        }
+
+        if (data_get($results, 'messages.code') !== 0) {
+            throw new ErrorException($results['messages']['message'], $results['messages']['code']);
         }
 
         $uid = fs_user('detail.uid');
 
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}");
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}", 'fresnsWeb');
 
         $conversation = $results['conversation']['data'];
 
@@ -86,6 +109,20 @@ class MessageController extends Controller
             paginate: $results['messages']['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['messages']['data']['list'] as $message) {
+                $html .= View::make('components.message.message', compact('message'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['messages']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('messages.conversation', compact('conversation', 'messages'));
     }
 
@@ -108,6 +145,20 @@ class MessageController extends Controller
             paginate: $result['data']['paginate'],
         );
 
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $notification) {
+                $html .= View::make('components.message.notification', compact('notification'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $result['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
         return view('messages.notifications', compact('notifications', 'types'));
     }
 }
