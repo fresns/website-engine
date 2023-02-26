@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.0 (2023-02-26)
+
+- 所有列表接口支持 ajax 请求
+- 优化编辑器评论功能
+- 优化缓存标签
+- 修正接口请求时语言标签不同步问题
+- 修复登录状态和报错，兼容接口异常状态
+- 配置项插件 URL 为空时补位插件 Unikey
+- API 请求关闭 SSL 验证
+
+
 ## 2.3.2 (2023-02-16)
 
 - Add conversation message list API
