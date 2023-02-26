@@ -142,6 +142,13 @@ class UserGuard implements Guard
                     CacheHelper::put($result, $cacheKey, $cacheTag, null, $cacheTime);
                 }
 
+                if ($result['code'] != 0) {
+                    $this->user = null;
+                    $this->loggedOut = true;
+
+                    return null;
+                }
+
                 $this->user = data_get($result, 'data');
             } catch (\Throwable $e) {
                 throw $e;

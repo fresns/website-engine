@@ -143,6 +143,13 @@ class AccountGuard implements Guard
                     CacheHelper::put($result, $cacheKey, $cacheTag, null, $cacheTime);
                 }
 
+                if ($result['code'] != 0) {
+                    $this->account = null;
+                    $this->loggedOut = true;
+
+                    return null;
+                }
+
                 $this->account = data_get($result, 'data');
             } catch (\Throwable $e) {
                 throw $e;

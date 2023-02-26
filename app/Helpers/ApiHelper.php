@@ -189,7 +189,7 @@ class ApiHelper
         $ulid = Cookie::get("{$cookiePrefix}ulid");
         $aidAndToken = [];
         if ($ulid) {
-            $aidAndToken = CacheHelper::get($ulid, 'fresnsWeb');
+            $aidAndToken = CacheHelper::get($ulid, ['fresnsWeb', 'fresnsWebAccountTokens']);
         }
 
         // headers

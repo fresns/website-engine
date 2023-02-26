@@ -54,6 +54,14 @@ class ErrorException extends \Exception
             31701, 31702, 31703,
             34201, 36300,
         ])) {
+            if (in_array($this->getCode(), [31501, 31502, 31503, 31504, 31505])) {
+                fs_account()->logout();
+            }
+
+            if (in_array($this->getCode(), [31601, 31602, 31603])) {
+                fs_user()->logout();
+            }
+
             return Response::view('error', [
                 'code' => $this->getCode(),
                 'message' => $this->getMessage(),
