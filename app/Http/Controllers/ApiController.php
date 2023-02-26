@@ -308,7 +308,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
                 'aid' => data_get($result, 'data.detail.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
@@ -320,7 +320,10 @@ class ApiController extends Controller
         $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
-        Cookie::queue($fresnsAid, data_get($result, 'data.detail.aid'), $accountTokenMinutes);
+        $aid = data_get($result, 'data.detail.aid');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$aid}", 'fresnsWeb');
+
+        Cookie::queue($fresnsAid, $aid, $accountTokenMinutes);
         Cookie::queue($fresnsAidToken, data_get($result, 'data.sessionToken.token'), $accountTokenMinutes);
 
         // Number of users under the account
@@ -404,13 +407,7 @@ class ApiController extends Controller
         }
     }
 
-    /**
-     * account connect login.
-     *
-     * @param  array  $apiData
-     * @param  string  $redirectURL
-     * @return array
-     */
+    // account connect login.
     public function accountConnectLogin(Request $request)
     {
         // api data
@@ -661,7 +658,10 @@ class ApiController extends Controller
         $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $userTokenMinutes = $userExpiredHours * 60;
 
-        Cookie::queue("{$cookiePrefix}uid", data_get($result, 'data.detail.uid'), $userTokenMinutes);
+        $uid = data_get($result, 'data.detail.uid');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$uid}", 'fresnsWeb');
+
+        Cookie::queue("{$cookiePrefix}uid", $uid, $userTokenMinutes);
         Cookie::queue("{$cookiePrefix}uid_token", data_get($result, 'data.sessionToken.token'), $userTokenMinutes);
 
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));

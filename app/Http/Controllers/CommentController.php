@@ -189,7 +189,7 @@ class CommentController extends Controller
         $type = match ($type) {
             'posts' => 'posts',
             'comments' => 'comments',
-            default => 'comments',
+            default => 'posts',
         };
 
         $query = $request->all();
@@ -204,20 +204,6 @@ class CommentController extends Controller
         }
 
         switch ($type) {
-            // comments
-            case 'comments':
-                $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-                    'query' => $query,
-                ]);
-
-                $comments = QueryHelper::convertApiDataToPaginate(
-                    items: $result['data']['list'],
-                    paginate: $result['data']['paginate'],
-                );
-
-                $posts = [];
-            break;
-
             // posts
             case 'posts':
                 $result = ApiHelper::make()->get('/api/v2/post/nearby', [
@@ -231,6 +217,20 @@ class CommentController extends Controller
 
                 $comments = [];
             break;
+
+            // comments
+            case 'comments':
+                $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
+                    'query' => $query,
+                ]);
+
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $result['data']['list'],
+                    paginate: $result['data']['paginate'],
+                );
+
+                $posts = [];
+            break;
         }
 
         // ajax
@@ -238,17 +238,17 @@ class CommentController extends Controller
             $html = '';
 
             switch ($type) {
-                // comments
-                case 'comments':
-                    foreach ($result['data']['list'] as $comment) {
-                        $html .= View::make('components.comment.list', compact('comment'))->render();
-                    }
-                break;
-
                 // posts
                 case 'posts':
                     foreach ($result['data']['list'] as $post) {
                         $html .= View::make('components.post.list', compact('post'))->render();
+                    }
+                break;
+
+                // comments
+                case 'comments':
+                    foreach ($result['data']['list'] as $comment) {
+                        $html .= View::make('components.comment.list', compact('comment'))->render();
                     }
                 break;
             }
@@ -260,7 +260,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.location', compact('archive', 'type', 'comments', 'posts'));
+        return view('comments.location', compact('archive', 'type', 'posts', 'comments'));
     }
 
     // likes
@@ -429,12 +429,12 @@ class CommentController extends Controller
         // ajax
         if ($request->ajax()) {
             $html = '';
-            foreach ($results['comment']['data']['list'] as $comment) {
+            foreach ($results['comments']['data']['list'] as $comment) {
                 $html .= View::make('components.comment.list', compact('comment'))->render();
             }
 
             return response()->json([
-                'paginate' => $results['comment']['data']['paginate'],
+                'paginate' => $results['comments']['data']['paginate'],
                 'html' => $html,
             ]);
         }
