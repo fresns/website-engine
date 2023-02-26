@@ -47,7 +47,7 @@ class EditorController extends Controller
     }
 
     // index
-    public function index(string $type, ?string $postGid = null, ?string $commentPid = null, ?string $commentCid = null)
+    public function index(Request $request, string $type)
     {
         $editorPlugin = match ($type) {
             'posts' => fs_api_config('post_editor_service'),
@@ -79,13 +79,40 @@ class EditorController extends Controller
         $config = $results['config']['data'];
         $drafts = $results['drafts']['data']['list'];
 
-        if (count($drafts) === 0) {
+        if (empty($drafts)) {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
-                    'postGid' => $postGid,
-                    'commentPid' => $commentPid,
-                    'commentCid' => $commentCid,
+                    'postGid' => $request->postGid,
+                    'commentPid' => $request->commentPid,
+                    'commentCid' => $request->commentCid,
+                ],
+            ]);
+
+            if (data_get($response, 'code') !== 0) {
+                throw new ErrorException($response['message'], $response['code']);
+            }
+
+            return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
+        }
+
+        if ($type == 'comment') {
+            foreach ($drafts as $draft) {
+                if ($draft['pid'] == $request->commentPid && $draft['parentCid'] == $request->commentCid) {
+                    return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $draft['id']])));
+                }
+
+                if ($draft['pid'] == $request->commentPid && empty($draft['parentCid']) && empty($request->commentCid)) {
+                    return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $draft['id']])));
+                }
+            }
+
+            $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
+                'json' => [
+                    'createType' => 2,
+                    'postGid' => $request->postGid,
+                    'commentPid' => $request->commentPid,
+                    'commentCid' => $request->commentCid,
                 ],
             ]);
 
@@ -185,6 +212,10 @@ class EditorController extends Controller
         if ($fsid) {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/generate/{$fsid}");
         } else {
+            if (empty($request->input('content'))) {
+                return redirect()->to(fs_route(route('fresns.editor.index', ['type' => $type])));
+            }
+
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
@@ -193,6 +224,8 @@ class EditorController extends Controller
                     'postTitle' => $request->input('postTitle'),
                     'postIsComment' => $request->input('postIsComment'),
                     'postIsCommentPublic' => $request->input('postIsCommentPublic'),
+                    'commentPid' => $request->input('commentPid'),
+                    'commentCid' => $request->input('commentCid'),
                     'content' => $request->input('content'),
                     'isMarkdown' => $request->input('isMarkdown'),
                     'isAnonymous' => $request->input('isAnonymous'),
@@ -228,6 +261,8 @@ class EditorController extends Controller
                 'postTitle' => $request->post('postTitle'),
                 'postIsComment' => $request->post('postIsComment'),
                 'postIsCommentPublic' => $request->post('postIsCommentPublic'),
+                'commentPid' => $request->input('commentPid'),
+                'commentCid' => $request->input('commentCid'),
                 'content' => $request->post('content'),
                 'isMarkdown' => $request->post('isMarkdown'),
                 'isAnonymous' => $request->post('isAnonymous'),
