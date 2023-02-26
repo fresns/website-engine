@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ## 2.4.0 (2023-02-26)
 
-- 所有列表接口支持 ajax 请求
-- 优化编辑器评论功能
-- 优化缓存标签
-- 修正接口请求时语言标签不同步问题
-- 修复登录状态和报错，兼容接口异常状态
-- 配置项插件 URL 为空时补位插件 Unikey
-- API 请求关闭 SSL 验证
+- All list interfaces support Ajax requests
+- Optimize editor comment function
+- Optimize the cache tag
+- Fix the problem of unsynchronized language tags when the interface is requested
+- Fix login status and error reporting, compatible with interface abnormal status
+- Unikey plugin when the plugin configuration item URL is empty
+- Disable SSL authentication for API requests
 
 
 ## 2.3.2 (2023-02-16)
