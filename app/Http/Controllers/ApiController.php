@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
+use App\Utilities\ConfigUtility;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -218,7 +219,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
                 'aid' => data_get($result, 'data.detail.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
@@ -435,7 +436,7 @@ class ApiController extends Controller
         // aid and token put to cache
         $cacheKey = Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
-            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+            $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
                 'aid' => data_get($accountData, 'detail.aid'),
                 'aidToken' => data_get($accountData, 'sessionToken.token'),
@@ -813,6 +814,10 @@ class ApiController extends Controller
                 'postGid' => ($type === 'post' && fs_api_config('post_editor_group_required')) ? 'required' : 'nullable',
                 'postTitle' => ($type === 'post' && fs_api_config('post_editor_title_required')) ? 'required' : 'nullable',
                 'commentPid' => ($type === 'comment') ? 'required' : 'nullable',
+            ], [
+                'postGid.required' => ConfigUtility::getCodeMessage(38208, 'Fresns', current_lang_tag()),
+                'postTitle.required' => ConfigUtility::getCodeMessage(38202, 'Fresns', current_lang_tag()),
+                'commentPid.required' => ConfigUtility::getCodeMessage(37300, 'Fresns', current_lang_tag()),
             ]
         );
 
