@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.1 (2023-02-28)
+
+- Fix the problem of inaccurate hints when the editor is verified
+- Fix the cache tag error problem of registration and login
+
+
 ## 2.4.0 (2023-02-26)
 
 - All list interfaces support Ajax requests
