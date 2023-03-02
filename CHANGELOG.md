@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.2 (2023-03-02)
+
+- Customize new Editor API parameter names
+- Optimize account credentials cache key names and labels
+- Fix failure to create new drafts
+
+
 ## 2.4.1 (2023-02-28)
 
 - Fix the problem of inaccurate hints when the editor is verified
