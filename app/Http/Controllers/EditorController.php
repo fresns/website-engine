@@ -212,10 +212,6 @@ class EditorController extends Controller
         if ($fsid) {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/generate/{$fsid}");
         } else {
-            if (empty($request->input('content'))) {
-                return redirect()->to(fs_route(route('fresns.editor.index', ['type' => $type])));
-            }
-
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
@@ -229,8 +225,9 @@ class EditorController extends Controller
                     'content' => $request->input('content'),
                     'isMarkdown' => $request->input('isMarkdown'),
                     'isAnonymous' => $request->input('isAnonymous'),
-                    'mapJson' => $request->input('mapJson'),
-                    'eid' => $request->input('eid'),
+                    'map' => $request->input('map'),
+                    'extends' => $request->input('extends'),
+                    'archives' => $request->input('archives'),
                 ],
             ]);
         }
@@ -266,10 +263,13 @@ class EditorController extends Controller
                 'content' => $request->post('content'),
                 'isMarkdown' => $request->post('isMarkdown'),
                 'isAnonymous' => $request->post('isAnonymous'),
-                'mapJson' => $request->post('mapJson'),
+                'map' => $request->post('map'),
+                'extends' => $request->post('extends'),
+                'archives' => $request->post('archives'),
                 'deleteMap' => $request->post('deleteMap'),
                 'deleteFile' => $request->post('deleteFile'),
                 'deleteExtend' => $request->post('deleteExtend'),
+                'deleteArchive' => $request->post('deleteArchive'),
             ],
         ]);
 

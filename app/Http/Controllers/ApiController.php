@@ -953,10 +953,13 @@ class ApiController extends Controller
             'content' => $request->post('content'),
             'isMarkdown' => $request->post('isMarkdown'),
             'isAnonymous' => $request->post('isAnonymous'),
-            'mapJson' => $request->post('mapJson'),
+            'map' => $request->post('map'),
+            'extends' => $request->post('extends'),
+            'archives' => $request->post('archives'),
             'deleteMap' => $request->post('deleteMap'),
             'deleteFile' => $request->post('deleteFile'),
             'deleteExtend' => $request->post('deleteExtend'),
+            'deleteArchive' => $request->post('deleteArchive'),
         ];
         $response = ApiHelper::make()->put("/api/v2/editor/{$type}/{$draftId}", [
             'json' => array_filter($params, fn ($val) => isset($val)),
