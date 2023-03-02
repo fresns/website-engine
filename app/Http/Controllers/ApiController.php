@@ -217,7 +217,7 @@ class ApiController extends Controller
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
         // aid and token put to cache
-        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
+        $cacheKey = 'fresns_web_'.Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
@@ -307,7 +307,7 @@ class ApiController extends Controller
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
         // aid and token put to cache
-        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
+        $cacheKey = 'fresns_web_'.Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
@@ -434,7 +434,7 @@ class ApiController extends Controller
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
         // aid and token put to cache
-        $cacheKey = Cookie::get("{$cookiePrefix}ulid");
+        $cacheKey = 'fresns_web_'.Cookie::get("{$cookiePrefix}ulid");
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
