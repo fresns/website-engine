@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.3 (2023-03-05)
+
+- Fixed issue causing incorrect output of private mode contents.
+- Adapted to the new configs interface.
+
+
 ## 2.4.2 (2023-03-02)
 
 - Customize new Editor API parameter names
