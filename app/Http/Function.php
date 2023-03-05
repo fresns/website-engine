@@ -35,13 +35,9 @@ if (! function_exists('fs_api_config')) {
         $apiConfig = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($apiConfig)) {
-            $result = ApiHelper::make()->get('/api/v2/global/configs', [
-                'query' => [
-                    'isAll' => true,
-                ],
-            ]);
+            $result = ApiHelper::make()->get('/api/v2/global/configs');
 
-            $apiConfig = data_get($result, 'data.list');
+            $apiConfig = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
             CacheHelper::put($apiConfig, $cacheKey, $cacheTags, null, $cacheTime);
@@ -171,6 +167,10 @@ if (! function_exists('fs_index_list')) {
      */
     function fs_index_list(string $listKey)
     {
+        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
         return DataHelper::getFresnsIndexList($listKey);
     }
 }
@@ -183,6 +183,10 @@ if (! function_exists('fs_list')) {
      */
     function fs_list(string $listKey)
     {
+        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
         return DataHelper::getFresnsList($listKey);
     }
 }
@@ -195,6 +199,10 @@ if (! function_exists('fs_sticky_posts')) {
      */
     function fs_sticky_posts(?string $gid = null)
     {
+        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
         return DataHelper::getFresnsStickyPosts($gid);
     }
 }
@@ -207,6 +215,10 @@ if (! function_exists('fs_sticky_comments')) {
      */
     function fs_sticky_comments(string $pid)
     {
+        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
         return DataHelper::getFresnsStickyComments($pid);
     }
 }
@@ -230,6 +242,10 @@ if (! function_exists('fs_stickers')) {
      */
     function fs_stickers()
     {
+        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
         return DataHelper::getFresnsStickers();
     }
 }
