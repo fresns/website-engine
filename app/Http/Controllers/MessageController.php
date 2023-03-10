@@ -159,6 +159,6 @@ class MessageController extends Controller
         }
 
         // view
-        return view('messages.notifications', compact('notifications', 'types'));
+        return view('notifications.index', compact('notifications', 'types'));
     }
 }
