@@ -20,6 +20,6 @@ return [
     'errorDesktopTheme' => '配置異常，獲取不到電腦端主題模板。',
     'errorMobileTheme' => '配置異常，獲取不到手機端主題模板。',
 
-    'settingApiTip' => '設置位置: 控制面板 -> 客戶端 -> 網站網頁 -> 網站引擎配置',
-    'settingThemeTip' => '設置位置: 控制面板 -> 應用中心 -> 網站引擎 -> 關聯主題模板',
+    'settingApiTip' => '設置位置: 管理後台 -> 客戶端 -> 網站網頁 -> 網站引擎配置',
+    'settingThemeTip' => '設置位置: 管理後台 -> 應用中心 -> 網站引擎 -> 關聯主題模板',
 ];

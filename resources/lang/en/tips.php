@@ -20,6 +20,6 @@ return [
     'errorDesktopTheme' => 'Configuration exception, can\'t get the theme template on computer side.',
     'errorMobileTheme' => 'Configuration exception, can\'t get the theme template for cell phone.',
 
-    'settingApiTip' => 'Set Path: Control Panel -> Client -> Website -> Engine Config',
-    'settingThemeTip' => 'Set Path: Control Panel -> App Center -> Engines -> Theme Config',
+    'settingApiTip' => 'Set Path: Admin Panel -> Client -> Website -> Engine Config',
+    'settingThemeTip' => 'Set Path: Admin Panel -> App Center -> Engines -> Theme Config',
 ];

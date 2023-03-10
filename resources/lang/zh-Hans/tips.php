@@ -20,6 +20,6 @@ return [
     'errorDesktopTheme' => '配置异常，获取不到电脑端主题模板。',
     'errorMobileTheme' => '配置异常，获取不到手机端主题模板。',
 
-    'settingApiTip' => '设置位置: 控制面板 -> 客户端 -> 网站网页 -> 网站引擎配置',
-    'settingThemeTip' => '设置位置: 控制面板 -> 应用中心 -> 网站引擎 -> 关联主题模板',
+    'settingApiTip' => '设置位置: 管理后台 -> 客户端 -> 网站网页 -> 网站引擎配置',
+    'settingThemeTip' => '设置位置: 管理后台 -> 应用中心 -> 网站引擎 -> 关联主题模板',
 ];
