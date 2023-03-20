@@ -8,8 +8,6 @@
 
 namespace Plugins\FresnsEngine\Http\Controllers;
 
-use App\Helpers\CacheHelper;
-use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;

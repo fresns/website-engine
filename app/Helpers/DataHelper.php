@@ -181,14 +181,14 @@ class DataHelper
                     ]);
 
                     $listArr = data_get($result, 'data.list', []);
-                break;
+                    break;
 
-                // tree
+                    // tree
                 case 'tree':
                     $result = ApiHelper::make()->get('/api/v2/group/tree');
 
                     $listArr = data_get($result, 'data', []);
-                break;
+                    break;
             }
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
@@ -241,39 +241,39 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/user/list', [
                         'query' => $userQuery,
                     ]);
-                break;
+                    break;
 
-                // groups
+                    // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP);
                     $result = ApiHelper::make()->get('/api/v2/group/list', [
                         'query' => $groupQuery,
                     ]);
-                break;
+                    break;
 
-                // hashtags
+                    // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG);
                     $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
-                break;
+                    break;
 
-                // posts
+                    // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST);
                     $result = ApiHelper::make()->get('/api/v2/post/list', [
                         'query' => $postQuery,
                     ]);
-                break;
+                    break;
 
-                // comments
+                    // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT);
                     $result = ApiHelper::make()->get('/api/v2/comment/list', [
                         'query' => $commentQuery,
                     ]);
-                break;
+                    break;
             }
 
             $listArr = data_get($result, 'data.list', []);
@@ -328,39 +328,39 @@ class DataHelper
                     $result = ApiHelper::make()->get('/api/v2/user/list', [
                         'query' => $userQuery,
                     ]);
-                break;
+                    break;
 
-                // groups
+                    // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP_LIST);
                     $result = ApiHelper::make()->get('/api/v2/group/list', [
                         'query' => $groupQuery,
                     ]);
-                break;
+                    break;
 
-                // hashtags
+                    // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG_LIST);
                     $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
-                break;
+                    break;
 
-                // posts
+                    // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST_LIST);
                     $result = ApiHelper::make()->get('/api/v2/post/list', [
                         'query' => $postQuery,
                     ]);
-                break;
+                    break;
 
-                // comments
+                    // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT_LIST);
                     $result = ApiHelper::make()->get('/api/v2/comment/list', [
                         'query' => $commentQuery,
                     ]);
-                break;
+                    break;
             }
 
             $listArr = data_get($result, 'data.list', []);

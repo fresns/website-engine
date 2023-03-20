@@ -37,7 +37,6 @@ Route::prefix(LaravelLocalization::setLocale())
         CheckSiteModel::class,
     ])
     ->group(function () {
-
         // homepage
         try {
             $defaultHomepage = [sprintf('Plugins\FresnsEngine\Http\Controllers\%sController', Str::ucfirst(fs_db_config('default_homepage'))), 'index'];
