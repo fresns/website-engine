@@ -273,9 +273,9 @@ class GroupController extends Controller
                 $paginate = $results['posts']['data']['paginate'];
 
                 $comments = [];
-            break;
+                break;
 
-            // comments
+                // comments
             case 'comments':
                 $results = $client->unwrapRequests([
                     'group' => $client->getAsync("/api/v2/group/{$gid}/detail"),
@@ -291,7 +291,7 @@ class GroupController extends Controller
                 $paginate = $results['comments']['data']['paginate'];
 
                 $posts = [];
-            break;
+                break;
         }
 
         if ($results['group']['code'] != 0) {
@@ -311,14 +311,14 @@ class GroupController extends Controller
                     foreach ($results['posts']['data']['list'] as $post) {
                         $html .= View::make('components.post.list', compact('post'))->render();
                     }
-                break;
+                    break;
 
-                // comments
+                    // comments
                 case 'comments':
                     foreach ($results['comments']['data']['list'] as $comment) {
                         $html .= View::make('components.comment.list', compact('comment'))->render();
                     }
-                break;
+                    break;
             }
 
             return response()->json([

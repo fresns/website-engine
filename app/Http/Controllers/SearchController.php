@@ -29,32 +29,32 @@ class SearchController extends Controller
             // user
             case 'user':
                 return redirect()->to(fs_route(route('fresns.search.users', ['searchKey' => $searchKey])));
-            break;
+                break;
 
-            // group
+                // group
             case 'group':
                 return redirect()->to(fs_route(route('fresns.search.groups', ['searchKey' => $searchKey])));
-            break;
+                break;
 
-            // hashtag
+                // hashtag
             case 'hashtag':
                 return redirect()->to(fs_route(route('fresns.search.hashtags', ['searchKey' => $searchKey])));
-            break;
+                break;
 
-            // post
+                // post
             case 'post':
                 return redirect()->to(fs_route(route('fresns.search.posts', ['searchKey' => $searchKey])));
-            break;
+                break;
 
-            // comment
+                // comment
             case 'comment':
                 return redirect()->to(fs_route(route('fresns.search.comments', ['searchKey' => $searchKey])));
-            break;
+                break;
 
-            // default
+                // default
             default:
                 return view('search.index');
-            break;
+                break;
         }
     }
 
