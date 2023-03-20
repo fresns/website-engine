@@ -128,6 +128,61 @@ class ProfileController extends Controller
         return view('profile.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
+    // followers you follow
+    public function followersYouFollow(Request $request, string $uidOrUsername)
+    {
+        $query = $request->all();
+
+        if (! fs_db_config('website_status')) {
+            $query['pageSize'] = fs_db_config('website_number');
+            $query['page'] = 1;
+        }
+
+        $client = ApiHelper::make();
+
+        $results = $client->unwrapRequests([
+            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
+            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
+                'query' => [
+                    'pageSize' => 3,
+                    'page' => 1,
+                ],
+            ]),
+            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
+                'query' => $query,
+            ]),
+        ]);
+
+        if ($results['profile']['code'] != 0) {
+            throw new ErrorException($results['profile']['message'], $results['profile']['code']);
+        }
+
+        $items = $results['profile']['data']['items'];
+        $profile = $results['profile']['data']['detail'];
+        $followersYouFollow = $results['followersYouFollow']['data']['list'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            paginate: $results['users']['data']['paginate'],
+        );
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'paginate' => $results['users']['data']['paginate'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        return view('profile.interactions.followers-you-follow', compact('items', 'profile', 'followersYouFollow', 'users'));
+    }
+
     // likers
     public function likers(Request $request, string $uidOrUsername)
     {
@@ -180,7 +235,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view('profile.interactions.likers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // dislikers
@@ -235,7 +290,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view('profile.interactions.dislikers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // followers
@@ -290,62 +345,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.followers', compact('items', 'profile', 'followersYouFollow', 'users'));
-    }
-
-    // followers you follow
-    public function followersYouFollow(Request $request, string $uidOrUsername)
-    {
-        $query = $request->all();
-
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
-            $query['page'] = 1;
-        }
-
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => $query,
-            ]),
-        ]);
-
-        if ($results['profile']['code'] != 0) {
-            throw new ErrorException($results['profile']['message'], $results['profile']['code']);
-        }
-
-        $items = $results['profile']['data']['items'];
-        $profile = $results['profile']['data']['detail'];
-        $followersYouFollow = $results['followersYouFollow']['data']['list'];
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
-        );
-
-        // ajax
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
-            }
-
-            return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
-                'html' => $html,
-            ]);
-        }
-
-        // view
-        return view('profile.followers-you-follow', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view('profile.interactions.followers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // blockers
@@ -400,7 +400,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blockers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view('profile.interactions.blockers', compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     /**
