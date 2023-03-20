@@ -155,106 +155,39 @@ class PostController extends Controller
     }
 
     // location
-    public function location(Request $request, string $pid, ?string $type = null)
+    public function location(Request $request, string $encoded)
     {
+        $locationData = urldecode(base64_decode($encoded));
+        $location = json_decode($locationData, true) ?? [];
+
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_post_{$pid}";
-        $cacheTag = 'fresnsWeb';
-
-        $post = CacheHelper::get($cacheKey, $cacheTag);
-
-        if (empty($post)) {
-            $post = ApiHelper::make()->get("/api/v2/post/{$pid}/detail");
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($post, $cacheKey, $cacheTag, null, $cacheTime);
-        }
-
-        if ($post['code'] != 0) {
-            CacheHelper::forgetFresnsKey($cacheKey, $cacheTag);
-
-            throw new ErrorException($post['message'], $post['code']);
-        }
-
-        $archive = $post['data']['detail'];
-
-        $isLbs = $archive['location']['isLbs'] ?? false;
-        $mapId = $archive['location']['mapId'] ?? 1;
-        $latitude = $archive['location']['latitude'] ?? null;
-        $longitude = $archive['location']['longitude'] ?? null;
-
-        if (! $isLbs || empty($latitude) || empty($longitude)) {
-            return back()->with([
-                'failure' => fs_lang('location').': '.fs_lang('errorEmpty'),
-            ]);
-        }
-
-        $type = match ($type) {
-            'posts' => 'posts',
-            'comments' => 'comments',
-            default => 'posts',
-        };
-
         $query = $request->all();
-        $query['mapId'] = $mapId;
-        $query['mapLng'] = $longitude;
-        $query['mapLat'] = $latitude;
-        $query['unit'] = $post['detail']['location']['unit'] ?? null;
+        $query['mapId'] = $location['mapId'] ?? null;
+        $query['mapLng'] = $location['longitude'] ?? null;
+        $query['mapLat'] = $location['latitude'] ?? null;
+        $query['unit'] = 'km';
+        $query['length'] = 1;
 
         if (! fs_db_config('website_status')) {
             $query['pageSize'] = fs_db_config('website_number');
             $query['page'] = 1;
         }
 
-        switch ($type) {
-            // posts
-            case 'posts':
-                $result = ApiHelper::make()->get('/api/v2/post/nearby', [
-                    'query' => $query,
-                ]);
+        $result = ApiHelper::make()->get('/api/v2/post/nearby', [
+            'query' => $query,
+        ]);
 
-                $posts = QueryHelper::convertApiDataToPaginate(
-                    items: $result['data']['list'],
-                    paginate: $result['data']['paginate'],
-                );
-
-                $comments = [];
-            break;
-
-            // comments
-            case 'comments':
-                $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-                    'query' => $query,
-                ]);
-
-                $comments = QueryHelper::convertApiDataToPaginate(
-                    items: $result['data']['list'],
-                    paginate: $result['data']['paginate'],
-                );
-
-                $posts = [];
-            break;
-        }
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            paginate: $result['data']['paginate'],
+        );
 
         // ajax
         if ($request->ajax()) {
             $html = '';
-
-            switch ($type) {
-                // posts
-                case 'posts':
-                    foreach ($result['data']['list'] as $post) {
-                        $html .= View::make('components.post.list', compact('post'))->render();
-                    }
-                break;
-
-                // comments
-                case 'comments':
-                    foreach ($result['data']['list'] as $comment) {
-                        $html .= View::make('components.comment.list', compact('comment'))->render();
-                    }
-                break;
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -264,7 +197,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.location', compact('archive', 'type', 'posts', 'comments'));
+        return view('posts.location', compact('location', 'encoded', 'posts'));
     }
 
     // likes
