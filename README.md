@@ -1,9 +1,10 @@
 <p align="center"><a href="https://fresns.org" target="_blank"><img src="https://raw.githubusercontent.com/fresns/docs/main/images/Fresns-Logo(orange).png" width="300"></a></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/PHP-%5E8.0-green" alt="PHP">
-<img src="https://img.shields.io/badge/MySQL-%5E5.7%7C%5E8.0-orange" alt="MySQL">
-<img src="https://img.shields.io/badge/License-Apache--2.0-blue" alt="License">
+<img src="https://img.shields.io/badge/Platform-Web-blue" alt="Platform">
+<img src="https://img.shields.io/badge/PHP-%5E8.1-blueviolet" alt="PHP">
+<img src="https://img.shields.io/badge/Fresns-2.x-orange" alt="Fresns">
+<img src="https://img.shields.io/badge/License-Apache--2.0-brightgreen" alt="License">
 </p>
 
 ## About Fresns
