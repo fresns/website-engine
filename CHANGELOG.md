@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.4 (2023-04-14)
+
+- Optimise message routing
+- Optimise prompt text
+- Optimise editor draft logic
+- Adjust location encoding parameters
+
+
 ## 2.4.3 (2023-03-05)
 
 - Fixed issue causing incorrect output of private mode contents.
