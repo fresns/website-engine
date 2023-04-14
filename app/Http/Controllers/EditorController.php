@@ -49,18 +49,7 @@ class EditorController extends Controller
     // index
     public function index(Request $request, string $type)
     {
-        $editorPlugin = match ($type) {
-            'posts' => fs_api_config('post_editor_service'),
-            'comments' => fs_api_config('comment_editor_service'),
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
-            default => null,
-        };
-
-        if ($editorPlugin) {
-            return redirect()->to($editorPlugin."/{$type}");
-        }
-
+        // Content Type
         $type = match ($type) {
             'posts' => 'post',
             'comments' => 'comment',
@@ -69,21 +58,33 @@ class EditorController extends Controller
             default => 'post',
         };
 
-        $client = ApiHelper::make();
+        // Editor Plugin Configuration
+        $editorPlugin = match ($type) {
+            'post' => fs_api_config('post_editor_service'),
+            'comment' => fs_api_config('comment_editor_service'),
+            default => null,
+        };
 
-        $results = $client->unwrapRequests([
-            'config' => $client->getAsync("/api/v2/editor/{$type}/config"),
-            'drafts' => $client->getAsync("/api/v2/editor/{$type}/drafts"),
-        ]);
+        // If the editor plugin is configured, jump to the plugin page
+        if ($editorPlugin) {
+            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type);
 
-        $config = $results['config']['data'];
-        $drafts = $results['drafts']['data']['list'];
+            // Get the query parameters of the original request
+            $queryParams = $request->query();
 
-        if (empty($drafts)) {
-            $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
+            // If query parameters exist, append them to $pluginUrl
+            if ($queryParams) {
+                $pluginUrl .= '&' . http_build_query($queryParams);
+            }
+
+            return redirect()->to($pluginUrl);
+        }
+
+        // If it is a comment ignore the draft logic
+        if ($type == 'comment') {
+            $response = ApiHelper::make()->post("/api/v2/editor/comment/create", [
                 'json' => [
                     'createType' => 2,
-                    'postGid' => $request->postGid,
                     'commentPid' => $request->commentPid,
                     'commentCid' => $request->commentCid,
                 ],
@@ -93,24 +94,29 @@ class EditorController extends Controller
                 throw new ErrorException($response['message'], $response['code']);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
+            return redirect()->to(fs_route(route('fresns.editor.edit', [
+                'type' => 'comment',
+                'draftId' => $response['data']['detail']['id']
+            ])));
         }
 
-        if ($type == 'comment') {
-            foreach ($drafts as $draft) {
-                if ($draft['pid'] == $request->commentPid && $draft['parentCid'] == $request->commentCid) {
-                    return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $draft['id']])));
-                }
+        // Editor request data
+        $client = ApiHelper::make();
+        $results = $client->unwrapRequests([
+            'config' => $client->getAsync("/api/v2/editor/{$type}/config"),
+            'drafts' => $client->getAsync("/api/v2/editor/{$type}/drafts"),
+        ]);
 
-                if ($draft['pid'] == $request->commentPid && empty($draft['parentCid']) && empty($request->commentCid)) {
-                    return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $draft['id']])));
-                }
-            }
+        $config = $results['config']['data'];
+        $drafts = $results['drafts']['data']['list'];
 
+        // User without drafts, automatically create drafts and enter the editor
+        if (empty($drafts)) {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
                     'postGid' => $request->postGid,
+                    'postQuotePid' => $request->postQuotePid,
                     'commentPid' => $request->commentPid,
                     'commentCid' => $request->commentCid,
                 ],
@@ -128,79 +134,10 @@ class EditorController extends Controller
         return view('editor.index', compact('type', 'config', 'drafts', 'uploadInfo'));
     }
 
-    // edit
-    public function edit(Request $request, string $type, int $draftId)
-    {
-        $editorPlugin = match ($type) {
-            'posts' => fs_api_config('post_editor_service'),
-            'comments' => fs_api_config('comment_editor_service'),
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
-            default => null,
-        };
-
-        if ($editorPlugin) {
-            return redirect()->to($editorPlugin."/{$type}/{$draftId}");
-        }
-
-        $type = match ($type) {
-            'posts' => 'post',
-            'comments' => 'comment',
-            'post' => 'post',
-            'comment' => 'comment',
-            default => 'post',
-        };
-
-        $draftInfo = self::getDraft($type, $draftId);
-
-        $config = $draftInfo['config'];
-        $draft = $draftInfo['draft'];
-        $group = data_get($draftInfo, 'group.detail') ?? data_get($draft, 'detail.group.0');
-
-        $plid = null; // post log id
-        $clid = null; // comment log id
-        if ($type == 'post') {
-            $plid = $draftId;
-        } else {
-            $clid = $draftId;
-        }
-
-        $usageType = match ($type) {
-            'posts' => FileUsage::TYPE_POST,
-            'comments' => FileUsage::TYPE_COMMENT,
-            'post' => FileUsage::TYPE_POST,
-            'comment' => FileUsage::TYPE_COMMENT,
-        };
-
-        $tableName = match ($type) {
-            'posts' => 'post_logs',
-            'comments' => 'comment_logs',
-            'post' => 'post_logs',
-            'comment' => 'comment_logs',
-        };
-
-        $uploadInfo = DataHelper::getUploadInfo($usageType, $tableName, 'id', $draftId, null);
-
-        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft', 'group', 'uploadInfo'));
-    }
-
     // request: create or edit
     public function store(Request $request, string $type)
     {
-        $fsid = $request->input('fsid');
-
-        $editorPlugin = match ($type) {
-            'posts' => fs_api_config('post_editor_service'),
-            'comments' => fs_api_config('comment_editor_service'),
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
-            default => null,
-        };
-
-        if ($editorPlugin) {
-            return redirect()->to($editorPlugin."/{$type}?fsid={$fsid}");
-        }
-
+        // Content Type
         $type = match ($type) {
             'posts' => 'post',
             'comments' => 'comment',
@@ -209,13 +146,31 @@ class EditorController extends Controller
             default => 'post',
         };
 
+        // Edit the pid or cid of the content
+        $fsid = $request->input('fsid');
+
+        // Editor Plugin Configuration
+        $editorPlugin = match ($type) {
+            'post' => fs_api_config('post_editor_service'),
+            'comment' => fs_api_config('comment_editor_service'),
+            default => null,
+        };
+
+        // If the editor plugin is configured, jump to the plugin page
+        if ($editorPlugin) {
+            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type, null, $fsid);
+
+            return redirect()->to($pluginUrl);
+        }
+
+        // Determine whether to edit content, or create a draft
         if ($fsid) {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/generate/{$fsid}");
         } else {
             $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
-                    'editorUnikey' => $request->input('editorUnikey'),
+                    'postQuotePid' => $request->input('postQuotePid'),
                     'postGid' => $request->input('postGid'),
                     'postTitle' => $request->input('postTitle'),
                     'postIsComment' => $request->input('postIsComment'),
@@ -232,6 +187,7 @@ class EditorController extends Controller
             ]);
         }
 
+        // Process draft and enter the editor
         if (data_get($response, 'code') !== 0) {
             throw new ErrorException($response['message'], $response['code']);
         }
@@ -239,6 +195,61 @@ class EditorController extends Controller
         DataHelper::cacheForgetAccountAndUser();
 
         return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
+    }
+
+    // edit
+    public function edit(Request $request, string $type, int $draftId)
+    {
+        // Content Type
+        $type = match ($type) {
+            'posts' => 'post',
+            'comments' => 'comment',
+            'post' => 'post',
+            'comment' => 'comment',
+            default => 'post',
+        };
+
+        // Editor Plugin Configuration
+        $editorPlugin = match ($type) {
+            'post' => fs_api_config('post_editor_service'),
+            'comment' => fs_api_config('comment_editor_service'),
+            default => null,
+        };
+
+        // If the editor plugin is configured, jump to the plugin page
+        if ($editorPlugin) {
+            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type, $draftId);
+
+            return redirect()->to($pluginUrl);
+        }
+
+        // Get draft data
+        $draftInfo = self::getDraft($type, $draftId);
+
+        $config = $draftInfo['config'];
+        $draft = $draftInfo['draft'];
+
+        $plid = null; // post log id
+        $clid = null; // comment log id
+        if ($type == 'post') {
+            $plid = $draftId;
+        } else {
+            $clid = $draftId;
+        }
+
+        $usageType = match ($type) {
+            'post' => FileUsage::TYPE_POST,
+            'comment' => FileUsage::TYPE_COMMENT,
+        };
+
+        $tableName = match ($type) {
+            'post' => 'post_logs',
+            'comment' => 'comment_logs',
+        };
+
+        $uploadInfo = DataHelper::getUploadInfo($usageType, $tableName, 'id', $draftId, null);
+
+        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft', 'uploadInfo'));
     }
 
     // request: publish
@@ -258,8 +269,9 @@ class EditorController extends Controller
                 'postTitle' => $request->post('postTitle'),
                 'postIsComment' => $request->post('postIsComment'),
                 'postIsCommentPublic' => $request->post('postIsCommentPublic'),
-                'commentPid' => $request->input('commentPid'),
-                'commentCid' => $request->input('commentCid'),
+                'postQuotePid' => $request->post('postQuotePid'),
+                'commentPid' => $request->post('commentPid'),
+                'commentCid' => $request->post('commentCid'),
                 'content' => $request->post('content'),
                 'isMarkdown' => $request->post('isMarkdown'),
                 'isAnonymous' => $request->post('isAnonymous'),
@@ -293,7 +305,7 @@ class EditorController extends Controller
     }
 
     // get draft
-    public static function getDraft(string $type, ?int $draftId = null)
+    protected static function getDraft(string $type, ?int $draftId = null)
     {
         $client = ApiHelper::make();
 
@@ -303,15 +315,10 @@ class EditorController extends Controller
             $params['draft'] = $client->getAsync("/api/v2/editor/{$type}/{$draftId}");
         }
 
-        if ($gid = request('gid')) {
-            $params['group'] = $client->getAsync("/api/v2/group/{$gid}/detail");
-        }
-
         $results = $client->unwrapRequests($params);
 
         $draftInfo['config'] = data_get($results, 'config.data');
         $draftInfo['draft'] = data_get($results, 'draft.data');
-        $draftInfo['group'] = data_get($results, 'group.data');
 
         return $draftInfo;
     }

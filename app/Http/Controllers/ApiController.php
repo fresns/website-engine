@@ -827,6 +827,11 @@ class ApiController extends Controller
 
         $multipart = [
             [
+                'name' => 'postQuotePid',
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'contents' => $request->post('postQuotePid'),
+            ],
+            [
                 'name' => 'postGid',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
                 'contents' => $request->post('postGid'),
@@ -945,24 +950,8 @@ class ApiController extends Controller
     // editor update
     public function editorUpdate(Request $request, string $type, int $draftId)
     {
-        $params = [
-            'postGid' => $request->post('postGid'),
-            'postTitle' => $request->post('postTitle'),
-            'postIsComment' => $request->post('postIsComment'),
-            'postIsCommentPublic' => $request->post('postIsCommentPublic'),
-            'content' => $request->post('content'),
-            'isMarkdown' => $request->post('isMarkdown'),
-            'isAnonymous' => $request->post('isAnonymous'),
-            'map' => $request->post('map'),
-            'extends' => $request->post('extends'),
-            'archives' => $request->post('archives'),
-            'deleteMap' => $request->post('deleteMap'),
-            'deleteFile' => $request->post('deleteFile'),
-            'deleteExtend' => $request->post('deleteExtend'),
-            'deleteArchive' => $request->post('deleteArchive'),
-        ];
         $response = ApiHelper::make()->put("/api/v2/editor/{$type}/{$draftId}", [
-            'json' => array_filter($params, fn ($val) => isset($val)),
+            'json' => $request->all(),
         ]);
 
         return \response()->json($response);

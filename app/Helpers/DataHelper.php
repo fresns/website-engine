@@ -14,10 +14,49 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\PluginHelper;
 use App\Models\Config;
 use App\Models\File;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
 class DataHelper
 {
+    // get editor url
+    public static function getEditorUrl(string $url, string $type, ?int $draftId = null, ?string $fsid = null)
+    {
+        $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
+
+        $authorization = urlencode(base64_encode(json_encode($headers)));
+
+        $scene = match ($type) {
+            'post' => 'postEditor',
+            'comment' => 'commentEditor',
+            default => 'postEditor',
+        };
+
+        $pluginUrl = Str::replace('{authorization}', $authorization, $url);
+        $pluginUrl = Str::replace('{type}', $type, $pluginUrl);
+        $pluginUrl = Str::replace('{scene}', $scene, $pluginUrl);
+        if ($draftId) {
+            $logIdName = match ($type) {
+                'post' => '{plid}',
+                'comment' => '{clid}',
+                default => '{plid}',
+            };
+            $pluginUrl = Str::replace($logIdName, $draftId, $pluginUrl);
+        }
+        if ($fsid) {
+            $fsidName = match ($type) {
+                'post' => '{pid}',
+                'comment' => '{cid}',
+                default => '{pid}',
+            };
+
+            $pluginUrl = Str::replace($fsidName, $fsid, $pluginUrl);
+        }
+
+        return $pluginUrl;
+    }
+
     // get upload info
     public static function getConfigByItemKey(string $itemKey)
     {
