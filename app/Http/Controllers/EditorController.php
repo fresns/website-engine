@@ -74,7 +74,7 @@ class EditorController extends Controller
 
             // If query parameters exist, append them to $pluginUrl
             if ($queryParams) {
-                $pluginUrl .= '&' . http_build_query($queryParams);
+                $pluginUrl .= '&'.http_build_query($queryParams);
             }
 
             return redirect()->to($pluginUrl);
@@ -82,7 +82,7 @@ class EditorController extends Controller
 
         // If it is a comment ignore the draft logic
         if ($type == 'comment') {
-            $response = ApiHelper::make()->post("/api/v2/editor/comment/create", [
+            $response = ApiHelper::make()->post('/api/v2/editor/comment/create', [
                 'json' => [
                     'createType' => 2,
                     'commentPid' => $request->commentPid,
@@ -96,7 +96,7 @@ class EditorController extends Controller
 
             return redirect()->to(fs_route(route('fresns.editor.edit', [
                 'type' => 'comment',
-                'draftId' => $response['data']['detail']['id']
+                'draftId' => $response['data']['detail']['id'],
             ])));
         }
 
