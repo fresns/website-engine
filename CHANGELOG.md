@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.5 (2023-04-15)
+
+- add `$fresnsVersion`
+
+
 ## 2.4.4 (2023-04-14)
 
 - Optimise message routing
