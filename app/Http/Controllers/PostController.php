@@ -153,9 +153,9 @@ class PostController extends Controller
     }
 
     // location
-    public function location(Request $request, string $encoded)
+    public function location(Request $request, string $encode)
     {
-        $locationData = urldecode(base64_decode($encoded));
+        $locationData = urldecode(base64_decode($encode));
         $location = json_decode($locationData, true) ?? [];
 
         $langTag = current_lang_tag();
@@ -195,7 +195,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.location', compact('location', 'encoded', 'posts'));
+        return view('posts.location', compact('location', 'encode', 'posts'));
     }
 
     // likes
