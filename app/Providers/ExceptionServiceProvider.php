@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Providers;
 
+use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
 use Browser;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -68,6 +69,7 @@ class ExceptionServiceProvider extends ServiceProvider
                 $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
 
                 return Response::view(404, [
+                    'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
                     'engineUnikey' => 'FresnsEngine',
                     'engineVersion' => $engineVersion,
                     'themeUnikey' => $themeUnikey,

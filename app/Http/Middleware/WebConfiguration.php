@@ -8,6 +8,7 @@
 
 namespace Plugins\FresnsEngine\Http\Middleware;
 
+use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
@@ -78,6 +79,7 @@ class WebConfiguration
         $engineVersion = PluginHelper::fresnsPluginVersionByUnikey('FresnsEngine') ?? 'null';
         $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
 
+        View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
         View::share('engineUnikey', 'FresnsEngine');
         View::share('engineVersion', $engineVersion);
         View::share('themeUnikey', $themeUnikey);
