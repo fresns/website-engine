@@ -24,39 +24,13 @@ Fresns officially developed website engine, integrated to run in the main applic
 - Installation with key name: `FresnsEngine`
 - Installation using command: `php artisan fresns:require FresnsEngine`
 
-### Theme directory Structure
-
-```php
-ThemeDemo/          // Theme template folder (named after uniKey)
-├── assets/             // Resource files
-│   ├── fresns.png          // Theme cover image (square), must be present and fixed in position
-│   ├── js/
-│   │   └── app.js
-│   └── css/
-│       └── style.css
-├── portal/             // Portal view folder
-├── users/              // User view folder
-├── groups/             // Group view folder
-├── hashtags/           // Hashtag view folder
-├── posts/              // Post view folder
-├── comments/           // Comment view folder
-├── profile/            // User profile view folder
-├── search/             // Search view folder
-├── account/            // Account view folder
-├── follows/            // Follow view folder
-├── messages/           // Message view folder
-├── editor/             // Editor view folder
-├── functions.blade.php // Theme Functions
-├── error.blade.php     // Error Message Page
-├── 404.blade.php       // 404 Page
-└── theme.json          // Theme configuration file, responsible for defining the base properties of the theme
-```
+**Theme Development**
 
 - [Theme Functions](https://fresns.org/extensions/theme/functions.html)
 - [Path Structure](https://fresns.org/extensions/theme/structure.html)
 - [Template Tags](https://fresns.org/extensions/theme/tags.html)
 
-### Contributing
+## Contributing
 
 Thank you for considering contributing to the Fresns core library! The contribution guide can be found in the [Fresns documentation](https://fresns.org/community/join.html).
 
@@ -67,58 +41,6 @@ In order to ensure that the Fresns community is welcoming to all, please review 
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Fresns, please send an e-mail to Taylor Otwell via [support@fresns.org](mailto:support@fresns.org). All security vulnerabilities will be promptly addressed.
-
-## Cache Key List
-
-- tag: `fresnsWeb`
-
-```php
-'fresns_web_languages'                                  // tag: fresnsWebConfigs
-'fresns_web_api_host'                                   // tag: fresnsWebConfigs
-'fresns_web_api_key'                                    // tag: fresnsWebConfigs
-"fresns_web_key_{$keyId}"                               // tag: fresnsWebConfigs
-"fresns_web_api_config_all_{$langTag}"                  // tag: fresnsWebConfigs
-"fresns_web_db_config_{$itemKey}_{$langTag}"            // tag: fresnsWebConfigs
-"fresns_web_code_message_all_{$unikey}_{$langTag}"      // tag: fresnsWebConfigs
-"fresns_web_post_content_types_{$langTag}"              // tag: fresnsWebConfigs
-"fresns_web_comment_content_types_{$langTag}"           // tag: fresnsWebConfigs
-"fresns_web_stickers_{$langTag}"                        // tag: fresnsWebConfigs
-"fresns_web_{$ulid}"                                    // tag: fresnsWebAccountTokens
-
-"fresns_web_account_{$aid}_{$langTag}"
-"fresns_web_user_{$uid}_{$langTag}"
-"fresns_web_user_panel_{$uid}_{$langTag}"
-"fresns_web_group_categories_by_{$uid}_{$langTag}"
-"fresns_web_group_tree_by_{$uid}_{$langTag}"
-
-"fresns_web_users_index_list_by_{$uid}_{$langTag}"
-"fresns_web_groups_index_list_by_{$uid}_{$langTag}"
-"fresns_web_hashtags_index_list_by_{$uid}_{$langTag}"
-"fresns_web_posts_index_list_by_{$uid}_{$langTag}"
-"fresns_web_comments_index_list_by_{$uid}_{$langTag}"
-
-"fresns_web_users_index_list_by_guest_{$langTag}"
-"fresns_web_groups_index_list_by_guest_{$langTag}"
-"fresns_web_hashtags_index_list_by_guest_{$langTag}"
-"fresns_web_posts_index_list_by_guest_{$langTag}"
-"fresns_web_comments_index_list_by_guest_{$langTag}"
-
-"fresns_web_users_list_by_{$uid}_{$langTag}"
-"fresns_web_groups_list_by_{$uid}_{$langTag}"
-"fresns_web_hashtags_list_by_{$uid}_{$langTag}"
-"fresns_web_posts_list_by_{$uid}_{$langTag}"
-"fresns_web_comments_list_by_{$uid}_{$langTag}"
-
-"fresns_web_users_list_by_guest_{$langTag}"
-"fresns_web_groups_list_by_guest_{$langTag}"
-"fresns_web_hashtags_list_by_guest_{$langTag}"
-"fresns_web_posts_list_by_guest_{$langTag}"
-"fresns_web_comments_list_by_guest_{$langTag}"
-
-"fresns_web_sticky_posts_{$langTag}"
-"fresns_web_group_{$gid}_sticky_posts_{$langTag}"
-"fresns_web_post_{$pid}_sticky_comments_{$langTag}"
-```
 
 ## License
 
