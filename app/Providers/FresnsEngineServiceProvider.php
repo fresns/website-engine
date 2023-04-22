@@ -38,7 +38,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
                         'isEnable' => true,
                         'langTag' => $defaultLangTag,
                         'langName' => $defaultLangTag,
-                    ]
+                    ],
                 ];
 
                 $localeMenus = [];
