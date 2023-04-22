@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.6 (2023-04-22)
+
+- fix: account edit
+- fix: comment parameter name
+- chore: lang menus
+
+
 ## 2.4.5 (2023-04-15)
 
 - add `$fresnsVersion`
