@@ -569,19 +569,24 @@ class ApiController extends Controller
     // account edit
     public function accountEdit()
     {
-        if ($editType = \request('edit_type')) {
-            $editTypeMode = \request($editType.'_mode');
+        $editType = \request('edit_type');
+        $editTypeMode = \request($editType.'_mode');
 
+        if ($editTypeMode) {
             $codeType = match ($editTypeMode) {
-                default => null,
                 'phone_to_editPassword' => 'sms',
                 'email_to_editPassword' => 'email',
+                'phone_to_editWalletPassword' => 'sms',
+                'email_to_editWalletPassword' => 'email',
+                default => null,
             };
 
             $verifyCode = match ($editTypeMode) {
-                default => null,
                 'phone_to_editPassword' => \request('phone_verifyCode'),
                 'email_to_editPassword' => \request('email_verifyCode'),
+                'phone_to_editWalletPassword' => \request('phone_verifyCode'),
+                'email_to_editWalletPassword' => \request('email_verifyCode'),
+                default => null,
             };
 
             \request()->offsetSet('codeType', $codeType);
@@ -867,12 +872,12 @@ class ApiController extends Controller
                 'contents' => $request->post('commentCid'),
             ],
         ];
-        if ($request->file('file')) {
+        if ($request->file('image')) {
             $multipart[] = [
-                'name' => 'file',
-                'filename' => $request->file('file')->getClientOriginalName(),
-                'contents' => $request->file('file')->getContent(),
-                'headers' => ['Content-Type' => $request->file('file')->getClientMimeType()],
+                'name' => 'image',
+                'filename' => $request->file('image')->getClientOriginalName(),
+                'contents' => $request->file('image')->getContent(),
+                'headers' => ['Content-Type' => $request->file('image')->getClientMimeType()],
             ];
         }
 
