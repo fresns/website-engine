@@ -33,7 +33,13 @@ class FresnsEngineServiceProvider extends ServiceProvider
             $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
 
             if (empty($supportedLocales)) {
-                $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [];
+                $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [
+                    [
+                        'isEnable' => true,
+                        'langTag' => $defaultLangTag,
+                        'langName' => $defaultLangTag,
+                    ]
+                ];
 
                 $localeMenus = [];
                 foreach ($langMenus as $menu) {
