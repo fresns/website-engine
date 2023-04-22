@@ -372,7 +372,7 @@ class PostController extends Controller
         // ajax
         if ($request->ajax()) {
             $html = '';
-            foreach ($results['comments']['data']['list'] as $post) {
+            foreach ($results['comments']['data']['list'] as $comment) {
                 $html .= View::make('components.comment.list', compact('comment'))->render();
             }
 
