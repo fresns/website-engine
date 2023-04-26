@@ -68,6 +68,11 @@ class ErrorException extends \Exception
             ], 500);
         }
 
+        // Private
+        if ($this->getCode() == 35306) {
+            return \response()->view('portal.private');
+        }
+
         // Other
         return back()->with([
             'code' => $this->getCode(),
