@@ -538,7 +538,7 @@ class ApiController extends Controller
         if (\request('password') !== \request('password_confirmation')) {
             return \response()->json([
                 'code' => 34104,
-                'message' => fs_api_config('passwordAgainError'),
+                'message' => fs_lang('passwordAgainError'),
                 'data' => null,
             ]);
         }
@@ -600,6 +600,7 @@ class ApiController extends Controller
                 \request()->offsetSet('editPasswordConfirm', \request('new_editPassword_confirmation'));
                 break;
             case 'editWalletPassword':
+                \request()->offsetSet('walletPassword', \request('now_editWalletPassword'));
                 \request()->offsetSet('editWalletPassword', \request('new_editWalletPassword'));
                 \request()->offsetSet('editWalletPasswordConfirm', \request('new_editWalletPassword_confirmation'));
                 break;
