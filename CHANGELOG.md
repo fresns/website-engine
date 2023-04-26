@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.7 (2023-04-27)
+
+- fix: private page
+- fix: api request name
+
+
 ## 2.4.6 (2023-04-22)
 
 - fix: account edit
