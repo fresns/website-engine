@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.4.8 (2023-04-27)
+
+- chore: key name
+
+
 ## 2.4.7 (2023-04-27)
 
 - fix: private page
