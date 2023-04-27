@@ -347,8 +347,8 @@ class CommentController extends Controller
         $comment = $results['comment']['data']['detail'];
 
         if (! fs_db_config('website_status')) {
-            $websiteProportion = intval(fs_db_config('website_proportion')) / 100;
-            $websiteContentLength = intval($comment['contentLength'] * $websiteProportion);
+            $websitePercentage = intval(fs_db_config('website_percentage')) / 100;
+            $websiteContentLength = intval($comment['contentLength'] * $websitePercentage);
             $comment['content'] = Str::limit($comment['content'], $websiteContentLength);
         }
 

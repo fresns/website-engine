@@ -357,8 +357,8 @@ class PostController extends Controller
         $post = $results['post']['data']['detail'];
 
         if (! fs_db_config('website_status')) {
-            $websiteProportion = intval(fs_db_config('website_proportion')) / 100;
-            $websiteContentLength = intval($post['contentLength'] * $websiteProportion);
+            $websitePercentage = intval(fs_db_config('website_percentage')) / 100;
+            $websiteContentLength = intval($post['contentLength'] * $websitePercentage);
             $post['content'] = Str::limit($post['content'], $websiteContentLength);
         }
 
