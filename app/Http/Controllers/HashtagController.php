@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -19,6 +20,10 @@ class HashtagController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_db_config('menu_hashtag_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG, $request->all());
 
         $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
@@ -54,6 +59,10 @@ class HashtagController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_db_config('menu_hashtag_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG_LIST, $request->all());
 
         $result = ApiHelper::make()->get('/api/v2/hashtag/list', [

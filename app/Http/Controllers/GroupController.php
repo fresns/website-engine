@@ -10,6 +10,7 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 
 use App\Helpers\ConfigHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -20,6 +21,10 @@ class GroupController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_db_config('menu_group_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $indexType = ConfigHelper::fresnsConfigByItemKey('menu_group_type');
 
         $groupTree = [];
@@ -70,6 +75,10 @@ class GroupController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_db_config('menu_group_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP_LIST, $request->all());
 
         $result = ApiHelper::make()->get('/api/v2/group/list', [

@@ -9,6 +9,7 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
@@ -20,6 +21,10 @@ class PostController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_db_config('menu_post_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST, $request->all());
 
         if (! fs_db_config('website_status')) {
@@ -60,6 +65,10 @@ class PostController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_db_config('menu_post_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST_LIST, $request->all());
 
         if (! fs_db_config('website_status')) {
