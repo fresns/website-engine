@@ -9,11 +9,11 @@
 namespace Plugins\FresnsEngine\Helpers;
 
 use App\Fresns\Client\Clientable;
+use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
-use App\Utilities\AppUtility;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
@@ -198,7 +198,7 @@ class ApiHelper
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
             'X-Fresns-Client-Version' => '2.2.0',
-            'X-Fresns-Client-Device-Info' => json_encode(AppUtility::getDeviceInfo()),
+            'X-Fresns-Client-Device-Info' => json_encode(AppHelper::getDeviceInfo()),
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
             'X-Fresns-Client-Timezone' => null,
             'X-Fresns-Client-Content-Format' => null,
