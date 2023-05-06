@@ -88,12 +88,12 @@ class DataHelper
             } elseif ($config->item_type == 'file') {
                 $itemValue = ConfigHelper::fresnsConfigFileUrlByItemKey($config->item_key);
             } elseif ($config->item_type == 'plugin') {
-                $itemValue = PluginHelper::fresnsPluginUrlByUnikey($config->item_value) ?? $config->item_value;
+                $itemValue = PluginHelper::fresnsPluginUrlByFskey($config->item_value) ?? $config->item_value;
             } elseif ($config->item_type == 'plugins') {
                 if ($config->item_value) {
                     foreach ($config->item_value as $plugin) {
                         $pluginItem['code'] = $plugin['code'];
-                        $pluginItem['url'] = PluginHelper::fresnsPluginUrlByUnikey($plugin['unikey']);
+                        $pluginItem['url'] = PluginHelper::fresnsPluginUrlByFskey($plugin['fskey']);
                         $itemArr[] = $pluginItem;
                     }
                     $itemValue = $itemArr;

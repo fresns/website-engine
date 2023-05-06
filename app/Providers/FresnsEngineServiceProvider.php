@@ -35,7 +35,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
             if (empty($supportedLocales)) {
                 $langMenus = ConfigHelper::fresnsConfigByItemKey('language_menus') ?? [
                     [
-                        'isEnable' => true,
+                        'isEnabled' => true,
                         'langTag' => $defaultLangTag,
                         'langName' => $defaultLangTag,
                     ],
@@ -43,7 +43,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
 
                 $localeMenus = [];
                 foreach ($langMenus as $menu) {
-                    if (! $menu['isEnable']) {
+                    if (! $menu['isEnabled']) {
                         continue;
                     }
 

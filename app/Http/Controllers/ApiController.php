@@ -128,7 +128,7 @@ class ApiController extends Controller
     {
         $response = ApiHelper::make()->get("/api/v2/global/{$type}/archives", [
             'query' => [
-                'unikey' => $request->get('unikey'),
+                'fskey' => $request->get('fskey'),
             ],
         ]);
 

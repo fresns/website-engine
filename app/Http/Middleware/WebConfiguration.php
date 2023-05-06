@@ -25,9 +25,9 @@ class WebConfiguration
 {
     public function handle(Request $request, Closure $next)
     {
-        $themeUnikey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+        $themeFskey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
 
-        if (! $themeUnikey) {
+        if (! $themeFskey) {
             return Response::view('error', [
                 'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
                 'code' => 500,
@@ -73,16 +73,16 @@ class WebConfiguration
 
         $this->loadLanguages();
         $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("extensions/themes/{$themeUnikey}"));
+        $finder->prependLocation(base_path("extensions/themes/{$themeFskey}"));
         $this->webLangTag();
 
-        $engineVersion = PluginHelper::fresnsPluginVersionByUnikey('FresnsEngine') ?? 'null';
-        $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
+        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine') ?? 'null';
+        $themeVersion = PluginHelper::fresnsPluginVersionByFskey($themeFskey) ?? 'null';
 
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-        View::share('engineUnikey', 'FresnsEngine');
+        View::share('engineFskey', 'FresnsEngine');
         View::share('engineVersion', $engineVersion);
-        View::share('themeUnikey', $themeUnikey);
+        View::share('themeFskey', $themeFskey);
         View::share('themeVersion', $themeVersion);
 
         return $next($request);
@@ -100,7 +100,7 @@ class WebConfiguration
 
             $supportedLocales = [];
             foreach ($menus as $menu) {
-                if (! $menu['isEnable']) {
+                if (! $menu['isEnabled']) {
                     continue;
                 }
                 $supportedLocales[$menu['langTag']] = ['name' => $menu['langName']];

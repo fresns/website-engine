@@ -68,11 +68,11 @@ if (! function_exists('fs_lang')) {
 
 // fs_code_message
 if (! function_exists('fs_code_message')) {
-    function fs_code_message(int $code, ?string $unikey = 'Fresns', ?string $default = null): ?string
+    function fs_code_message(int $code, ?string $fskey = 'Fresns', ?string $default = null): ?string
     {
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_code_message_all_{$unikey}_{$langTag}";
+        $cacheKey = "fresns_web_code_message_all_{$fskey}_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
         $codeMessages = CacheHelper::get($cacheKey, $cacheTags);
@@ -80,7 +80,7 @@ if (! function_exists('fs_code_message')) {
         if (empty($codeMessages)) {
             $codeMessages = ApiHelper::make()->get('/api/v2/global/code-messages', [
                 'query' => [
-                    'unikey' => $unikey,
+                    'fskey' => $fskey,
                     'isAll' => true,
                 ],
             ]);

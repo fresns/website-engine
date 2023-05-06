@@ -60,19 +60,19 @@ class ExceptionServiceProvider extends ServiceProvider
         return function (\Throwable $e) {
             // 404 page
             if ($e instanceof NotFoundHttpException) {
-                $themeUnikey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+                $themeFskey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
 
                 $finder = app('view')->getFinder();
-                $finder->prependLocation(base_path("extensions/themes/{$themeUnikey}"));
+                $finder->prependLocation(base_path("extensions/themes/{$themeFskey}"));
 
-                $engineVersion = PluginHelper::fresnsPluginVersionByUnikey('FresnsEngine') ?? 'null';
-                $themeVersion = PluginHelper::fresnsPluginVersionByUnikey($themeUnikey) ?? 'null';
+                $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine') ?? 'null';
+                $themeVersion = PluginHelper::fresnsPluginVersionByFskey($themeFskey) ?? 'null';
 
                 return Response::view(404, [
                     'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
-                    'engineUnikey' => 'FresnsEngine',
+                    'engineFskey' => 'FresnsEngine',
                     'engineVersion' => $engineVersion,
-                    'themeUnikey' => $themeUnikey,
+                    'themeFskey' => $themeFskey,
                     'themeVersion' => $themeVersion,
                 ], 404);
             }
