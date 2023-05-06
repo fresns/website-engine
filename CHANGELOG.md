@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.5.0 (2023-05-06)
+
+- Fix menu configuration page does not determine if it is closed or not
+- New view page `/account/user-extcredits`
+- Adapted to the new version of `fskey`
+
+
 ## 2.4.8 (2023-04-27)
 
 - chore: key name
