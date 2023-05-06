@@ -183,6 +183,7 @@ Route::prefix(LaravelLocalization::setLocale())
             Route::get('reset-password', [AccountController::class, 'resetPassword'])->name('reset.password')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
             Route::get('/', [AccountController::class, 'index'])->name('index')->withoutMiddleware([UserAuthorize::class]);
             Route::get('wallet', [AccountController::class, 'wallet'])->name('wallet')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('user-extcredits', [AccountController::class, 'userExtcredits'])->name('user.extcredits');
             Route::get('users', [AccountController::class, 'users'])->name('users')->withoutMiddleware([UserAuthorize::class]);
             Route::get('settings', [AccountController::class, 'settings'])->name('settings')->withoutMiddleware([UserAuthorize::class]);
         });

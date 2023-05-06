@@ -88,6 +88,25 @@ class AccountController extends Controller
         return view('account.wallet', compact('logs'));
     }
 
+    // userExtcredits
+    public function userExtcredits(Request $request)
+    {
+        $result = ApiHelper::make()->get('/api/v2/user/extcredits-logs', [
+            'query' => $request->all(),
+        ]);
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $logs = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            paginate: $result['data']['paginate'],
+        );
+
+        return view('account.user-extcredits', compact('logs'));
+    }
+
     // users
     public function users()
     {
