@@ -40,6 +40,16 @@ class ApiController extends Controller
         ]);
     }
 
+    // plugin callback
+    public function pluginCallback(Request $request): JsonResponse
+    {
+        $result = ApiHelper::make()->get('/api/v2/common/callback', [
+            'query' => $request->all(),
+        ]);
+
+        return Response::json($result);
+    }
+
     // index list
     public function indexList(string $type, Request $request): JsonResponse
     {
