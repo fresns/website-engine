@@ -8,16 +8,17 @@
 
 namespace Plugins\FresnsEngine\Helpers;
 
-use App\Fresns\Client\Clientable;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
+use App\Helpers\PluginHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
+use Plugins\FresnsEngine\Client\Clientable;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 
 class ApiHelper
@@ -64,12 +65,7 @@ class ApiHelper
 
     public function getBaseUri(): ?string
     {
-        $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
-
-        $isLocal = true;
-        if ($engineApiType == 'remote') {
-            $isLocal = false;
-        }
+        $isLocal = is_local_api();
 
         $localApiHost = config('app.url');
         $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('engine_api_host');
@@ -155,9 +151,7 @@ class ApiHelper
         $keyConfig = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($keyConfig['platformId']) || empty($keyConfig['appId']) || empty($keyConfig['appSecret'])) {
-            $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
-
-            if ($engineApiType == 'local') {
+            if (is_local_api()) {
                 $keyId = ConfigHelper::fresnsConfigByItemKey('engine_key_id');
                 $keyInfo = SessionKey::find($keyId);
 
@@ -192,12 +186,14 @@ class ApiHelper
             $aidAndToken = CacheHelper::get("fresns_web_{$ulid}", ['fresnsWeb', 'fresnsWebAccountTokens']);
         }
 
+        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine');
+
         // headers
         $headers = [
             'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
-            'X-Fresns-Client-Version' => '2.2.0',
+            'X-Fresns-Client-Version' => $engineVersion,
             'X-Fresns-Client-Device-Info' => json_encode(AppHelper::getDeviceInfo()),
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
             'X-Fresns-Client-Timezone' => null,
