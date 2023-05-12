@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class UserController extends Controller
 {
@@ -26,9 +26,7 @@ class UserController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_USER, $request->all());
 
-        $result = ApiHelper::make()->get('/api/v2/user/list', [
-            'query' => $query,
-        ]);
+        $result = UserInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -65,9 +63,7 @@ class UserController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_USER_LIST, $request->all());
 
-        $result = ApiHelper::make()->get('/api/v2/user/list', [
-            'query' => $query,
-        ]);
+        $result = UserInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -98,11 +94,9 @@ class UserController extends Controller
     // likes
     public function likes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/like/users", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'like', 'users', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -133,11 +127,9 @@ class UserController extends Controller
     // dislikes
     public function dislikes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/dislike/users", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'dislike', 'users', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -168,11 +160,9 @@ class UserController extends Controller
     // following
     public function following(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/follow/users", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'follow', 'users', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -203,11 +193,9 @@ class UserController extends Controller
     // blocking
     public function blocking(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/block/users", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'block', 'users', $request->all());
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],

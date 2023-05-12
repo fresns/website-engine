@@ -15,6 +15,26 @@ use Plugins\FresnsEngine\Auth\UserGuard;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\DataHelper;
 
+// is_local_api
+if (! function_exists('is_local_api')) {
+    function is_local_api()
+    {
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
+
+        return $engineApiType == 'local';
+    }
+}
+
+// is_remote_api
+if (! function_exists('is_remote_api')) {
+    function is_remote_api()
+    {
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
+
+        return $engineApiType == 'remote';
+    }
+}
+
 // current_lang_tag
 if (! function_exists('current_lang_tag')) {
     function current_lang_tag()

@@ -13,8 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\GroupInterface;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class GroupController extends Controller
 {
@@ -31,7 +32,7 @@ class GroupController extends Controller
         $groups = [];
 
         if ($indexType == 'tree') {
-            $result = ApiHelper::make()->get('/api/v2/group/tree');
+            $result = GroupInterface::tree();
 
             if (data_get($result, 'code') !== 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -41,9 +42,7 @@ class GroupController extends Controller
         } else {
             $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP, $request->all());
 
-            $result = ApiHelper::make()->get('/api/v2/group/list', [
-                'query' => $query,
-            ]);
+            $result = GroupInterface::list($query);
 
             if (data_get($result, 'code') !== 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -81,9 +80,7 @@ class GroupController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP_LIST, $request->all());
 
-        $result = ApiHelper::make()->get('/api/v2/group/list', [
-            'query' => $query,
-        ]);
+        $result = GroupInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -114,11 +111,9 @@ class GroupController extends Controller
     // likes
     public function likes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/like/groups", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'like', 'groups', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -149,11 +144,9 @@ class GroupController extends Controller
     // dislikes
     public function dislikes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/dislike/groups", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'dislike', 'groups', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -184,11 +177,9 @@ class GroupController extends Controller
     // following
     public function following(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/follow/groups", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'follow', 'groups', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -219,11 +210,9 @@ class GroupController extends Controller
     // blocking
     public function blocking(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/block/groups", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'block', 'groups', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -257,8 +246,6 @@ class GroupController extends Controller
         $query = $request->all();
         $query['gid'] = $gid;
 
-        $client = ApiHelper::make();
-
         $type = match ($type) {
             'posts' => 'posts',
             'comments' => 'comments',
@@ -266,14 +253,8 @@ class GroupController extends Controller
         };
 
         switch ($type) {
-            // posts
             case 'posts':
-                $results = $client->unwrapRequests([
-                    'group' => $client->getAsync("/api/v2/group/{$gid}/detail"),
-                    'posts' => $client->getAsync('/api/v2/post/list', [
-                        'query' => $query,
-                    ]),
-                ]);
+                $results = GroupInterface::detail($gid, 'posts', $query);
 
                 $posts = QueryHelper::convertApiDataToPaginate(
                     items: $results['posts']['data']['list'],
@@ -284,14 +265,8 @@ class GroupController extends Controller
                 $comments = [];
                 break;
 
-                // comments
             case 'comments':
-                $results = $client->unwrapRequests([
-                    'group' => $client->getAsync("/api/v2/group/{$gid}/detail"),
-                    'comments' => $client->getAsync('/api/v2/comment/list', [
-                        'query' => $query,
-                    ]),
-                ]);
+                $results = GroupInterface::detail($gid, 'comments', $query);
 
                 $comments = QueryHelper::convertApiDataToPaginate(
                     items: $results['comments']['data']['list'],
@@ -315,14 +290,12 @@ class GroupController extends Controller
             $html = '';
 
             switch ($type) {
-                // posts
                 case 'posts':
                     foreach ($results['posts']['data']['list'] as $post) {
                         $html .= View::make('components.post.list', compact('post'))->render();
                     }
                     break;
 
-                    // comments
                 case 'comments':
                     foreach ($results['comments']['data']['list'] as $comment) {
                         $html .= View::make('components.comment.list', compact('comment'))->render();

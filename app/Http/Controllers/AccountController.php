@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\AccountInterface;
 
 class AccountController extends Controller
 {
@@ -72,9 +73,7 @@ class AccountController extends Controller
     // wallet
     public function wallet(Request $request)
     {
-        $result = ApiHelper::make()->get('/api/v2/account/wallet-logs', [
-            'query' => $request->all(),
-        ]);
+        $result = AccountInterface::walletLogs($request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -91,9 +90,7 @@ class AccountController extends Controller
     // userExtcredits
     public function userExtcredits(Request $request)
     {
-        $result = ApiHelper::make()->get('/api/v2/user/extcredits-logs', [
-            'query' => $request->all(),
-        ]);
+        $result = AccountInterface::extcreditsLogs($request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);

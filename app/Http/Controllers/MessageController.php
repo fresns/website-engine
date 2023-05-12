@@ -12,30 +12,15 @@ use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\MessageInterface;
 
 class MessageController extends Controller
 {
     // index
     public function index(Request $request)
     {
-        $query = $request->all();
-
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'conversations' => $client->getAsync('/api/v2/conversation/list', [
-                'query' => [
-                    'isPin' => false,
-                ],
-            ]),
-            'pinConversations' => $client->getAsync('/api/v2/conversation/list', [
-                'query' => [
-                    'isPin' => true,
-                ],
-            ]),
-        ]);
+        $results = MessageInterface::list();
 
         if (data_get($results, 'conversations.code') !== 0) {
             throw new ErrorException($results['conversations']['message'], $results['conversations']['code']);
@@ -75,20 +60,7 @@ class MessageController extends Controller
         $query = $request->all();
         $query['pageListDirection'] = 'oldest';
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'conversation' => $client->getAsync("/api/v2/conversation/{$conversationId}/detail"),
-            'messages' => $client->getAsync("/api/v2/conversation/{$conversationId}/messages", [
-                'query' => $query,
-            ]),
-            'markAllAsRead' => $client->putAsync('/api/v2/conversation/mark-as-read', [
-                'json' => [
-                    'type' => 'conversation',
-                    'conversationId' => $conversationId,
-                ],
-            ]),
-        ]);
+        $results = MessageInterface::conversation($conversationId, $query);
 
         if (data_get($results, 'conversation.code') !== 0) {
             throw new ErrorException($results['conversation']['message'], $results['conversation']['code']);
@@ -132,9 +104,7 @@ class MessageController extends Controller
         $query = $request->all();
         $query['types'] = $types;
 
-        $result = ApiHelper::make()->get('/api/v2/notification/list', [
-            'query' => $query,
-        ]);
+        $result = MessageInterface::notifications($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);

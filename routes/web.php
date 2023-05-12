@@ -24,12 +24,14 @@ use Plugins\FresnsEngine\Http\Controllers\SearchController;
 use Plugins\FresnsEngine\Http\Controllers\UserController;
 use Plugins\FresnsEngine\Http\Middleware\AccountAuthorize;
 use Plugins\FresnsEngine\Http\Middleware\CheckSiteModel;
+use Plugins\FresnsEngine\Http\Middleware\SetHeaders;
 use Plugins\FresnsEngine\Http\Middleware\UserAuthorize;
 use Plugins\FresnsEngine\Http\Middleware\WebConfiguration;
 
 Route::prefix(LaravelLocalization::setLocale())
     ->middleware([
         'web',
+        SetHeaders::class,
         LaravelLocalizationRedirectFilter::class,
         WebConfiguration::class,
         AccountAuthorize::class,

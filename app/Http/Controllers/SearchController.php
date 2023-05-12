@@ -10,8 +10,8 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\SearchInterface;
 
 class SearchController extends Controller
 {
@@ -63,9 +63,7 @@ class SearchController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/search/users', [
-            'query' => $query,
-        ]);
+        $result = SearchInterface::search('users', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -84,9 +82,7 @@ class SearchController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/search/groups', [
-            'query' => $query,
-        ]);
+        $result = SearchInterface::search('groups', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -105,9 +101,7 @@ class SearchController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/search/hashtags', [
-            'query' => $query,
-        ]);
+        $result = SearchInterface::search('hashtags', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -126,9 +120,7 @@ class SearchController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/search/posts', [
-            'query' => $query,
-        ]);
+        $result = SearchInterface::search('posts', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -147,9 +139,7 @@ class SearchController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/search/comments', [
-            'query' => $query,
-        ]);
+        $result = SearchInterface::search('comments', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);

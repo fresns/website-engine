@@ -11,8 +11,8 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class ProfileController extends Controller
 {
@@ -27,20 +27,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'posts' => $client->getAsync('/api/v2/post/list', [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'posts', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -83,20 +70,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'comments' => $client->getAsync('/api/v2/comment/list', [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'comments', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -138,20 +112,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'followersYouFollow', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -193,20 +154,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/like", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'interaction', 'likers', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -248,20 +196,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/dislike", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'interaction', 'dislikers', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -303,20 +238,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/follow", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'interaction', 'followers', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -358,20 +280,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/interaction/block", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'interaction', 'blockers', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -417,20 +326,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/like/users", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'like', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -472,20 +368,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'groups' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/like/groups", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'like', 'groups', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -527,20 +410,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'hashtags' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/like/hashtags", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'like', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -582,20 +452,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'posts' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/like/posts", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'like', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -637,20 +494,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'comments' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/like/comments", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'like', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -696,20 +540,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/dislike/users", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'dislike', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -751,20 +582,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'groups' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/dislike/groups", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'dislike', 'groups', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -806,20 +624,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'hashtags' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/dislike/hashtags", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'dislike', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -861,20 +666,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'posts' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/dislike/posts", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'dislike', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -916,20 +708,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'comments' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/dislike/comments", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'dislike', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -975,20 +754,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/follow/users", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'follow', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1030,20 +796,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'groups' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/follow/groups", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'follow', 'groups', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1085,20 +838,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'hashtags' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/follow/hashtags", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'follow', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1140,20 +880,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'posts' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/follow/posts", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'follow', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1195,20 +922,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'comments' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/follow/comments", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'follow', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1254,20 +968,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'users' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/block/users", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'block', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1309,20 +1010,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'groups' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/block/groups", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'block', 'groups', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1364,20 +1052,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'hashtags' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/block/hashtags", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'block', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1419,20 +1094,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'posts' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/block/posts", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'block', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
@@ -1474,20 +1136,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'profile' => $client->getAsync("/api/v2/user/{$uidOrUsername}/detail"),
-            'followersYouFollow' => $client->getAsync("/api/v2/user/{$uidOrUsername}/followers-you-follow", [
-                'query' => [
-                    'pageSize' => 3,
-                    'page' => 1,
-                ],
-            ]),
-            'comments' => $client->getAsync("/api/v2/user/{$uidOrUsername}/mark/block/comments", [
-                'query' => $query,
-            ]),
-        ]);
+        $results = UserInterface::detail($uidOrUsername, 'block', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);

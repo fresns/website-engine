@@ -14,6 +14,7 @@ use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\DataHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\EditorInterface;
 
 class EditorController extends Controller
 {
@@ -30,9 +31,7 @@ class EditorController extends Controller
 
         $query = $request->all();
 
-        $result = ApiHelper::make()->get("/api/v2/editor/{$draftType}/drafts", [
-            'query' => $query,
-        ]);
+        $result = EditorInterface::drafts($draftType, $query);
 
         if ($result['code'] != 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -224,7 +223,7 @@ class EditorController extends Controller
         }
 
         // Get draft data
-        $draftInfo = self::getDraft($type, $draftId);
+        $draftInfo = EditorInterface::getDraft($type, $draftId);
 
         $config = $draftInfo['config'];
         $draft = $draftInfo['draft'];
@@ -302,24 +301,5 @@ class EditorController extends Controller
         }
 
         return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);
-    }
-
-    // get draft
-    protected static function getDraft(string $type, ?int $draftId = null)
-    {
-        $client = ApiHelper::make();
-
-        $params['config'] = $client->getAsync("/api/v2/editor/{$type}/config");
-
-        if ($draftId) {
-            $params['draft'] = $client->getAsync("/api/v2/editor/{$type}/{$draftId}");
-        }
-
-        $results = $client->unwrapRequests($params);
-
-        $draftInfo['config'] = data_get($results, 'config.data');
-        $draftInfo['draft'] = data_get($results, 'draft.data');
-
-        return $draftInfo;
     }
 }

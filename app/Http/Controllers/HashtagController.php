@@ -12,8 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\HashtagInterface;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class HashtagController extends Controller
 {
@@ -26,9 +27,7 @@ class HashtagController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG, $request->all());
 
-        $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
-            'query' => $query,
-        ]);
+        $result = HashtagInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -65,9 +64,7 @@ class HashtagController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG_LIST, $request->all());
 
-        $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
-            'query' => $query,
-        ]);
+        $result = HashtagInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -98,11 +95,9 @@ class HashtagController extends Controller
     // likes
     public function likes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/like/hashtags", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'like', 'hashtags', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -133,11 +128,9 @@ class HashtagController extends Controller
     // dislikes
     public function dislikes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/dislike/hashtags", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'dislike', 'hashtags', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -168,11 +161,9 @@ class HashtagController extends Controller
     // following
     public function following(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/follow/hashtags", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'follow', 'hashtags', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -203,11 +194,9 @@ class HashtagController extends Controller
     // blocking
     public function blocking(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/block/hashtags", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'block', 'hashtags', $request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -241,8 +230,6 @@ class HashtagController extends Controller
         $query = $request->all();
         $query['hid'] = $hid;
 
-        $client = ApiHelper::make();
-
         $type = match ($type) {
             'posts' => 'posts',
             'comments' => 'comments',
@@ -250,14 +237,8 @@ class HashtagController extends Controller
         };
 
         switch ($type) {
-            // posts
             case 'posts':
-                $results = $client->unwrapRequests([
-                    'hashtag' => $client->getAsync("/api/v2/hashtag/{$hid}/detail"),
-                    'posts' => $client->getAsync('/api/v2/post/list', [
-                        'query' => $query,
-                    ]),
-                ]);
+                $results = HashtagInterface::detail($hid, 'posts', $query);
 
                 $posts = QueryHelper::convertApiDataToPaginate(
                     items: $results['posts']['data']['list'],
@@ -268,14 +249,8 @@ class HashtagController extends Controller
                 $comments = [];
                 break;
 
-                // comments
             case 'comments':
-                $results = $client->unwrapRequests([
-                    'hashtag' => $client->getAsync("/api/v2/hashtag/{$hid}/detail"),
-                    'comments' => $client->getAsync('/api/v2/comment/list', [
-                        'query' => $query,
-                    ]),
-                ]);
+                $results = HashtagInterface::detail($hid, 'comments', $query);
 
                 $comments = QueryHelper::convertApiDataToPaginate(
                     items: $results['comments']['data']['list'],
@@ -299,14 +274,12 @@ class HashtagController extends Controller
             $html = '';
 
             switch ($type) {
-                // posts
                 case 'posts':
                     foreach ($results['posts']['data']['list'] as $post) {
                         $html .= View::make('components.post.list', compact('post'))->render();
                     }
                     break;
 
-                    // comments
                 case 'comments':
                     foreach ($results['comments']['data']['list'] as $comment) {
                         $html .= View::make('components.comment.list', compact('comment'))->render();

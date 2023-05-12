@@ -11,8 +11,8 @@ namespace Plugins\FresnsEngine\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\FollowInterface;
 
 class FollowController extends Controller
 {
@@ -21,9 +21,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/post/follow/all', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::posts('all', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -56,9 +54,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/post/follow/user', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::posts('user', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -91,9 +87,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/post/follow/group', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::posts('post', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -126,9 +120,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/post/follow/hashtag', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::posts('hashtag', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -161,9 +153,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/comment/follow/all', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::comments('all', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -196,9 +186,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/comment/follow/user', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::comments('user', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -231,9 +219,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/comment/follow/group', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::comments('group', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -266,9 +252,7 @@ class FollowController extends Controller
     {
         $query = $request->all();
 
-        $result = ApiHelper::make()->get('/api/v2/comment/follow/hashtag', [
-            'query' => $query,
-        ]);
+        $result = FollowInterface::comments('hashtag', $query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);

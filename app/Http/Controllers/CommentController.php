@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\CommentInterface;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class CommentController extends Controller
 {
@@ -32,9 +33,7 @@ class CommentController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/comment/list', [
-            'query' => $query,
-        ]);
+        $result = CommentInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -76,9 +75,7 @@ class CommentController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/comment/list', [
-            'query' => $query,
-        ]);
+        $result = CommentInterface::list($query);
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -130,9 +127,7 @@ class CommentController extends Controller
                 ],
             ];
         } else {
-            $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-                'query' => $query,
-            ]);
+            $result = CommentInterface::nearby($query);
         }
 
         $comments = QueryHelper::convertApiDataToPaginate(
@@ -177,9 +172,7 @@ class CommentController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/comment/nearby', [
-            'query' => $query,
-        ]);
+        $result = CommentInterface::nearby($query);
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -206,11 +199,9 @@ class CommentController extends Controller
     // likes
     public function likes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/like/comments", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'like', 'comments', $request->all());
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -237,11 +228,9 @@ class CommentController extends Controller
     // dislikes
     public function dislikes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/dislike/comments", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'dislike', 'comments', $request->all());
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -268,11 +257,9 @@ class CommentController extends Controller
     // following
     public function following(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/follow/comments", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'follow', 'comments', $request->all());
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -299,11 +286,9 @@ class CommentController extends Controller
     // blocking
     public function blocking(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/block/comments", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'block', 'comments', $request->all());
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -339,14 +324,7 @@ class CommentController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'comment' => $client->getAsync("/api/v2/comment/{$cid}/detail"),
-            'comments' => $client->getAsync('/api/v2/comment/list', [
-                'query' => $query,
-            ]),
-        ]);
+        $results = CommentInterface::detail($cid, $query);
 
         if ($results['comment']['code'] != 0) {
             throw new ErrorException($results['comment']['message'], $results['comment']['code']);

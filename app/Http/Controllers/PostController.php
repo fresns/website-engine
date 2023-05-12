@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
 use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Plugins\FresnsEngine\Interfaces\PostInterface;
+use Plugins\FresnsEngine\Interfaces\UserInterface;
 
 class PostController extends Controller
 {
@@ -32,9 +33,7 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/post/list', [
-            'query' => $query,
-        ]);
+        $result = PostInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -76,9 +75,7 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/post/list', [
-            'query' => $query,
-        ]);
+        $result = PostInterface::list($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -134,9 +131,7 @@ class PostController extends Controller
                 ],
             ];
         } else {
-            $result = ApiHelper::make()->get('/api/v2/post/nearby', [
-                'query' => $query,
-            ]);
+            $result = PostInterface::nearby($query);
         }
 
         $posts = QueryHelper::convertApiDataToPaginate(
@@ -181,9 +176,7 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $result = ApiHelper::make()->get('/api/v2/post/nearby', [
-            'query' => $query,
-        ]);
+        $result = PostInterface::nearby($query);
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -210,11 +203,9 @@ class PostController extends Controller
     // likes
     public function likes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/like/posts", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'like', 'posts', $request->all());
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -241,11 +232,9 @@ class PostController extends Controller
     // dislikes
     public function dislikes(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/dislike/posts", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'dislike', 'posts', $request->all());
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -272,11 +261,9 @@ class PostController extends Controller
     // following
     public function following(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/follow/posts", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'follow', 'posts', $request->all());
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -303,11 +290,9 @@ class PostController extends Controller
     // blocking
     public function blocking(Request $request)
     {
-        $uid = fs_user('detail.uid');
+        $uid = (int) fs_user('detail.uid');
 
-        $result = ApiHelper::make()->get("/api/v2/user/{$uid}/mark/block/posts", [
-            'query' => $request->all(),
-        ]);
+        $result = UserInterface::markList($uid, 'block', 'posts', $request->all());
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -343,20 +328,7 @@ class PostController extends Controller
             $query['page'] = 1;
         }
 
-        $client = ApiHelper::make();
-
-        $results = $client->unwrapRequests([
-            'post' => $client->getAsync("/api/v2/post/{$pid}/detail"),
-            'comments' => $client->getAsync('/api/v2/comment/list', [
-                'query' => $query,
-            ]),
-            'stickies' => $client->getAsync('/api/v2/comment/list', [
-                'query' => [
-                    'pid' => $pid,
-                    'sticky' => true,
-                ],
-            ]),
-        ]);
+        $results = PostInterface::detail($pid, $query);
 
         if ($results['post']['code'] != 0) {
             throw new ErrorException($results['post']['message'], $results['post']['code']);
