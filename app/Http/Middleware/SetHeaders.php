@@ -69,7 +69,7 @@ class SetHeaders
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => now()->unix(),
         ];
-        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers,  $keyInfo->app_secret);
+        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyInfo->app_secret);
 
         $request->headers->set('X-Fresns-App-Id', $headers['X-Fresns-App-Id']);
         $request->headers->set('X-Fresns-Client-Platform-Id', $headers['X-Fresns-Client-Platform-Id']);

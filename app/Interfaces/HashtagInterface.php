@@ -9,8 +9,8 @@
 namespace Plugins\FresnsEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\CommentController;
-use App\Fresns\Api\Http\Controllers\PostController;
 use App\Fresns\Api\Http\Controllers\HashtagController;
+use App\Fresns\Api\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
