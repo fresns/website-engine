@@ -34,7 +34,7 @@ class WebConfiguration
             ], 500);
         }
 
-        if (fs_db_config('engine_api_type') == 'local') {
+        if (is_local_api()) {
             if (! fs_db_config('engine_key_id')) {
                 return Response::view('error', [
                     'message' => '<p>'.__('FsWeb::tips.errorKey').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',
@@ -62,7 +62,7 @@ class WebConfiguration
             }
         }
 
-        if (fs_db_config('engine_api_type') == 'remote') {
+        if (! is_local_api()) {
             if (! fs_db_config('engine_api_host') || ! fs_db_config('engine_api_app_id') || ! fs_db_config('engine_api_app_secret')) {
                 return Response::view('error', [
                     'message' => '<p>'.__('FsWeb::tips.errorApi').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',

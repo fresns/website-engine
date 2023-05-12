@@ -70,7 +70,7 @@ class ErrorException extends \Exception
 
         // Private
         if ($this->getCode() == 35306) {
-            return \response()->view('portal.private');
+            return Response::view('portal.private');
         }
 
         // Other

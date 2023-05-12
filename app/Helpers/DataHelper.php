@@ -14,12 +14,43 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\PluginHelper;
 use App\Models\Config;
 use App\Models\File;
+use App\Utilities\ConfigUtility;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
 class DataHelper
 {
+    // get api data
+    public static function getApiDataTemplate(?string $type = 'list'): array
+    {
+        $message = ConfigUtility::getCodeMessage(35303, 'Fresns', current_lang_tag()) ?? 'Unknown Warning';
+
+        $data = [
+            'code' => 0,
+            'message' => "[35303] {$message}",
+            'data' => [
+                'paginate' => [
+                    'total' => 0,
+                    'pageSize' => 15,
+                    'currentPage' => 1,
+                    'lastPage' => 1,
+                ],
+                'list' => [],
+            ],
+        ];
+
+        if ($type == 'list') {
+            return $data;
+        }
+
+        return [
+            'code' => 35303,
+            'message' => $message,
+            'data' => [],
+        ];
+    }
+
     // get editor url
     public static function getEditorUrl(string $url, string $type, ?int $draftId = null, ?string $fsid = null)
     {
@@ -273,6 +304,10 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
+            if (fs_api_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
+                return [];
+            }
+
             switch ($listKey) {
                 // users
                 case 'users':
@@ -360,6 +395,10 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
+            if (fs_api_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
+                return [];
+            }
+
             switch ($listKey) {
                 // users
                 case 'users':
@@ -441,6 +480,10 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
+            if (fs_api_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
+                return [];
+            }
+
             $result = ApiHelper::make()->get('/api/v2/post/list', [
                 'query' => $query,
             ]);
@@ -472,6 +515,10 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
+            if (fs_api_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
+                return [];
+            }
+
             $result = ApiHelper::make()->get('/api/v2/comment/list', [
                 'query' => [
                     'pid' => $pid,
