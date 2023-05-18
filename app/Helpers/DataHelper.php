@@ -261,7 +261,7 @@ class DataHelper
                     break;
             }
 
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
             CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
         }
 
@@ -352,7 +352,7 @@ class DataHelper
 
             $listArr = data_get($result, 'data.list', []);
 
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
             CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
         }
 
@@ -443,7 +443,7 @@ class DataHelper
 
             $listArr = data_get($result, 'data.list', []);
 
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 120);
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
             CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
         }
 

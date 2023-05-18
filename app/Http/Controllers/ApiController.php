@@ -168,7 +168,7 @@ class ApiController extends Controller
     }
 
     // upload file
-    public function uploadFile()
+    public function uploadFile(Request $request)
     {
         $multipart = [];
 
@@ -192,6 +192,10 @@ class ApiController extends Controller
         $response = ApiHelper::make()->post('/api/v2/common/upload-file', [
             'multipart' => $multipart,
         ]);
+
+        if ($request->post('tableName') == 'users') {
+            DataHelper::cacheForgetAccountAndUser();
+        }
 
         return \response()->json($response);
     }
@@ -231,7 +235,7 @@ class ApiController extends Controller
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
-                'aid' => data_get($result, 'data.detail.aid'),
+                'aid' => data_get($result, 'data.sessionToken.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
             ];
             CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
@@ -241,10 +245,10 @@ class ApiController extends Controller
         $accountExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
-        Cookie::queue($fresnsAid, $data['detail']['aid'], $accountTokenMinutes);
+        Cookie::queue($fresnsAid, $data['sessionToken']['aid'], $accountTokenMinutes);
         Cookie::queue($fresnsAidToken, $data['sessionToken']['token'], $accountTokenMinutes);
 
-        \request()->offsetSet($fresnsAid, $data['detail']['aid']);
+        \request()->offsetSet($fresnsAid, $data['sessionToken']['aid']);
         \request()->offsetSet($fresnsAidToken, $data['sessionToken']['token']);
 
         // forget cache
@@ -262,7 +266,7 @@ class ApiController extends Controller
         $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
         $userTokenMinutes = $userExpiredHours * 60;
 
-        Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
+        Cookie::queue($fresnsUid, data_get($userResult, 'data.sessionToken.uid'), $userTokenMinutes);
         Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
 
         if ($userResult['code'] != 0) {
@@ -321,7 +325,7 @@ class ApiController extends Controller
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
-                'aid' => data_get($result, 'data.detail.aid'),
+                'aid' => data_get($result, 'data.sessionToken.aid'),
                 'aidToken' => data_get($result, 'data.sessionToken.token'),
             ];
             CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
@@ -362,7 +366,7 @@ class ApiController extends Controller
                 return redirect()->intended(fs_route(route('fresns.account.login')));
             } else {
                 // User does not have a password
-                \request()->offsetSet($fresnsAid, $data['detail']['aid']);
+                \request()->offsetSet($fresnsAid, $data['sessionToken']['aid']);
                 \request()->offsetSet($fresnsAidToken, $data['sessionToken']['token']);
 
                 DataHelper::cacheForgetAccountAndUser();
@@ -385,7 +389,7 @@ class ApiController extends Controller
                 $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
                 $userTokenMinutes = $userExpiredHours * 60;
 
-                Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
+                Cookie::queue($fresnsUid, data_get($userResult, 'data.sessionToken.uid'), $userTokenMinutes);
                 Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
 
                 if ($request->wantsJson()) {
@@ -429,7 +433,7 @@ class ApiController extends Controller
         $redirectURL = $request->redirectURL;
 
         // check api code
-        if ($accountCode != 0 || empty(data_get($accountData, 'detail.aid')) || empty(data_get($accountData, 'sessionToken.token'))) {
+        if ($accountCode != 0 || empty(data_get($accountData, 'sessionToken.aid')) || empty(data_get($accountData, 'sessionToken.token'))) {
             return back()->with([
                 'code' => $accountCode,
                 'failure' => $accountMessage,
@@ -448,7 +452,7 @@ class ApiController extends Controller
         if ($cacheKey) {
             $cacheTags = ['fresnsWeb', 'fresnsWebAccountTokens'];
             $cacheData = [
-                'aid' => data_get($accountData, 'detail.aid'),
+                'aid' => data_get($accountData, 'sessionToken.aid'),
                 'aidToken' => data_get($accountData, 'sessionToken.token'),
             ];
             CacheHelper::put($cacheData, $cacheKey, $cacheTags, 3, now()->addMinutes(3));
@@ -458,7 +462,7 @@ class ApiController extends Controller
         $accountExpiredHours = data_get($accountData, 'sessionToken.expiredHours') ?? 8760;
         $accountTokenMinutes = $accountExpiredHours * 60;
 
-        Cookie::queue($fresnsAid, data_get($accountData, 'detail.aid'), $accountTokenMinutes);
+        Cookie::queue($fresnsAid, data_get($accountData, 'sessionToken.aid'), $accountTokenMinutes);
         Cookie::queue($fresnsAidToken, data_get($accountData, 'sessionToken.token'), $accountTokenMinutes);
 
         // Number of users under the account
@@ -486,7 +490,7 @@ class ApiController extends Controller
                 return redirect()->intended(fs_route(route('fresns.account.login')));
             } else {
                 // User does not have a password
-                \request()->offsetSet($fresnsAid, $accountData['detail']['aid']);
+                \request()->offsetSet($fresnsAid, $accountData['sessionToken']['aid']);
                 \request()->offsetSet($fresnsAidToken, $accountData['sessionToken']['token']);
 
                 DataHelper::cacheForgetAccountAndUser();
@@ -509,7 +513,7 @@ class ApiController extends Controller
                 $userExpiredHours = data_get($userResult, 'data.sessionToken.expiredHours') ?? 8760;
                 $userTokenMinutes = $userExpiredHours * 60;
 
-                Cookie::queue($fresnsUid, data_get($userResult, 'data.detail.uid'), $userTokenMinutes);
+                Cookie::queue($fresnsUid, data_get($userResult, 'data.sessionToken.uid'), $userTokenMinutes);
                 Cookie::queue($fresnsUidToken, data_get($userResult, 'data.sessionToken.token'), $userTokenMinutes);
 
                 if ($request->wantsJson()) {
