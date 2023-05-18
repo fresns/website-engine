@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.6.0 (2023-05-12)
+
+- Interfacing with the plugin callback interface
+- Refactor the API interface to call the API directly internally from the local environment.
+
+
 ## 2.5.0 (2023-05-06)
 
 - Fix menu configuration page does not determine if it is closed or not
