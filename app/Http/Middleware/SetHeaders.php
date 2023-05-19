@@ -37,7 +37,7 @@ class SetHeaders
             ], 500);
         }
 
-        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('WebEngine');
+        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine');
 
         // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
