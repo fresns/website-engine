@@ -34,8 +34,12 @@ class SearchInterface
             $apiController = new SearchController();
             $response = $apiController->$type($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage(), $e->getCode());
         }

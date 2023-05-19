@@ -35,8 +35,12 @@ class FollowInterface
             $apiController = new PostController();
             $response = $apiController->follow($type, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage(), $e->getCode());
         }
@@ -62,8 +66,12 @@ class FollowInterface
             $apiController = new CommentController();
             $response = $apiController->follow($type, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage(), $e->getCode());
         }

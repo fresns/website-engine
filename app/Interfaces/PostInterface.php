@@ -34,8 +34,12 @@ class PostInterface
             $apiController = new PostController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage(), $e->getCode());
         }
@@ -61,8 +65,12 @@ class PostInterface
             $apiController = new PostController();
             $response = $apiController->nearby($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
         } catch (\Exception $e) {
             throw new ErrorException($e->getMessage(), $e->getCode());
         }
@@ -107,8 +115,12 @@ class PostInterface
             $apiController = new PostController();
             $response = $apiController->detail($pid, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             $results = [
                 'post' => $result,
