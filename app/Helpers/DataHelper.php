@@ -89,58 +89,6 @@ class DataHelper
     }
 
     // get upload info
-    public static function getConfigByItemKey(string $itemKey)
-    {
-        $langTag = current_lang_tag();
-
-        $cacheKey = "fresns_web_db_config_{$itemKey}_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return null;
-        }
-
-        // get cache
-        $dbConfig = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($dbConfig)) {
-            $config = Config::where('item_key', $itemKey)->first();
-
-            if (! $config) {
-                return null;
-            }
-
-            $itemValue = $config->item_value;
-
-            if ($config->is_multilingual == 1) {
-                $itemValue = LanguageHelper::fresnsLanguageByTableKey($config->item_key, $config->item_type, $langTag);
-            } elseif ($config->item_type == 'file') {
-                $itemValue = ConfigHelper::fresnsConfigFileUrlByItemKey($config->item_key);
-            } elseif ($config->item_type == 'plugin') {
-                $itemValue = PluginHelper::fresnsPluginUrlByFskey($config->item_value) ?? $config->item_value;
-            } elseif ($config->item_type == 'plugins') {
-                if ($config->item_value) {
-                    foreach ($config->item_value as $plugin) {
-                        $pluginItem['code'] = $plugin['code'];
-                        $pluginItem['url'] = PluginHelper::fresnsPluginUrlByFskey($plugin['fskey']);
-                        $itemArr[] = $pluginItem;
-                    }
-                    $itemValue = $itemArr;
-                }
-            }
-
-            $dbConfig = $itemValue;
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($dbConfig, $cacheKey, $cacheTags, null, $cacheTime);
-        }
-
-        return $dbConfig;
-    }
-
-    // get upload info
     public static function getUploadInfo(?int $usageType = null, ?string $tableName = null, ?string $tableColumn = null, ?int $tableId = null, ?string $tableKey = null)
     {
         $uploadInfo = [

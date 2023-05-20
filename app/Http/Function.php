@@ -71,7 +71,9 @@ if (! function_exists('fs_api_config')) {
 if (! function_exists('fs_db_config')) {
     function fs_db_config(string $itemKey, mixed $default = null)
     {
-        return DataHelper::getConfigByItemKey($itemKey) ?? $default;
+        $langTag = current_lang_tag();
+
+        return ConfigHelper::fresnsConfigApiByItemKey($itemKey, $langTag) ?? $default;
     }
 }
 
