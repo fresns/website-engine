@@ -9,8 +9,8 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Browser;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class PortalController extends Controller
 {
