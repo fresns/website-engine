@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.7.0 (2023-05-23)
+
+- Fix fskey bug
+- Fix plugin data output bug
+- `fs_db_config` calls the main program wrapper function
+- Support for custom pages, path format `/portal/{name}`
+
+
 ## 2.6.0 (2023-05-12)
 
 - Interfacing with the plugin callback interface
