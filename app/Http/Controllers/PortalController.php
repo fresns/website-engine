@@ -9,6 +9,8 @@
 namespace Plugins\FresnsEngine\Http\Controllers;
 
 use Browser;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Response;
 
 class PortalController extends Controller
 {
@@ -24,5 +26,25 @@ class PortalController extends Controller
     public function policies()
     {
         return view('portal.policies');
+    }
+
+    public function customPage(string $name)
+    {
+        $checkName = in_array($name, [
+            'index',
+            'private',
+            'policies',
+        ]);
+
+        $viewName = "portal.{$name}";
+
+        if ($checkName || ! View::exists($viewName)) {
+            return Response::view('error', [
+                'code' => 404,
+                'message' => 'Page Not Found',
+            ], 404);
+        }
+
+        return view($viewName);
     }
 }
