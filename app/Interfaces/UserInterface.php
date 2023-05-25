@@ -176,7 +176,6 @@ class UserInterface
                     'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
                     'posts' => DataHelper::getApiDataTemplate(),
                     'comments' => DataHelper::getApiDataTemplate(),
-                    'followersYouFollow' => DataHelper::getApiDataTemplate(),
                     'users' => DataHelper::getApiDataTemplate(),
                     $listType => DataHelper::getApiDataTemplate(),
                 ];
@@ -186,34 +185,18 @@ class UserInterface
 
             switch ($type) {
                 case 'posts':
-                    $queryRequest = Request::create('/api/v2/post/list', 'GET', $query);
-                    $apiPostController = new PostController();
-
-                    $response = $apiPostController->list($queryRequest);
-
-                    $resultContent = $response->getContent();
-                    $result = json_decode($resultContent, true);
-
                     $results = [
                         'profile' => json_decode($resultDetailContent, true),
                         'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
-                        'posts' => $result,
+                        'posts' => PostInterface::list($query),
                     ];
                     break;
 
                 case 'comments':
-                    $queryRequest = Request::create('/api/v2/comment/list', 'GET', $query);
-                    $apiCommentController = new CommentController();
-
-                    $response = $apiCommentController->list($queryRequest);
-
-                    $resultContent = $response->getContent();
-                    $result = json_decode($resultContent, true);
-
                     $results = [
                         'profile' => json_decode($resultDetailContent, true),
                         'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
-                        'comments' => $result,
+                        'comments' => CommentInterface::list($query),
                     ];
                     break;
 
@@ -228,7 +211,7 @@ class UserInterface
                     $results = [
                         'profile' => json_decode($resultDetailContent, true),
                         'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
-                        'comments' => $result,
+                        'users' => $result,
                     ];
                     break;
 

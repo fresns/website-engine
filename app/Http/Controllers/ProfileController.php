@@ -112,7 +112,7 @@ class ProfileController extends Controller
             $query['page'] = 1;
         }
 
-        $results = UserInterface::detail($uidOrUsername, 'followersYouFollow', $query);
+        $results = UserInterface::detail($uidOrUsername, 'followersYouFollow', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
             throw new ErrorException($results['profile']['message'], $results['profile']['code']);
