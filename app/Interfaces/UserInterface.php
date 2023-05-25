@@ -8,8 +8,6 @@
 
 namespace Plugins\FresnsEngine\Interfaces;
 
-use App\Fresns\Api\Http\Controllers\CommentController;
-use App\Fresns\Api\Http\Controllers\PostController;
 use App\Fresns\Api\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
