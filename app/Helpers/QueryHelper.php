@@ -32,10 +32,10 @@ class QueryHelper
 
         // Convert to array parameters
         $params = [];
-        if (! empty($queryConfig)) {
+        if ($queryConfig) {
             $urlInfo = parse_url($queryConfig);
 
-            if (! empty($urlInfo['path'])) {
+            if ($urlInfo['path']) {
                 parse_str($urlInfo['path'], $params);
             }
         }
@@ -68,10 +68,10 @@ class QueryHelper
         $queryConfig = ConfigHelper::fresnsConfigByItemKey("menu_{$type}_query_config");
 
         $params = [];
-        if (! empty($queryConfig)) {
+        if ($queryConfig) {
             $urlInfo = parse_url($queryConfig);
 
-            if (! empty($urlInfo['path'])) {
+            if ($urlInfo['path']) {
                 parse_str($urlInfo['path'], $params);
             }
         }
