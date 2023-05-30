@@ -23,22 +23,15 @@ class PortalController extends Controller
         return view('portal.index', compact('content'));
     }
 
-    public function policies()
-    {
-        return view('portal.policies');
-    }
-
     public function customPage(string $name)
     {
-        $checkName = in_array($name, [
-            'index',
-            'private',
-            'policies',
-        ]);
+        if ($name == 'index') {
+            return redirect(fs_route(route('fresns.portal')));
+        }
 
         $viewName = "portal.{$name}";
 
-        if ($checkName || ! View::exists($viewName)) {
+        if ($name == 'private' || ! View::exists($viewName)) {
             return Response::view('error', [
                 'code' => 404,
                 'message' => 'Page Not Found',
