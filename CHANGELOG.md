@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.8.0 (2023-05-30)
+
+- Fixed interface bug
+- Added `fs_channels`
+- Optimise other issues
+
+
 ## 2.7.0 (2023-05-23)
 
 - Fix fskey bug
