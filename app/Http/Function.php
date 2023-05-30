@@ -127,6 +127,40 @@ if (! function_exists('fs_route')) {
     }
 }
 
+// fs_channels
+if (! function_exists('fs_channels')) {
+    function fs_channels()
+    {
+        $langTag = current_lang_tag();
+
+        $uid = 'guest';
+        if (fs_user()->check()) {
+            $uid = fs_user('detail.uid');
+        }
+
+        $cacheKey = "fresns_web_channels_{$uid}_{$langTag}";
+        $cacheTag = 'fresnsWeb';
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        $channels = CacheHelper::get($cacheKey, $cacheTag);
+
+        if (empty($channels)) {
+            $result = ApiHelper::make()->get('/api/v2/global/channels');
+
+            $channels = data_get($result, 'data');
+
+            CacheHelper::put($channels, $cacheKey, $cacheTag, 5, now()->addMinutes(5));
+        }
+
+        return $channels ?? [];
+    }
+}
+
 // fs_account
 if (! function_exists('fs_account')) {
     /**
