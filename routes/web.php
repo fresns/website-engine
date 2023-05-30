@@ -48,7 +48,6 @@ Route::prefix(LaravelLocalization::setLocale())
 
         // portal
         Route::get(fs_db_config('website_portal_path'), [PortalController::class, 'index'])->name('portal')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
-        Route::get('policies', [PortalController::class, 'policies'])->name('policies')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
         Route::get('portal/{name}', [PortalController::class, 'customPage'])->name('custom.page')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
 
         // users

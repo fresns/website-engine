@@ -101,7 +101,9 @@ class AccountController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('account.user-extcredits', compact('logs'));
+        $extcreditsId = (int) $request->extcreditsId;
+
+        return view('account.user-extcredits', compact('extcreditsId', 'logs'));
     }
 
     // users

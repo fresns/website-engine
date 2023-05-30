@@ -18,6 +18,7 @@ function authorization() {
 (function ($) {
     $('#fresnsModal.fresnsExtensions').on('show.bs.modal', function (e) {
         let button = $(e.relatedTarget),
+            fsHeight = button.data('fs-height'),
             title = button.data('title'),
             reg = /\{[^\}]+\}/g,
             url = button.data('url'),
@@ -43,13 +44,13 @@ function authorization() {
         let inputHtml = `<iframe src="` + url + `" class="iframe-modal"></iframe>`;
         $(this).find('.modal-body').empty().html(inputHtml);
 
-        // iFrame Resizer
-        // http://davidjbradshaw.github.io/iframe-resizer/
+        // iFrame Resizer V4
+        // https://github.com/davidjbradshaw/iframe-resizer
         let isOldIE = navigator.userAgent.indexOf('MSIE') !== -1;
         $('#fresnsModal.fresnsExtensions iframe').on('load', function () {
             $(this).iFrameResize({
                 autoResize: true,
-                minHeight: 500,
+                minHeight: fsHeight ? fsHeight : 500,
                 heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
                 scrolling: true,
             });
