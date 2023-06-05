@@ -8,9 +8,7 @@
 
 namespace Plugins\FresnsEngine\Interfaces;
 
-use App\Fresns\Api\Http\Controllers\CommentController;
 use App\Fresns\Api\Http\Controllers\GroupController;
-use App\Fresns\Api\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Plugins\FresnsEngine\Helpers\ApiHelper;
@@ -102,30 +100,16 @@ class GroupInterface
 
             switch ($type) {
                 case 'posts':
-                    $request = Request::create('/api/v2/post/list', 'GET', $query);
-                    $apiPostController = new PostController();
-
-                    $response = $apiPostController->list($request);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'group' => $result,
-                        'posts' => json_decode($resultContent, true),
+                        'posts' => PostInterface::list($query),
                     ];
                     break;
 
                 case 'comments':
-                    $request = Request::create('/api/v2/comment/list', 'GET', $query);
-                    $apiCommentController = new CommentController();
-
-                    $response = $apiCommentController->list($request);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'group' => $result,
-                        'comments' => json_decode($resultContent, true),
+                        'comments' => CommentInterface::list($query),
                     ];
                     break;
             }
