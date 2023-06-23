@@ -47,7 +47,7 @@ if (! function_exists('current_lang_tag')) {
 if (! function_exists('fs_status')) {
     function fs_status(string $key)
     {
-        $cacheKey = 'fresns_status';
+        $cacheKey = 'fresns_web_status';
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
         $statusJson = CacheHelper::get($cacheKey, $cacheTags);
@@ -72,7 +72,7 @@ if (! function_exists('fs_status')) {
         $langTag = current_lang_tag();
 
         $status = [
-            'activate' => $statusJson['activate'],
+            'activate' => $statusJson['activate'] ?? true,
             'deactivateDescription' => $statusJson['deactivateDescription'][$langTag] ?? $statusJson['deactivateDescription']['default'] ?? '',
         ];
 
