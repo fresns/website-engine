@@ -17,7 +17,7 @@ use Plugins\FresnsEngine\Auth\UserGuard;
 
 class FresnsEngineServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
         config()->set('laravellocalization.useAcceptLanguageHeader', false);
 
@@ -71,7 +71,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
         $this->registerTranslations();
     }
 
-    public function boot()
+    public function boot(): void
     {
         $this->app->register(RouteServiceProvider::class);
 
@@ -89,7 +89,7 @@ class FresnsEngineServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerTranslations()
+    protected function registerTranslations(): void
     {
         $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'FsWeb');
     }
