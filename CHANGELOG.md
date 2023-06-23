@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## 2.9.0 (2023-06-23)
+
+- Added: `fs_status`
+
+
 ## 2.8.1 (2023-06-05)
 
 - Chore: group interface
