@@ -25,6 +25,13 @@ class WebConfiguration
 {
     public function handle(Request $request, Closure $next)
     {
+        if (! fs_status('activate')) {
+            return Response::view('error', [
+                'message' => '<p>'.fs_status('deactivateDescription').'</p>',
+                'code' => 503,
+            ], 503);
+        }
+
         $themeFskey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
 
         if (! $themeFskey) {

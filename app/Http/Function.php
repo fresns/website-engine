@@ -43,6 +43,43 @@ if (! function_exists('current_lang_tag')) {
     }
 }
 
+// fs_status
+if (! function_exists('fs_status')) {
+    function fs_status(string $key)
+    {
+        $cacheKey = "fresns_status";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        $statusJson = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($statusJson)) {
+            $isLocal = is_local_api();
+
+            $localApiHost = config('app.url');
+            $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('engine_api_host');
+
+            $apiHost = $isLocal ? $localApiHost : $remoteApiHost;
+
+            $fileUrl = $apiHost.'/status.json';
+            $client = new \GuzzleHttp\Client(['verify' => false]);
+            $response = $client->request('GET', $fileUrl);
+
+            $statusJson = json_decode($response->getBody(), true);
+
+            CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, now()->addMinutes(10));
+        }
+
+        $langTag = current_lang_tag();
+
+        $status = [
+            'activate' => $statusJson['activate'],
+            'deactivateDescription' => $statusJson['deactivateDescription'][$langTag] ?? $statusJson['deactivateDescription']['default'] ?? '',
+        ];
+
+        return $status[$key];
+    }
+}
+
 // fs_api_config
 if (! function_exists('fs_api_config')) {
     function fs_api_config(string $itemKey, mixed $default = null)
