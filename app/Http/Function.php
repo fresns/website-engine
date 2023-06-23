@@ -62,9 +62,19 @@ if (! function_exists('fs_status')) {
 
             $fileUrl = $apiHost.'/status.json';
             $client = new \GuzzleHttp\Client(['verify' => false]);
-            $response = $client->request('GET', $fileUrl);
 
-            $statusJson = json_decode($response->getBody(), true);
+            try {
+                $response = $client->request('GET', $fileUrl);
+                $statusJson = json_decode($response->getBody(), true);
+            } catch (\GuzzleHttp\Exception\RequestException $e) {
+                $statusJson = [
+                    'name' => 'Fresns',
+                    'activate' => true,
+                    'deactivateDescription' => [
+                        'default' => '',
+                    ],
+                ];
+            }
 
             CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, now()->addMinutes(10));
         }
