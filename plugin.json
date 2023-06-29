@@ -5,7 +5,7 @@
     "description": "Fresns officially developed website engine, integrated to run in the main application.",
     "author": "Fresns",
     "authorLink": "https://fresns.org",
-    "version": "2.9.0",
+    "version": "2.9.1",
     "scene": [
         "apiKey",
         "engine"
