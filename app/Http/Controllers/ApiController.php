@@ -581,47 +581,15 @@ class ApiController extends Controller
     }
 
     // account edit
-    public function accountEdit()
+    public function accountEdit(Request $request)
     {
-        $editType = \request('edit_type');
-        $editTypeMode = \request($editType.'_mode');
-
-        if ($editTypeMode) {
-            $codeType = match ($editTypeMode) {
-                'phone_to_editPassword' => 'sms',
-                'email_to_editPassword' => 'email',
-                'phone_to_editWalletPassword' => 'sms',
-                'email_to_editWalletPassword' => 'email',
-                default => null,
-            };
-
-            $verifyCode = match ($editTypeMode) {
-                'phone_to_editPassword' => \request('phone_verifyCode'),
-                'email_to_editPassword' => \request('email_verifyCode'),
-                'phone_to_editWalletPassword' => \request('phone_verifyCode'),
-                'email_to_editWalletPassword' => \request('email_verifyCode'),
-                default => null,
-            };
-
-            \request()->offsetSet('codeType', $codeType);
-            \request()->offsetSet('verifyCode', $verifyCode);
-        }
-
-        switch ($editType) {
-            case 'editPassword':
-                \request()->offsetSet('password', \request('now_editPassword'));
-                \request()->offsetSet('editPassword', \request('new_editPassword'));
-                \request()->offsetSet('editPasswordConfirm', \request('new_editPassword_confirmation'));
-                break;
-            case 'editWalletPassword':
-                \request()->offsetSet('walletPassword', \request('now_editWalletPassword'));
-                \request()->offsetSet('editWalletPassword', \request('new_editWalletPassword'));
-                \request()->offsetSet('editWalletPasswordConfirm', \request('new_editWalletPassword_confirmation'));
-                break;
+        if ($request->codeType == 'password') {
+            \request()->offsetSet('codeType', '');
+            \request()->offsetSet('verifyCode', '');
         }
 
         $response = ApiHelper::make()->put('/api/v2/account/edit', [
-            'json' => \request()->all(),
+            'json' => $request->all(),
         ]);
 
         DataHelper::cacheForgetAccountAndUser();
