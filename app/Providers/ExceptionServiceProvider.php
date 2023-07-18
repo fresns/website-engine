@@ -19,6 +19,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ExceptionServiceProvider extends ServiceProvider
 {
     /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array<int, class-string<\Throwable>>
+     */
+    protected $dontReport = [
+        \Plugins\FresnsEngine\Exceptions\ErrorException::class,
+    ];
+
+    /**
      * Register any services.
      */
     public function boot(): void
@@ -31,6 +40,12 @@ class ExceptionServiceProvider extends ServiceProvider
 
         if (method_exists($handler, 'renderable')) {
             $handler->renderable($this->renderable());
+        }
+
+        if (method_exists($handler, 'ignore') && $this->dontReport) {
+            foreach ($this->dontReport as $exceptionClass) {
+                $handler->ignore($exceptionClass);
+            }
         }
     }
 
