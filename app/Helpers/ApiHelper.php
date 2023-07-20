@@ -175,7 +175,6 @@ class ApiHelper
 
         // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
-        $fresnsTimezone = "{$cookiePrefix}timezone";
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -199,7 +198,7 @@ class ApiHelper
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
             'X-Fresns-Client-Version' => $engineVersion,
             'X-Fresns-Client-Device-Info' => json_encode(AppHelper::getDeviceInfo()),
-            'X-Fresns-Client-Timezone' => Cookie::get($fresnsTimezone) ?? null,
+            'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
             'X-Fresns-Client-Content-Format' => null,
             'X-Fresns-Aid' => Cookie::get($fresnsAid) ?? $aidAndToken['aid'] ?? null,
