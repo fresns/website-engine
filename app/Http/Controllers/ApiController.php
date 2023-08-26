@@ -878,6 +878,11 @@ class ApiController extends Controller
     {
         $multipart = [
             [
+                'name' => 'usageType',
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'contents' => $request->post('usageType'),
+            ],
+            [
                 'name' => 'tableName',
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
                 'contents' => $request->post('tableName'),
