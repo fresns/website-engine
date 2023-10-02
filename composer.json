@@ -27,10 +27,8 @@
     "require": {},
     "require-dev": {},
     "autoload": {
-        "autoload": {
-            "psr-4": {
-                "Fresns\\WebEngine\\": "app"
-            }
+        "psr-4": {
+            "Fresns\\WebEngine\\": "app"
         },
         "files": [
             "app/Http/Function.php"
