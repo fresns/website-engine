@@ -24,7 +24,9 @@
             "role": "Developer"
         }
     ],
-    "require": {},
+    "require": {
+        "mcamara/laravel-localization": "^1.8"
+    },
     "require-dev": {},
     "autoload": {
         "psr-4": {
