@@ -19,6 +19,18 @@ class WebEngineServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->registerAuthenticator();
+        $this->registerTranslations();
+    }
+
+    public function boot(): void
+    {
+        Paginator::useBootstrap();
+
+        if (fs_db_config('engine_status', false)) {
+            $this->app->register(RouteServiceProvider::class);
+        }
+
         config()->set('laravellocalization.useAcceptLanguageHeader', false);
 
         config()->set('laravellocalization.hideDefaultLocaleInURL', true);
@@ -66,18 +78,6 @@ class WebEngineServiceProvider extends ServiceProvider
         config()->set('laravellocalization.supportedLocales', $supportedLocales);
 
         config()->set('app.locale', $defaultLangTag);
-
-        $this->registerAuthenticator();
-        $this->registerTranslations();
-    }
-
-    public function boot(): void
-    {
-        if (fs_db_config('engine_status', false)) {
-            $this->app->register(RouteServiceProvider::class);
-        }
-
-        Paginator::useBootstrap();
     }
 
     protected function registerAuthenticator(): void
