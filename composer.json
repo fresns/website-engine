@@ -6,9 +6,8 @@
     "license": "Apache-2.0",
     "homepage": "https://fresns.org",
     "support": {
-        "issues": "https://github.com/fresns/plugin-manager/issues",
-        "source": "https://github.com/fresns/plugin-manager",
-        "docs": "https://fresns.org/extensions/plugin/"
+        "issues": "https://github.com/fresns/web-engin/issues",
+        "source": "https://github.com/fresns/web-engin"
     },
     "authors": [
         {
