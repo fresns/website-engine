@@ -11,9 +11,9 @@ use App\Helpers\ConfigHelper;
 use App\Models\File;
 use Illuminate\Support\Facades\App;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Plugins\FresnsEngine\Auth\UserGuard;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
-use Plugins\FresnsEngine\Helpers\DataHelper;
+use Fresns\WebEngine\Auth\UserGuard;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
 
 // is_local_api
 if (! function_exists('is_local_api')) {

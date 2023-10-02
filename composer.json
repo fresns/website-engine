@@ -1,18 +1,81 @@
 {
-    "name": "fresns/engine",
+    "name": "fresns/web-engine",
+    "type": "library",
+    "description": "Fresns officially developed website engine, integrated to run in the main application.",
+    "keywords": ["fresns"],
     "license": "Apache-2.0",
+    "homepage": "https://fresns.org",
+    "support": {
+        "issues": "https://github.com/fresns/plugin-manager/issues",
+        "source": "https://github.com/fresns/plugin-manager",
+        "docs": "https://fresns.org/extensions/plugin/"
+    },
     "authors": [
         {
             "name": "Jevan Tang",
             "email": "jevan@fresns.org",
             "homepage": "https://github.com/jevantang",
             "role": "Creator"
+        },
+        {
+            "name": "mouyong",
+            "email": "my24251325@gmail.com",
+            "homepage": "https://github.com/mouyong",
+            "role": "Developer"
         }
     ],
     "require": {},
+    "require-dev": {},
     "autoload": {
-        "psr-4": {
-            "Plugins\\FresnsEngine\\": "app"
+        "autoload": {
+            "psr-4": {
+                "Fresns\\WebEngine\\": "app"
+            }
+        },
+        "files": [
+            "app/Http/Function.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fresns\\WebEngine\\Providers\\WebEngineServiceProvider",
+                "Fresns\\WebEngine\\Providers\\ExceptionServiceProvider"
+            ]
+        },
+        "hooks": {
+            "pre-commit": [
+                "composer check-style",
+                "composer test"
+            ],
+            "pre-push": [
+                "composer test",
+                "composer check-style"
+            ]
         }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "cghooks remove",
+            "cghooks add --ignore-lock",
+            "cghooks update"
+        ],
+        "post-merge": "composer install",
+        "post-install-cmd": [
+            "cghooks remove",
+            "cghooks add --ignore-lock",
+            "cghooks update"
+        ],
+        "cghooks": "vendor/bin/cghooks",
+        "check-style": "php-cs-fixer fix --using-cache=no --diff --dry-run --ansi",
+        "fix-style": "php-cs-fixer fix --using-cache=no --ansi",
+        "test": "phpunit --colors",
+        "psalm": "psalm --show-info=true --no-cache",
+        "psalm-fix": "psalm --no-cache --alter --issues=MissingReturnType,MissingParamType"
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests.",
+        "check-style": "Run style checks (only dry run - no fixing!).",
+        "fix-style": "Run style checks and fix violations."
     }
 }

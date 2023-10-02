@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Middleware;
+namespace Fresns\WebEngine\Http\Middleware;
 
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
@@ -32,9 +32,9 @@ class WebConfiguration
             ], 503);
         }
 
-        $themeFskey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
+        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
 
-        if (! $themeFskey) {
+        if (! $viewNamespace) {
             return Response::view('error', [
                 'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
                 'code' => 500,
@@ -79,18 +79,13 @@ class WebConfiguration
         }
 
         $this->loadLanguages();
-        $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("extensions/themes/{$themeFskey}"));
         $this->webLangTag();
 
-        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine') ?? 'null';
-        $themeVersion = PluginHelper::fresnsPluginVersionByFskey($themeFskey) ?? 'null';
+        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
 
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-        View::share('engineFskey', 'FresnsEngine');
-        View::share('engineVersion', $engineVersion);
-        View::share('themeFskey', $themeFskey);
-        View::share('themeVersion', $themeVersion);
+        View::share('viewFskey', $viewNamespace);
+        View::share('viewVersion', $viewVersion);
 
         return $next($request);
     }

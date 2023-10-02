@@ -6,15 +6,16 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Middleware;
+namespace Fresns\WebEngine\Http\Middleware;
 
+use Browser;
+use Closure;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Helpers\PrimaryHelper;
 use App\Helpers\SignHelper;
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
@@ -37,7 +38,8 @@ class SetHeaders
             ], 500);
         }
 
-        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine');
+        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
+        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
 
         // cookie key name
         $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
@@ -58,8 +60,8 @@ class SetHeaders
         $headers = [
             'X-Fresns-App-Id' => $keyInfo->app_id,
             'X-Fresns-Client-Platform-Id' => $keyInfo->platform_id,
-            'X-Fresns-Client-Version' => $engineVersion,
-            'X-Fresns-Client-Device-Info' => json_encode(AppHelper::getDeviceInfo()),
+            'X-Fresns-Client-Version' => $viewVersion,
+            'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
             'X-Fresns-Client-Content-Format' => null,

@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Auth;
+namespace Fresns\WebEngine\Auth;
 
 use App\Helpers\CacheHelper;
 use App\Models\File;
@@ -15,8 +15,8 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
-use Plugins\FresnsEngine\Helpers\DataHelper;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
 
 class UserGuard implements Guard
 {

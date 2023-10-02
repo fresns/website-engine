@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Middleware;
+namespace Fresns\WebEngine\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

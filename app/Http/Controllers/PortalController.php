@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Browser;
 use Illuminate\Support\Facades\Response;
@@ -20,7 +20,7 @@ class PortalController extends Controller
             Browser::isMobile() ? fs_db_config('portal_3') : fs_db_config('portal_2')
         );
 
-        return view('portal.index', compact('content'));
+        return view("{$this->viewNamespace}::portal.index", compact('content'));
     }
 
     public function customPage(string $name)

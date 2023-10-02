@@ -6,16 +6,16 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\PostInterface;
-use Plugins\FresnsEngine\Interfaces\UserInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\PostInterface;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class PostController extends Controller
 {
@@ -58,7 +58,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.index', compact('posts'));
+        return view("{$this->viewNamespace}::posts.index", compact('posts'));
     }
 
     // list
@@ -100,7 +100,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.list', compact('posts'));
+        return view("{$this->viewNamespace}::posts.list", compact('posts'));
     }
 
     // nearby
@@ -153,7 +153,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.nearby', compact('posts'));
+        return view("{$this->viewNamespace}::posts.nearby", compact('posts'));
     }
 
     // location
@@ -197,7 +197,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.location', compact('location', 'encode', 'posts'));
+        return view("{$this->viewNamespace}::posts.location", compact('location', 'encode', 'posts'));
     }
 
     // likes
@@ -226,7 +226,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.likes', compact('posts'));
+        return view("{$this->viewNamespace}::posts.likes", compact('posts'));
     }
 
     // dislikes
@@ -255,7 +255,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.dislikes', compact('posts'));
+        return view("{$this->viewNamespace}::posts.dislikes", compact('posts'));
     }
 
     // following
@@ -284,7 +284,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.following', compact('posts'));
+        return view("{$this->viewNamespace}::posts.following", compact('posts'));
     }
 
     // blocking
@@ -313,7 +313,7 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.blocking', compact('posts'));
+        return view("{$this->viewNamespace}::posts.blocking", compact('posts'));
     }
 
     // detail
@@ -364,6 +364,6 @@ class PostController extends Controller
         }
 
         // view
-        return view('posts.detail', compact('items', 'post', 'comments', 'stickies'));
+        return view("{$this->viewNamespace}::posts.detail", compact('items', 'post', 'comments', 'stickies'));
     }
 }

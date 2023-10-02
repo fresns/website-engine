@@ -6,12 +6,12 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\SearchInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\SearchInterface;
 
 class SearchController extends Controller
 {
@@ -22,7 +22,7 @@ class SearchController extends Controller
         $searchKey = $request->get('searchKey');
 
         if (empty($searchType)) {
-            return view('search.index');
+            return view("{$this->viewNamespace}::search.index");
         }
 
         switch ($searchType) {
@@ -53,7 +53,7 @@ class SearchController extends Controller
 
                 // default
             default:
-                return view('search.index');
+                return view("{$this->viewNamespace}::search.index");
                 break;
         }
     }
@@ -74,7 +74,7 @@ class SearchController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('search.users', compact('users'));
+        return view("{$this->viewNamespace}::search.users", compact('users'));
     }
 
     // groups
@@ -93,7 +93,7 @@ class SearchController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('search.groups', compact('groups'));
+        return view("{$this->viewNamespace}::search.groups", compact('groups'));
     }
 
     // hashtags
@@ -112,7 +112,7 @@ class SearchController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('search.hashtags', compact('hashtags'));
+        return view("{$this->viewNamespace}::search.hashtags", compact('hashtags'));
     }
 
     // posts
@@ -131,7 +131,7 @@ class SearchController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('search.posts', compact('posts'));
+        return view("{$this->viewNamespace}::search.posts", compact('posts'));
     }
 
     // comments
@@ -150,6 +150,6 @@ class SearchController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('search.comments', compact('comments'));
+        return view("{$this->viewNamespace}::search.comments", compact('comments'));
     }
 }

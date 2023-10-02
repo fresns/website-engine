@@ -6,10 +6,10 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Middleware;
+namespace Fresns\WebEngine\Http\Middleware;
 
-use App\Utilities\ConfigUtility;
 use Closure;
+use App\Utilities\ConfigUtility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 

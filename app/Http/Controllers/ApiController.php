@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
 use App\Utilities\ConfigUtility;
@@ -17,10 +17,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
-use Plugins\FresnsEngine\Helpers\DataHelper;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
+use Fresns\WebEngine\Helpers\QueryHelper;
 
 class ApiController extends Controller
 {

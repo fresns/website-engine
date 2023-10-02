@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Providers;
+namespace Fresns\WebEngine\Providers;
 
+use Browser;
 use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
-use Browser;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
@@ -24,7 +24,7 @@ class ExceptionServiceProvider extends ServiceProvider
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-        \Plugins\FresnsEngine\Exceptions\ErrorException::class,
+        \Fresns\WebEngine\Exceptions\ErrorException::class,
     ];
 
     /**
@@ -73,20 +73,13 @@ class ExceptionServiceProvider extends ServiceProvider
         return function (\Throwable $e) {
             // 404 page
             if ($e instanceof NotFoundHttpException) {
-                $themeFskey = Browser::isMobile() ? fs_db_config('FresnsEngine_Mobile') : fs_db_config('FresnsEngine_Desktop');
-
-                $finder = app('view')->getFinder();
-                $finder->prependLocation(base_path("extensions/themes/{$themeFskey}"));
-
-                $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine') ?? 'null';
-                $themeVersion = PluginHelper::fresnsPluginVersionByFskey($themeFskey) ?? 'null';
+                $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
+                $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
 
                 return Response::view(404, [
                     'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
-                    'engineFskey' => 'FresnsEngine',
-                    'engineVersion' => $engineVersion,
-                    'themeFskey' => $themeFskey,
-                    'themeVersion' => $themeVersion,
+                    'viewFskey' => $viewNamespace,
+                    'viewVersion' => $viewVersion,
                 ], 404);
             }
         };

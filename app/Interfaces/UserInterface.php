@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Interfaces;
+namespace Fresns\WebEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\UserController;
 use Illuminate\Http\Request;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
-use Plugins\FresnsEngine\Helpers\DataHelper;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
 
 class UserInterface
 {

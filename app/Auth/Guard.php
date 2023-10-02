@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Auth;
+namespace Fresns\WebEngine\Auth;
 
 interface Guard
 {

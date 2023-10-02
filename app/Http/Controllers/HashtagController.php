@@ -6,15 +6,15 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\HashtagInterface;
-use Plugins\FresnsEngine\Interfaces\UserInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\HashtagInterface;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class HashtagController extends Controller
 {
@@ -52,7 +52,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.index', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.index", compact('hashtags'));
     }
 
     // list
@@ -89,7 +89,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.list', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.list", compact('hashtags'));
     }
 
     // likes
@@ -122,7 +122,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.likes', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.likes", compact('hashtags'));
     }
 
     // dislikes
@@ -155,7 +155,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.dislikes', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.dislikes", compact('hashtags'));
     }
 
     // following
@@ -188,7 +188,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.following', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.following", compact('hashtags'));
     }
 
     // blocking
@@ -221,7 +221,7 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.blocking', compact('hashtags'));
+        return view("{$this->viewNamespace}::hashtags.blocking", compact('hashtags'));
     }
 
     // detail
@@ -294,6 +294,6 @@ class HashtagController extends Controller
         }
 
         // view
-        return view('hashtags.detail', compact('items', 'hashtag', 'type', 'posts', 'comments'));
+        return view("{$this->viewNamespace}::hashtags.detail", compact('items', 'hashtag', 'type', 'posts', 'comments'));
     }
 }

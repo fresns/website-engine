@@ -6,16 +6,16 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Providers;
+namespace Fresns\WebEngine\Providers;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
-use Plugins\FresnsEngine\Auth\AccountGuard;
-use Plugins\FresnsEngine\Auth\UserGuard;
+use Fresns\WebEngine\Auth\AccountGuard;
+use Fresns\WebEngine\Auth\UserGuard;
 
-class FresnsEngineServiceProvider extends ServiceProvider
+class WebEngineServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -73,7 +73,9 @@ class FresnsEngineServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->app->register(RouteServiceProvider::class);
+        if (fs_db_config('engine_status', false)) {
+            $this->app->register(RouteServiceProvider::class);
+        }
 
         Paginator::useBootstrap();
     }

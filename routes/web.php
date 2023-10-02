@@ -10,23 +10,23 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
-use Plugins\FresnsEngine\Http\Controllers\AccountController;
-use Plugins\FresnsEngine\Http\Controllers\CommentController;
-use Plugins\FresnsEngine\Http\Controllers\EditorController;
-use Plugins\FresnsEngine\Http\Controllers\FollowController;
-use Plugins\FresnsEngine\Http\Controllers\GroupController;
-use Plugins\FresnsEngine\Http\Controllers\HashtagController;
-use Plugins\FresnsEngine\Http\Controllers\MessageController;
-use Plugins\FresnsEngine\Http\Controllers\PortalController;
-use Plugins\FresnsEngine\Http\Controllers\PostController;
-use Plugins\FresnsEngine\Http\Controllers\ProfileController;
-use Plugins\FresnsEngine\Http\Controllers\SearchController;
-use Plugins\FresnsEngine\Http\Controllers\UserController;
-use Plugins\FresnsEngine\Http\Middleware\AccountAuthorize;
-use Plugins\FresnsEngine\Http\Middleware\CheckSiteModel;
-use Plugins\FresnsEngine\Http\Middleware\SetHeaders;
-use Plugins\FresnsEngine\Http\Middleware\UserAuthorize;
-use Plugins\FresnsEngine\Http\Middleware\WebConfiguration;
+use Fresns\WebEngine\Http\Controllers\AccountController;
+use Fresns\WebEngine\Http\Controllers\CommentController;
+use Fresns\WebEngine\Http\Controllers\EditorController;
+use Fresns\WebEngine\Http\Controllers\FollowController;
+use Fresns\WebEngine\Http\Controllers\GroupController;
+use Fresns\WebEngine\Http\Controllers\HashtagController;
+use Fresns\WebEngine\Http\Controllers\MessageController;
+use Fresns\WebEngine\Http\Controllers\PortalController;
+use Fresns\WebEngine\Http\Controllers\PostController;
+use Fresns\WebEngine\Http\Controllers\ProfileController;
+use Fresns\WebEngine\Http\Controllers\SearchController;
+use Fresns\WebEngine\Http\Controllers\UserController;
+use Fresns\WebEngine\Http\Middleware\AccountAuthorize;
+use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
+use Fresns\WebEngine\Http\Middleware\SetHeaders;
+use Fresns\WebEngine\Http\Middleware\UserAuthorize;
+use Fresns\WebEngine\Http\Middleware\WebConfiguration;
 
 Route::prefix(LaravelLocalization::setLocale())
     ->middleware([
@@ -41,7 +41,7 @@ Route::prefix(LaravelLocalization::setLocale())
     ->group(function () {
         // homepage
         try {
-            $defaultHomepage = [sprintf('Plugins\FresnsEngine\Http\Controllers\%sController', Str::ucfirst(fs_db_config('default_homepage'))), 'index'];
+            $defaultHomepage = [sprintf('Fresns\WebEngine\Http\Controllers\%sController', Str::ucfirst(fs_db_config('default_homepage'))), 'index'];
             Route::get('/', $defaultHomepage)->name('home')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
         } catch (\Throwable $e) {
         }

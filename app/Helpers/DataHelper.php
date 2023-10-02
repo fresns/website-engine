@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Helpers;
+namespace Fresns\WebEngine\Helpers;
 
 use App\Helpers\CacheHelper;
 use App\Models\File;

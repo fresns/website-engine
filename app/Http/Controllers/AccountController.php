@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\ApiHelper;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\AccountInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\AccountInterface;
 
 class AccountController extends Controller
 {
@@ -25,7 +25,7 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view('account.register');
+        return view("{$this->viewNamespace}::account.register");
     }
 
     // login
@@ -37,7 +37,7 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view('account.login');
+        return view("{$this->viewNamespace}::account.login");
     }
 
     // logout
@@ -61,13 +61,13 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view('account.reset-password');
+        return view("{$this->viewNamespace}::account.reset-password");
     }
 
     // index
     public function index()
     {
-        return view('account.index');
+        return view("{$this->viewNamespace}::account.index");
     }
 
     // wallet
@@ -84,7 +84,7 @@ class AccountController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view('account.wallet', compact('logs'));
+        return view("{$this->viewNamespace}::account.wallet", compact('logs'));
     }
 
     // userExtcredits
@@ -103,18 +103,18 @@ class AccountController extends Controller
 
         $extcreditsId = (int) $request->extcreditsId;
 
-        return view('account.user-extcredits', compact('extcreditsId', 'logs'));
+        return view("{$this->viewNamespace}::account.user-extcredits", compact('extcreditsId', 'logs'));
     }
 
     // users
     public function users()
     {
-        return view('account.users');
+        return view("{$this->viewNamespace}::account.users");
     }
 
     // settings
     public function settings()
     {
-        return view('account.settings');
+        return view("{$this->viewNamespace}::account.settings");
     }
 }

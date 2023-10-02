@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\UserInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class ProfileController extends Controller
 {
@@ -56,7 +56,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
+        return view("{$this->viewNamespace}::profile.posts", compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
     // comments
@@ -99,7 +99,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
+        return view("{$this->viewNamespace}::profile.comments", compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
     // followers you follow
@@ -141,7 +141,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.interactions.followers-you-follow', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.interactions.followers-you-follow", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // likers
@@ -183,7 +183,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.interactions.likers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.interactions.likers", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // dislikers
@@ -225,7 +225,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.interactions.dislikers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.interactions.dislikers", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // followers
@@ -267,7 +267,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.interactions.followers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.interactions.followers", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // blockers
@@ -309,7 +309,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.interactions.blockers', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.interactions.blockers", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     /**
@@ -355,7 +355,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likes.users', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.likes.users", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // likeGroups
@@ -397,7 +397,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likes.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
+        return view("{$this->viewNamespace}::profile.likes.groups", compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
     // likeHashtags
@@ -439,7 +439,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likes.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
+        return view("{$this->viewNamespace}::profile.likes.hashtags", compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
     // likePosts
@@ -481,7 +481,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likes.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
+        return view("{$this->viewNamespace}::profile.likes.posts", compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
     // likeComments
@@ -523,7 +523,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.likes.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
+        return view("{$this->viewNamespace}::profile.likes.comments", compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
     /**
@@ -569,7 +569,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikes.users', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.dislikes.users", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // dislikeGroups
@@ -611,7 +611,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikes.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
+        return view("{$this->viewNamespace}::profile.dislikes.groups", compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
     // dislikeHashtags
@@ -653,7 +653,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikes.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
+        return view("{$this->viewNamespace}::profile.dislikes.hashtags", compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
     // dislikePosts
@@ -695,7 +695,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikes.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
+        return view("{$this->viewNamespace}::profile.dislikes.posts", compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
     // dislikeComments
@@ -737,7 +737,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.dislikes.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
+        return view("{$this->viewNamespace}::profile.dislikes.comments", compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
     /**
@@ -783,7 +783,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.following.users', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.following.users", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // followingGroups
@@ -825,7 +825,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.following.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
+        return view("{$this->viewNamespace}::profile.following.groups", compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
     // followingHashtags
@@ -867,7 +867,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.following.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
+        return view("{$this->viewNamespace}::profile.following.hashtags", compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
     // followingPosts
@@ -909,7 +909,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.following.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
+        return view("{$this->viewNamespace}::profile.following.posts", compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
     // followingComments
@@ -951,7 +951,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.following.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
+        return view("{$this->viewNamespace}::profile.following.comments", compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 
     /**
@@ -997,7 +997,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blocking.users', compact('items', 'profile', 'followersYouFollow', 'users'));
+        return view("{$this->viewNamespace}::profile.blocking.users", compact('items', 'profile', 'followersYouFollow', 'users'));
     }
 
     // blockingGroups
@@ -1039,7 +1039,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blocking.groups', compact('items', 'profile', 'followersYouFollow', 'groups'));
+        return view("{$this->viewNamespace}::profile.blocking.groups", compact('items', 'profile', 'followersYouFollow', 'groups'));
     }
 
     // blockingHashtags
@@ -1081,7 +1081,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blocking.hashtags', compact('items', 'profile', 'followersYouFollow', 'hashtags'));
+        return view("{$this->viewNamespace}::profile.blocking.hashtags", compact('items', 'profile', 'followersYouFollow', 'hashtags'));
     }
 
     // blockingPosts
@@ -1123,7 +1123,7 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blocking.posts', compact('items', 'profile', 'followersYouFollow', 'posts'));
+        return view("{$this->viewNamespace}::profile.blocking.posts", compact('items', 'profile', 'followersYouFollow', 'posts'));
     }
 
     // blockingComments
@@ -1165,6 +1165,6 @@ class ProfileController extends Controller
         }
 
         // view
-        return view('profile.blocking.comments', compact('items', 'profile', 'followersYouFollow', 'comments'));
+        return view("{$this->viewNamespace}::profile.blocking.comments", compact('items', 'profile', 'followersYouFollow', 'comments'));
     }
 }

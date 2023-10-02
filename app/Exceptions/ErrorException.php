@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Exceptions;
+namespace Fresns\WebEngine\Exceptions;
 
 use Illuminate\Support\Facades\Response;
 

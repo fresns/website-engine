@@ -6,8 +6,9 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Helpers;
+namespace Fresns\WebEngine\Helpers;
 
+use Browser;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
@@ -18,8 +19,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
-use Plugins\FresnsEngine\Client\Clientable;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Client\Clientable;
+use Fresns\WebEngine\Exceptions\ErrorException;
 
 class ApiHelper
 {
@@ -186,7 +187,8 @@ class ApiHelper
             $aidAndToken = CacheHelper::get("fresns_web_{$ulid}", ['fresnsWeb', 'fresnsWebAccountTokens']);
         }
 
-        $engineVersion = PluginHelper::fresnsPluginVersionByFskey('FresnsEngine');
+        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
+        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
 
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
@@ -196,8 +198,8 @@ class ApiHelper
             'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
-            'X-Fresns-Client-Version' => $engineVersion,
-            'X-Fresns-Client-Device-Info' => json_encode(AppHelper::getDeviceInfo()),
+            'X-Fresns-Client-Version' => $viewVersion,
+            'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
             'X-Fresns-Client-Content-Format' => null,

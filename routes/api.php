@@ -7,10 +7,10 @@
  */
 
 use Illuminate\Support\Facades\Route;
-use Plugins\FresnsEngine\Http\Controllers\ApiController;
-use Plugins\FresnsEngine\Http\Middleware\AccountAuthorize;
-use Plugins\FresnsEngine\Http\Middleware\CheckSiteModel;
-use Plugins\FresnsEngine\Http\Middleware\UserAuthorize;
+use Fresns\WebEngine\Http\Controllers\ApiController;
+use Fresns\WebEngine\Http\Middleware\AccountAuthorize;
+use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
+use Fresns\WebEngine\Http\Middleware\UserAuthorize;
 
 Route::prefix('engine')
     ->middleware([

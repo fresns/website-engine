@@ -6,16 +6,16 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Plugins\FresnsEngine\Http\Controllers;
+namespace Fresns\WebEngine\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Plugins\FresnsEngine\Exceptions\ErrorException;
-use Plugins\FresnsEngine\Helpers\QueryHelper;
-use Plugins\FresnsEngine\Interfaces\CommentInterface;
-use Plugins\FresnsEngine\Interfaces\UserInterface;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\CommentInterface;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class CommentController extends Controller
 {
@@ -58,7 +58,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.index', compact('comments'));
+        return view("{$this->viewNamespace}::comments.index", compact('comments'));
     }
 
     // list
@@ -96,7 +96,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.list', compact('comments'));
+        return view("{$this->viewNamespace}::comments.list", compact('comments'));
     }
 
     // nearby
@@ -149,7 +149,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.nearby', compact('comments'));
+        return view("{$this->viewNamespace}::comments.nearby", compact('comments'));
     }
 
     // location
@@ -193,7 +193,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.location', compact('location', 'encode', 'comments'));
+        return view("{$this->viewNamespace}::comments.location", compact('location', 'encode', 'comments'));
     }
 
     // likes
@@ -222,7 +222,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.likes', compact('comments'));
+        return view("{$this->viewNamespace}::comments.likes", compact('comments'));
     }
 
     // dislikes
@@ -251,7 +251,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.dislikes', compact('comments'));
+        return view("{$this->viewNamespace}::comments.dislikes", compact('comments'));
     }
 
     // following
@@ -280,7 +280,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.following', compact('comments'));
+        return view("{$this->viewNamespace}::comments.following", compact('comments'));
     }
 
     // blocking
@@ -309,7 +309,7 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.blocking', compact('comments'));
+        return view("{$this->viewNamespace}::comments.blocking", compact('comments'));
     }
 
     // detail
@@ -358,6 +358,6 @@ class CommentController extends Controller
         }
 
         // view
-        return view('comments.detail', compact('items', 'comment', 'comments'));
+        return view("{$this->viewNamespace}::comments.detail", compact('items', 'comment', 'comments'));
     }
 }
