@@ -15,6 +15,7 @@ use App\Helpers\PluginHelper;
 use App\Models\SessionKey;
 use Browser;
 use Closure;
+use Fresns\PluginManager\Plugin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
@@ -39,6 +40,15 @@ class WebConfiguration
                 'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
                 'code' => 500,
             ], 500);
+        } else {
+            $plugin = new Plugin($viewNamespace);
+
+            if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
+                return Response::view('error', [
+                    'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
+                    'code' => 500,
+                ], 500);
+            }
         }
 
         if (is_local_api()) {
@@ -78,12 +88,15 @@ class WebConfiguration
             }
         }
 
+        $finder = app('view')->getFinder();
+        $finder->prependLocation(base_path("plugins/{$viewNamespace}/resources/views"));
         $this->loadLanguages();
         $this->webLangTag();
 
         $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
 
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
+        View::share('viewNamespace', $viewNamespace);
         View::share('viewFskey', $viewNamespace);
         View::share('viewVersion', $viewVersion);
 

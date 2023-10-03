@@ -78,6 +78,7 @@ class ExceptionServiceProvider extends ServiceProvider
 
                 return Response::view(404, [
                     'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
+                    'viewNamespace' => $viewNamespace,
                     'viewFskey' => $viewNamespace,
                     'viewVersion' => $viewVersion,
                 ], 404);

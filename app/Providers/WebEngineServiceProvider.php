@@ -93,6 +93,6 @@ class WebEngineServiceProvider extends ServiceProvider
 
     protected function registerTranslations(): void
     {
-        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'FsWeb');
+        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/lang', 'FsWeb');
     }
 }
