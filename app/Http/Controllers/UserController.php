@@ -8,12 +8,12 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\UserInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class UserController extends Controller
 {

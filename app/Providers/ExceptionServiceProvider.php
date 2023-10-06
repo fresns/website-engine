@@ -8,9 +8,9 @@
 
 namespace Fresns\WebEngine\Providers;
 
-use Browser;
 use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
+use Browser;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;

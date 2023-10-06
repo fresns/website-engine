@@ -9,13 +9,13 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\ConfigHelper;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\GroupInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class GroupController extends Controller
 {

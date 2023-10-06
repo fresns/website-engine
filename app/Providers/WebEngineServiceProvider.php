@@ -10,10 +10,10 @@ namespace Fresns\WebEngine\Providers;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\ServiceProvider;
 use Fresns\WebEngine\Auth\AccountGuard;
 use Fresns\WebEngine\Auth\UserGuard;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class WebEngineServiceProvider extends ServiceProvider
 {

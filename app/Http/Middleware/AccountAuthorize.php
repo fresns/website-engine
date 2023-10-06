@@ -8,8 +8,8 @@
 
 namespace Fresns\WebEngine\Http\Middleware;
 
-use Closure;
 use App\Utilities\ConfigUtility;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 

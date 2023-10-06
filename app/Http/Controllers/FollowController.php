@@ -8,11 +8,11 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\FollowInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class FollowController extends Controller
 {
