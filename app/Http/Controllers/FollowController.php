@@ -8,11 +8,11 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\FollowInterface;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 
 class FollowController extends Controller
 {
@@ -46,7 +46,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.all-posts", compact('posts'));
+        return view('follows.all-posts', compact('posts'));
     }
 
     // user posts
@@ -79,7 +79,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.user-posts", compact('posts'));
+        return view('follows.user-posts', compact('posts'));
     }
 
     // group posts
@@ -112,7 +112,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.group-posts", compact('posts'));
+        return view('follows.group-posts', compact('posts'));
     }
 
     // hashtag posts
@@ -145,7 +145,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.hashtag-posts", compact('posts'));
+        return view('follows.hashtag-posts', compact('posts'));
     }
 
     // all comments
@@ -178,7 +178,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.all-comments", compact('comments'));
+        return view('follows.all-comments', compact('comments'));
     }
 
     // user comments
@@ -211,7 +211,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.user-comments", compact('comments'));
+        return view('follows.user-comments', compact('comments'));
     }
 
     // group comments
@@ -244,7 +244,7 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.group-comments", compact('comments'));
+        return view('follows.group-comments', compact('comments'));
     }
 
     // hashtag comments
@@ -277,6 +277,6 @@ class FollowController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::follows.hashtag-comments", compact('comments'));
+        return view('follows.hashtag-comments', compact('comments'));
     }
 }

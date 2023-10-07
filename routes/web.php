@@ -6,7 +6,12 @@
  * Released under the Apache-2.0 License.
  */
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Fresns\WebEngine\Http\Controllers\AccountController;
+use Fresns\WebEngine\Http\Controllers\AdminController;
 use Fresns\WebEngine\Http\Controllers\CommentController;
 use Fresns\WebEngine\Http\Controllers\EditorController;
 use Fresns\WebEngine\Http\Controllers\FollowController;
@@ -23,10 +28,6 @@ use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
 use Fresns\WebEngine\Http\Middleware\SetHeaders;
 use Fresns\WebEngine\Http\Middleware\UserAuthorize;
 use Fresns\WebEngine\Http\Middleware\WebConfiguration;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 
 Route::prefix(LaravelLocalization::setLocale())
     ->middleware([
@@ -215,3 +216,12 @@ Route::prefix(LaravelLocalization::setLocale())
             Route::post('publish/{type}/{draftId}', [EditorController::class, 'publish'])->name('publish');
         });
     });
+
+// web-engine settings
+Route::prefix('web-engine')->name('web-engine.')->group(function () {
+    // panel
+    Route::prefix('panel')->name('panel.')->middleware(['panel', 'panelAuth'])->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::put('update', [AdminController::class, 'update'])->name('update');
+    });
+});

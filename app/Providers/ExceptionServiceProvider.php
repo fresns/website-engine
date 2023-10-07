@@ -73,14 +73,13 @@ class ExceptionServiceProvider extends ServiceProvider
         return function (\Throwable $e) {
             // 404 page
             if ($e instanceof NotFoundHttpException) {
-                $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
-                $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
+                $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+                $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
 
                 return Response::view(404, [
                     'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
-                    'viewNamespace' => $viewNamespace,
-                    'viewFskey' => $viewNamespace,
-                    'viewVersion' => $viewVersion,
+                    'clientFskey' => $clientFskey,
+                    'clientVersion' => $clientVersion,
                 ], 404);
             }
         };

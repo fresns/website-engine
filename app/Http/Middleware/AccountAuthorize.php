@@ -8,8 +8,8 @@
 
 namespace Fresns\WebEngine\Http\Middleware;
 
-use App\Utilities\ConfigUtility;
 use Closure;
+use App\Utilities\ConfigUtility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -21,7 +21,7 @@ class AccountAuthorize
             if (fs_account()->check()) {
                 return $next($request);
             } else {
-                $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+                $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
                 $langTag = "{$cookiePrefix}lang_tag";
 
                 $accountLoginTip = ConfigUtility::getCodeMessage(31501, 'Fresns', \request()->cookie($langTag));

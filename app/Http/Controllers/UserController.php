@@ -8,12 +8,12 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class UserController extends Controller
 {
@@ -51,7 +51,7 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.index", compact('users'));
+        return view('users.index', compact('users'));
     }
 
     // list
@@ -88,7 +88,7 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.list", compact('users'));
+        return view('users.list', compact('users'));
     }
 
     // likes
@@ -121,7 +121,7 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.likes", compact('users'));
+        return view('users.likes', compact('users'));
     }
 
     // dislikes
@@ -154,7 +154,7 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.dislikes", compact('users'));
+        return view('users.dislikes', compact('users'));
     }
 
     // following
@@ -187,7 +187,7 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.following", compact('users'));
+        return view('users.following', compact('users'));
     }
 
     // blocking
@@ -216,6 +216,6 @@ class UserController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::users.blocking", compact('users'));
+        return view('users.blocking', compact('users'));
     }
 }

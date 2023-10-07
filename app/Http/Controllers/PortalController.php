@@ -20,7 +20,7 @@ class PortalController extends Controller
             Browser::isMobile() ? fs_db_config('portal_3') : fs_db_config('portal_2')
         );
 
-        return view("{$this->viewNamespace}::portal.index", compact('content'));
+        return view('portal.index', compact('content'));
     }
 
     public function customPage(string $name)

@@ -10,24 +10,30 @@ namespace Fresns\WebEngine\Providers;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use Fresns\WebEngine\Auth\AccountGuard;
-use Fresns\WebEngine\Auth\UserGuard;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Fresns\WebEngine\Auth\AccountGuard;
+use Fresns\WebEngine\Auth\UserGuard;
 
 class WebEngineServiceProvider extends ServiceProvider
 {
+    /**
+     * Register the service provider.
+     */
     public function register(): void
     {
         $this->registerAuthenticator();
         $this->registerTranslations();
     }
 
+    /**
+     * Boot the application events.
+     */
     public function boot(): void
     {
         Paginator::useBootstrap();
 
-        if (fs_db_config('engine_status', false)) {
+        if (fs_db_config('webengine_status', false)) {
             $this->app->register(RouteServiceProvider::class);
         }
 
@@ -65,7 +71,7 @@ class WebEngineServiceProvider extends ServiceProvider
                 $supportedLocales = $localeMenus;
             }
         } catch (\Throwable $e) {
-            $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('engine_cookie_prefix') ?? 'fresns_';
+            $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
             $langCookie = "{$cookiePrefix}lang_tag";
 
             $defaultLangTag = \request()->header('X-Fresns-Client-Lang-Tag') ?? \request()->cookie($langCookie) ?? ConfigHelper::fresnsConfigDefaultLangTag();
@@ -80,6 +86,9 @@ class WebEngineServiceProvider extends ServiceProvider
         config()->set('app.locale', $defaultLangTag);
     }
 
+    /**
+     * Register Authenticator.
+     */
     protected function registerAuthenticator(): void
     {
         app()->singleton('fresns.account', function ($app) {
@@ -91,8 +100,19 @@ class WebEngineServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerTranslations(): void
+    /**
+     * Register translations.
+     */
+    public function registerTranslations(): void
     {
-        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/lang', 'FsWeb');
+        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'WebEngine');
+    }
+
+    /**
+     * Register views.
+     */
+    public function registerViews(): void
+    {
+        $this->loadViewsFrom(dirname(__DIR__, 2).'/resources/views', 'WebEngine');
     }
 }

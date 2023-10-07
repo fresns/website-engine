@@ -20,7 +20,7 @@ class UserAuthorize
             if (fs_user()->check()) {
                 return $next($request);
             } else {
-                $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+                $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
                 $langTag = "{$cookiePrefix}lang_tag";
 
                 $userLoginTip = ConfigUtility::getCodeMessage(31601, 'Fresns', \request()->cookie($langTag));

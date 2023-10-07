@@ -9,11 +9,11 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\MessageInterface;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 
 class MessageController extends Controller
 {
@@ -51,7 +51,7 @@ class MessageController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::messages.index", compact('conversations', 'pinConversations'));
+        return view('messages.index', compact('conversations', 'pinConversations'));
     }
 
     // conversation
@@ -95,7 +95,7 @@ class MessageController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::messages.conversation", compact('conversation', 'messages'));
+        return view('messages.conversation', compact('conversation', 'messages'));
     }
 
     // notification
@@ -129,6 +129,6 @@ class MessageController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::notifications.index", compact('notifications', 'types'));
+        return view('notifications.index', compact('notifications', 'types'));
     }
 }

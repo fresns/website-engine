@@ -8,19 +8,19 @@
 
 namespace Fresns\WebEngine\Helpers;
 
+use Browser;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
-use Browser;
-use Fresns\WebEngine\Client\Clientable;
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
+use Fresns\WebEngine\Client\Clientable;
+use Fresns\WebEngine\Exceptions\ErrorException;
 
 class ApiHelper
 {
@@ -69,7 +69,7 @@ class ApiHelper
         $isLocal = is_local_api();
 
         $localApiHost = config('app.url');
-        $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('engine_api_host');
+        $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('webengine_api_host');
 
         $apiHost = $isLocal ? $localApiHost : $remoteApiHost;
 
@@ -153,7 +153,7 @@ class ApiHelper
 
         if (empty($keyConfig['platformId']) || empty($keyConfig['appId']) || empty($keyConfig['appSecret'])) {
             if (is_local_api()) {
-                $keyId = ConfigHelper::fresnsConfigByItemKey('engine_key_id');
+                $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
                 $keyInfo = SessionKey::find($keyId);
 
                 $platformId = $keyInfo?->platform_id;
@@ -161,8 +161,8 @@ class ApiHelper
                 $appSecret = $keyInfo?->app_secret;
             } else {
                 $platformId = 4;
-                $appId = ConfigHelper::fresnsConfigByItemKey('engine_api_app_id');
-                $appSecret = ConfigHelper::fresnsConfigByItemKey('engine_api_app_secret');
+                $appId = ConfigHelper::fresnsConfigByItemKey('webengine_api_app_id');
+                $appSecret = ConfigHelper::fresnsConfigByItemKey('webengine_api_app_secret');
             }
 
             $keyConfig = [
@@ -175,7 +175,7 @@ class ApiHelper
         }
 
         // cookie key name
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -187,8 +187,8 @@ class ApiHelper
             $aidAndToken = CacheHelper::get("fresns_web_{$ulid}", ['fresnsWeb', 'fresnsWebAccountTokens']);
         }
 
-        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
-        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
+        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
 
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
@@ -198,7 +198,7 @@ class ApiHelper
             'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
-            'X-Fresns-Client-Version' => $viewVersion,
+            'X-Fresns-Client-Version' => $clientVersion,
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),

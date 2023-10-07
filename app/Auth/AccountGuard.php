@@ -10,13 +10,13 @@ namespace Fresns\WebEngine\Auth;
 
 use App\Helpers\CacheHelper;
 use App\Models\File;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
 
 class AccountGuard implements Guard
 {
@@ -123,7 +123,7 @@ class AccountGuard implements Guard
             return $key ? Arr::get($this->account, $key) : $this->account;
         }
 
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
 
         $aid = Cookie::get("{$cookiePrefix}aid");
         $token = Cookie::get("{$cookiePrefix}aid_token");
@@ -170,7 +170,7 @@ class AccountGuard implements Guard
     {
         DataHelper::cacheForgetAccountAndUser();
 
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
 
         Cookie::queue(Cookie::forget("{$cookiePrefix}aid"));
         Cookie::queue(Cookie::forget("{$cookiePrefix}aid_token"));

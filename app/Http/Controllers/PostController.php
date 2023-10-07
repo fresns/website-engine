@@ -8,14 +8,14 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\PostInterface;
-use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\QueryHelper;
+use Fresns\WebEngine\Interfaces\PostInterface;
+use Fresns\WebEngine\Interfaces\UserInterface;
 
 class PostController extends Controller
 {
@@ -28,8 +28,8 @@ class PostController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST, $request->all());
 
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
+        if (! fs_db_config('webengine_interaction_status')) {
+            $query['pageSize'] = fs_db_config('webengine_interaction_number');
             $query['page'] = 1;
         }
 
@@ -58,7 +58,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.index", compact('posts'));
+        return view('posts.index', compact('posts'));
     }
 
     // list
@@ -70,8 +70,8 @@ class PostController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST_LIST, $request->all());
 
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
+        if (! fs_db_config('webengine_interaction_status')) {
+            $query['pageSize'] = fs_db_config('webengine_interaction_number');
             $query['page'] = 1;
         }
 
@@ -100,7 +100,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.list", compact('posts'));
+        return view('posts.list', compact('posts'));
     }
 
     // nearby
@@ -113,8 +113,8 @@ class PostController extends Controller
         $query['unit'] = $request->unit ?? null;
         $query['length'] = $request->length ?? null;
 
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
+        if (! fs_db_config('webengine_interaction_status')) {
+            $query['pageSize'] = fs_db_config('webengine_interaction_number');
             $query['page'] = 1;
         }
 
@@ -153,7 +153,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.nearby", compact('posts'));
+        return view('posts.nearby', compact('posts'));
     }
 
     // location
@@ -171,8 +171,8 @@ class PostController extends Controller
         $query['unit'] = 'km';
         $query['length'] = 1;
 
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
+        if (! fs_db_config('webengine_interaction_status')) {
+            $query['pageSize'] = fs_db_config('webengine_interaction_number');
             $query['page'] = 1;
         }
 
@@ -197,7 +197,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.location", compact('location', 'encode', 'posts'));
+        return view('posts.location', compact('location', 'encode', 'posts'));
     }
 
     // likes
@@ -226,7 +226,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.likes", compact('posts'));
+        return view('posts.likes', compact('posts'));
     }
 
     // dislikes
@@ -255,7 +255,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.dislikes", compact('posts'));
+        return view('posts.dislikes', compact('posts'));
     }
 
     // following
@@ -284,7 +284,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.following", compact('posts'));
+        return view('posts.following', compact('posts'));
     }
 
     // blocking
@@ -313,7 +313,7 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.blocking", compact('posts'));
+        return view('posts.blocking', compact('posts'));
     }
 
     // detail
@@ -323,8 +323,8 @@ class PostController extends Controller
         $query['pid'] = $pid;
         $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
-        if (! fs_db_config('website_status')) {
-            $query['pageSize'] = fs_db_config('website_number');
+        if (! fs_db_config('webengine_interaction_status')) {
+            $query['pageSize'] = fs_db_config('webengine_interaction_number');
             $query['page'] = 1;
         }
 
@@ -337,8 +337,8 @@ class PostController extends Controller
         $items = $results['post']['data']['items'];
         $post = $results['post']['data']['detail'];
 
-        if (! fs_db_config('website_status')) {
-            $websitePercentage = intval(fs_db_config('website_percentage')) / 100;
+        if (! fs_db_config('webengine_interaction_status')) {
+            $websitePercentage = intval(fs_db_config('webengine_interaction_percentage')) / 100;
             $websiteContentLength = intval($post['contentLength'] * $websitePercentage);
             $post['content'] = Str::limit($post['content'], $websiteContentLength);
         }
@@ -364,6 +364,6 @@ class PostController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::posts.detail", compact('items', 'post', 'comments', 'stickies'));
+        return view('posts.detail', compact('items', 'post', 'comments', 'stickies'));
     }
 }

@@ -539,7 +539,7 @@ class DataHelper
     // cache forget account and user
     public static function cacheForgetAccountAndUser()
     {
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
 
         $aid = Cookie::get("{$cookiePrefix}aid");
         $uid = Cookie::get("{$cookiePrefix}uid");

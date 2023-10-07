@@ -10,10 +10,6 @@ namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
 use App\Utilities\ConfigUtility;
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
-use Fresns\WebEngine\Helpers\QueryHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -21,6 +17,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\DataHelper;
+use Fresns\WebEngine\Helpers\QueryHelper;
 
 class ApiController extends Controller
 {
@@ -224,7 +224,7 @@ class ApiController extends Controller
         $user = $data['detail']['users'][0];
 
         // cookie key name
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -314,7 +314,7 @@ class ApiController extends Controller
         $redirectURL = $request->redirectURL;
 
         // cookie key name
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -441,7 +441,7 @@ class ApiController extends Controller
         }
 
         // cookie key name
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -642,7 +642,7 @@ class ApiController extends Controller
             throw new ErrorException($result['message'], $result['code']);
         }
 
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
 
         $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $userTokenMinutes = $userExpiredHours * 60;

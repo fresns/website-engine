@@ -8,14 +8,14 @@
 
 namespace Fresns\WebEngine\Http\Middleware;
 
+use Browser;
+use Closure;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Helpers\PrimaryHelper;
 use App\Helpers\SignHelper;
-use Browser;
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
@@ -28,21 +28,21 @@ class SetHeaders
             return $next($request);
         }
 
-        $keyId = ConfigHelper::fresnsConfigByItemKey('engine_key_id');
+        $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
         $keyInfo = PrimaryHelper::fresnsModelById('key', $keyId);
 
         if (empty($keyInfo)) {
             return Response::view('error', [
-                'message' => '<p>'.__('FsWeb::tips.errorKey').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',
+                'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                 'code' => 500,
             ], 500);
         }
 
-        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
-        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
+        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
 
         // cookie key name
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -60,7 +60,7 @@ class SetHeaders
         $headers = [
             'X-Fresns-App-Id' => $keyInfo->app_id,
             'X-Fresns-Client-Platform-Id' => $keyInfo->platform_id,
-            'X-Fresns-Client-Version' => $viewVersion,
+            'X-Fresns-Client-Version' => $clientVersion,
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),

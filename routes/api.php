@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
+use Illuminate\Support\Facades\Route;
 use Fresns\WebEngine\Http\Controllers\ApiController;
 use Fresns\WebEngine\Http\Middleware\AccountAuthorize;
 use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
 use Fresns\WebEngine\Http\Middleware\UserAuthorize;
-use Illuminate\Support\Facades\Route;
 
-Route::prefix('engine')
+Route::prefix('web-engine')
     ->middleware([
         'web',
         AccountAuthorize::class,
@@ -22,12 +22,12 @@ Route::prefix('engine')
     ->group(function () {
         Route::get('url-authorization', [ApiController::class, 'urlAuthorization'])->name('url.authorization')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class, CheckSiteModel::class]);
 
-        // fresns.api.index.list /api/engine/index-list/posts
-        // fresns.api.list /api/engine/list/posts
+        // fresns.api.index.list /api/web-engine/index-list/posts
+        // fresns.api.list /api/web-engine/list/posts
         Route::get('index-list/{type}', [ApiController::class, 'indexList'])->name('index.list');
         Route::get('list/{type}', [ApiController::class, 'list'])->name('list');
 
-        // fresns.api.sub.groups /api/engine/sub-groups/gid
+        // fresns.api.sub.groups /api/web-engine/sub-groups/gid
         Route::get('sub-groups/{gid}', [ApiController::class, 'subGroups'])->name('sub.groups');
 
         Route::get('input-tips', [ApiController::class, 'getInputTips'])->name('input.tips')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);

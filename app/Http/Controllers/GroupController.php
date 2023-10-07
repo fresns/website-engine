@@ -9,13 +9,13 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\ConfigHelper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\GroupInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 
 class GroupController extends Controller
 {
@@ -68,7 +68,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.index", compact('groupTree', 'groups'));
+        return view('groups.index', compact('groupTree', 'groups'));
     }
 
     // list
@@ -105,7 +105,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.list", compact('groups'));
+        return view('groups.list', compact('groups'));
     }
 
     // likes
@@ -138,7 +138,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.likes", compact('groups'));
+        return view('groups.likes', compact('groups'));
     }
 
     // dislikes
@@ -171,7 +171,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.dislikes", compact('groups'));
+        return view('groups.dislikes', compact('groups'));
     }
 
     // following
@@ -204,7 +204,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.following", compact('groups'));
+        return view('groups.following', compact('groups'));
     }
 
     // blocking
@@ -237,7 +237,7 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.blocking", compact('groups'));
+        return view('groups.blocking', compact('groups'));
     }
 
     // detail
@@ -310,6 +310,6 @@ class GroupController extends Controller
         }
 
         // view
-        return view("{$this->viewNamespace}::groups.detail", compact('items', 'group', 'type', 'posts', 'comments'));
+        return view('groups.detail', compact('items', 'group', 'type', 'posts', 'comments'));
     }
 }

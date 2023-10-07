@@ -9,17 +9,17 @@
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Models\File;
+use Illuminate\Support\Facades\App;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Fresns\WebEngine\Auth\UserGuard;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
-use Illuminate\Support\Facades\App;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 // is_local_api
 if (! function_exists('is_local_api')) {
     function is_local_api()
     {
-        $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
 
         return $engineApiType == 'local';
     }
@@ -29,7 +29,7 @@ if (! function_exists('is_local_api')) {
 if (! function_exists('is_remote_api')) {
     function is_remote_api()
     {
-        $engineApiType = ConfigHelper::fresnsConfigByItemKey('engine_api_type');
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
 
         return $engineApiType == 'remote';
     }
@@ -56,7 +56,7 @@ if (! function_exists('fs_status')) {
             $isLocal = is_local_api();
 
             $localApiHost = config('app.url');
-            $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('engine_api_host');
+            $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('webengine_api_host');
 
             $apiHost = $isLocal ? $localApiHost : $remoteApiHost;
 

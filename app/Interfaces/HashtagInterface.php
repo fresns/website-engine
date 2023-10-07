@@ -11,10 +11,10 @@ namespace Fresns\WebEngine\Interfaces;
 use App\Fresns\Api\Http\Controllers\CommentController;
 use App\Fresns\Api\Http\Controllers\HashtagController;
 use App\Fresns\Api\Http\Controllers\PostController;
+use Illuminate\Http\Request;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
-use Illuminate\Http\Request;
 
 class HashtagInterface
 {

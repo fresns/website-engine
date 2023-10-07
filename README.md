@@ -307,11 +307,11 @@ route('fresns.api.index.list', [$type => 'posts', 'page' => 2]) // Post home lis
 route('fresns.api.index.list', [$type => 'comments', 'page' => 2]) // Comment home list
 
 // 2.Path method
-/api/engine/index-list/users?page=2
-/api/engine/index-list/groups?page=2
-/api/engine/index-list/hashtags?page=2
-/api/engine/index-list/posts?page=2
-/api/engine/index-list/comments?page=2
+/api/web-engine/index-list/users?page=2
+/api/web-engine/index-list/groups?page=2
+/api/web-engine/index-list/hashtags?page=2
+/api/web-engine/index-list/posts?page=2
+/api/web-engine/index-list/comments?page=2
 ```
 
 **List**
@@ -335,11 +335,11 @@ route('fresns.api.list', [$type => 'posts', 'page' => 2]) // Post list
 route('fresns.api.list', [$type => 'comments', 'page' => 2]) // Comment list
 
 // 2.Path method
-/api/engine/list/users?page=2
-/api/engine/list/groups?page=2
-/api/engine/list/hashtags?page=2
-/api/engine/list/posts?page=2
-/api/engine/list/comments?page=2
+/api/web-engine/list/users?page=2
+/api/web-engine/list/groups?page=2
+/api/web-engine/list/hashtags?page=2
+/api/web-engine/list/posts?page=2
+/api/web-engine/list/comments?page=2
 ```
 
 **Sticky Post List**

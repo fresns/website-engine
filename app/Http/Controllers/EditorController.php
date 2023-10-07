@@ -9,12 +9,12 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Models\FileUsage;
+use Illuminate\Http\Request;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\EditorInterface;
-use Illuminate\Http\Request;
 
 class EditorController extends Controller
 {
@@ -42,7 +42,7 @@ class EditorController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view("{$this->viewNamespace}::editor.drafts", compact('drafts', 'type'));
+        return view('editor.drafts', compact('drafts', 'type'));
     }
 
     // index
@@ -130,7 +130,7 @@ class EditorController extends Controller
 
         $uploadInfo = DataHelper::getUploadInfo();
 
-        return view("{$this->viewNamespace}::editor.index", compact('type', 'config', 'drafts', 'uploadInfo'));
+        return view('editor.index', compact('type', 'config', 'drafts', 'uploadInfo'));
     }
 
     // request: create or edit
@@ -248,7 +248,7 @@ class EditorController extends Controller
 
         $uploadInfo = DataHelper::getUploadInfo($usageType, $tableName, 'id', $draftId, null);
 
-        return view("{$this->viewNamespace}::editor.edit", compact('type', 'plid', 'clid', 'config', 'draft', 'uploadInfo'));
+        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft', 'uploadInfo'));
     }
 
     // request: publish

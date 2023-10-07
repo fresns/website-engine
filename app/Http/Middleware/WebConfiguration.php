@@ -33,33 +33,33 @@ class WebConfiguration
             ], 503);
         }
 
-        $viewNamespace = Browser::isMobile() ? fs_db_config('engine_view_mobile') : fs_db_config('engine_view_desktop');
+        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
 
-        if (! $viewNamespace) {
+        if (! $clientFskey) {
             return Response::view('error', [
-                'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
+                'message' => Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                 'code' => 500,
             ], 500);
         } else {
-            $plugin = new Plugin($viewNamespace);
+            $plugin = new Plugin($clientFskey);
 
             if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
                 return Response::view('error', [
-                    'message' => Browser::isMobile() ? '<p>'.__('FsWeb::tips.errorMobileTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>' : '<p>'.__('FsWeb::tips.errorDesktopTheme').'</p><p>'.__('FsWeb::tips.settingThemeTip').'</p>',
+                    'message' => Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 500,
                 ], 500);
             }
         }
 
         if (is_local_api()) {
-            if (! fs_db_config('engine_key_id')) {
+            if (! fs_db_config('webengine_key_id')) {
                 return Response::view('error', [
-                    'message' => '<p>'.__('FsWeb::tips.errorKey').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',
+                    'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 500,
                 ], 500);
             }
 
-            $keyId = fs_db_config('engine_key_id');
+            $keyId = fs_db_config('webengine_key_id');
             $cacheKey = "fresns_web_key_{$keyId}";
             $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
@@ -73,32 +73,31 @@ class WebConfiguration
 
             if (! $keyInfo) {
                 return Response::view('error', [
-                    'message' => '<p>'.__('FsWeb::tips.errorKey').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',
+                    'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 500,
                 ], 500);
             }
         }
 
         if (! is_local_api()) {
-            if (! fs_db_config('engine_api_host') || ! fs_db_config('engine_api_app_id') || ! fs_db_config('engine_api_app_secret')) {
+            if (! fs_db_config('webengine_api_host') || ! fs_db_config('webengine_api_app_id') || ! fs_db_config('webengine_api_app_secret')) {
                 return Response::view('error', [
-                    'message' => '<p>'.__('FsWeb::tips.errorApi').'</p><p>'.__('FsWeb::tips.settingApiTip').'</p>',
+                    'message' => '<p>'.__('WebEngine::tips.errorApi').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 500,
                 ], 500);
             }
         }
 
         $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("plugins/{$viewNamespace}/resources/views"));
+        $finder->prependLocation(base_path("plugins/{$clientFskey}/resources/views"));
         $this->loadLanguages();
         $this->webLangTag();
 
-        $viewVersion = PluginHelper::fresnsPluginVersionByFskey($viewNamespace);
+        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
 
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-        View::share('viewNamespace', $viewNamespace);
-        View::share('viewFskey', $viewNamespace);
-        View::share('viewVersion', $viewVersion);
+        View::share('clientFskey', $clientFskey);
+        View::share('clientVersion', $clientVersion);
 
         return $next($request);
     }
@@ -141,7 +140,7 @@ class WebConfiguration
             }
         }
 
-        $cookiePrefix = fs_db_config('engine_cookie_prefix', 'fresns_');
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
         Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
 
         // ulid

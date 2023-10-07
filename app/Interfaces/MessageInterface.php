@@ -10,9 +10,9 @@ namespace Fresns\WebEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\ConversationController;
 use App\Fresns\Api\Http\Controllers\NotificationController;
+use Illuminate\Http\Request;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
-use Illuminate\Http\Request;
 
 class MessageInterface
 {

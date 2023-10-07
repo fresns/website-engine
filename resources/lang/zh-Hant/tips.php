@@ -17,9 +17,8 @@ return [
     'errorKey' => '服務異常，密鑰不存在',
 
     'errorApi' => '服務異常，獲取不到完整的 API 配置信息。',
-    'errorDesktopTheme' => '配置異常，獲取不到電腦端主題模板。',
-    'errorMobileTheme' => '配置異常，獲取不到手機端主題模板。',
+    'errorDesktopFskey' => '配置異常，獲取不到電腦端主題模板。',
+    'errorMobileFskey' => '配置異常，獲取不到手機端主題模板。',
 
-    'settingApiTip' => '設置位置: 管理後台 -> 客戶端 -> 網站網頁 -> 網站引擎配置',
-    'settingThemeTip' => '設置位置: 管理後台 -> 應用中心 -> 網站引擎 -> 關聯主題模板',
+    'settingTip' => '設置位置: 管理後台 -> 應用中心 -> 擴充外掛 -> 設定',
 ];

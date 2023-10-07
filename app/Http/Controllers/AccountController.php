@@ -8,11 +8,11 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\AccountInterface;
-use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -25,7 +25,7 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view("{$this->viewNamespace}::account.register");
+        return view('account.register');
     }
 
     // login
@@ -37,7 +37,7 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view("{$this->viewNamespace}::account.login");
+        return view('account.login');
     }
 
     // logout
@@ -61,13 +61,13 @@ class AccountController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view("{$this->viewNamespace}::account.reset-password");
+        return view('account.reset-password');
     }
 
     // index
     public function index()
     {
-        return view("{$this->viewNamespace}::account.index");
+        return view('account.index');
     }
 
     // wallet
@@ -84,7 +84,7 @@ class AccountController extends Controller
             paginate: $result['data']['paginate'],
         );
 
-        return view("{$this->viewNamespace}::account.wallet", compact('logs'));
+        return view('account.wallet', compact('logs'));
     }
 
     // userExtcredits
@@ -103,18 +103,18 @@ class AccountController extends Controller
 
         $extcreditsId = (int) $request->extcreditsId;
 
-        return view("{$this->viewNamespace}::account.user-extcredits", compact('extcreditsId', 'logs'));
+        return view('account.user-extcredits', compact('extcreditsId', 'logs'));
     }
 
     // users
     public function users()
     {
-        return view("{$this->viewNamespace}::account.users");
+        return view('account.users');
     }
 
     // settings
     public function settings()
     {
-        return view("{$this->viewNamespace}::account.settings");
+        return view('account.settings');
     }
 }
