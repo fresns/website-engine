@@ -9,11 +9,11 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\MessageInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class MessageController extends Controller
 {

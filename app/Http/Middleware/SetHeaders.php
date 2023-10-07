@@ -8,14 +8,14 @@
 
 namespace Fresns\WebEngine\Http\Middleware;
 
-use Browser;
-use Closure;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Helpers\PrimaryHelper;
 use App\Helpers\SignHelper;
+use Browser;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;

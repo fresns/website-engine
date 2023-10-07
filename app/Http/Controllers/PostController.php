@@ -8,14 +8,14 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\PostInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {

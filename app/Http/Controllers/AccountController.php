@@ -8,11 +8,11 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\AccountInterface;
+use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {

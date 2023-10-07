@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
-use Illuminate\Support\Facades\Route;
 use Fresns\WebEngine\Http\Controllers\ApiController;
 use Fresns\WebEngine\Http\Middleware\AccountAuthorize;
 use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
 use Fresns\WebEngine\Http\Middleware\UserAuthorize;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('web-engine')
     ->middleware([
