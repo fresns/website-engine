@@ -18,7 +18,20 @@
 </head>
 
 <body>
-    @yield('body')
+    <header class="mt-4">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link {{ !Route::is('web-engine.admin.index') ? 'active' : '' }}" href="{{ $redirectURL }}">{{ __('WebEngine::fresns.view_config') }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::is('web-engine.admin.index') ? 'active' : '' }}" href="{{ route('web-engine.admin.index') }}">{{ __('WebEngine::fresns.webengine_config') }}</a>
+            </li>
+        </ul>
+    </header>
+
+    <main class="bg-white mb-2 p-3 p-lg-5">
+        @yield('body')
+    </main>
 
     <!--fresns tips-->
     <div class="fresns-tips">
@@ -61,6 +74,24 @@
                 })
             }
         });
+
+        // copyright-year
+        var yearElement = document.querySelector('.copyright-year');
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        if (yearElement) {
+            yearElement.textContent = currentYear;
+        }
+
+        // set timeout toast hide
+        const setTimeoutToastHide = () => {
+            $('.toast.show').each((k, v) => {
+                setTimeout(function () {
+                    $(v).hide();
+                }, 1500);
+            });
+        };
+        setTimeoutToastHide();
     </script>
     @stack('script')
 </body>

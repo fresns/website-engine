@@ -22,8 +22,8 @@ class WebEngineServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerAuthenticator();
         $this->registerTranslations();
+        $this->registerViews();
     }
 
     /**
@@ -31,11 +31,17 @@ class WebEngineServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrap();
+        // web engine admin
+        $this->app->register(AdminRouteServiceProvider::class);
 
-        if (fs_db_config('webengine_status', false)) {
-            $this->app->register(RouteServiceProvider::class);
+        // web engine client
+        if (! fs_db_config('webengine_status', false)) {
+            return;
         }
+
+        $this->registerAuthenticator();
+        $this->app->register(RouteServiceProvider::class);
+        Paginator::useBootstrap();
 
         config()->set('laravellocalization.useAcceptLanguageHeader', false);
 

@@ -35,9 +35,11 @@ class WebConfiguration
 
         $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
 
+        $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
+
         if (! $clientFskey) {
             return Response::view('error', [
-                'message' => Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
+                'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
                 'code' => 500,
             ], 500);
         } else {
@@ -45,7 +47,7 @@ class WebConfiguration
 
             if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
                 return Response::view('error', [
-                    'message' => Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
+                    'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 500,
                 ], 500);
             }

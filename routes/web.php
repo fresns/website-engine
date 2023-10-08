@@ -216,12 +216,3 @@ Route::prefix(LaravelLocalization::setLocale())
             Route::post('publish/{type}/{draftId}', [EditorController::class, 'publish'])->name('publish');
         });
     });
-
-// web-engine settings
-Route::prefix('web-engine')->name('web-engine.')->group(function () {
-    // panel
-    Route::prefix('panel')->name('panel.')->middleware(['panel', 'panelAuth'])->group(function () {
-        Route::get('/', [AdminController::class, 'index'])->name('index');
-        Route::put('update', [AdminController::class, 'update'])->name('update');
-    });
-});
