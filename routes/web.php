@@ -7,7 +7,6 @@
  */
 
 use Fresns\WebEngine\Http\Controllers\AccountController;
-use Fresns\WebEngine\Http\Controllers\AdminController;
 use Fresns\WebEngine\Http\Controllers\CommentController;
 use Fresns\WebEngine\Http\Controllers\EditorController;
 use Fresns\WebEngine\Http\Controllers\FollowController;
