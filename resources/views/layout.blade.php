@@ -24,12 +24,12 @@
                 <a class="nav-link {{ !Route::is('web-engine.admin.index') ? 'active' : '' }}" href="{{ $redirectURL }}">{{ __('WebEngine::fresns.view_config') }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::is('web-engine.admin.index') ? 'active' : '' }}" href="{{ route('web-engine.admin.index') }}">{{ __('WebEngine::fresns.webengine_config') }}</a>
+                <a class="nav-link {{ Route::is('web-engine.admin.index') ? 'active' : '' }}" href="{{ route('web-engine.admin.index', ['redirectURL' => $redirectURL]) }}">{{ __('WebEngine::fresns.webengine_config') }}</a>
             </li>
         </ul>
     </header>
 
-    <main class="bg-white mb-2 p-3 p-lg-5">
+    <main class="bg-white p-3 p-lg-5">
         @yield('body')
     </main>
 
@@ -92,6 +92,18 @@
             });
         };
         setTimeoutToastHide();
+
+        // spinner
+        $(document).on('submit', 'form', function () {
+            var btn = $(this).find('button[type="submit"]');
+            btn.prop('disabled', true);
+            if (0 === btn.children('.spinner-border').length) {
+                btn.prepend(
+                    '<span class="spinner-border spinner-border-sm mg-r-5 d-none" role="status" aria-hidden="true"></span> '
+                );
+            }
+            btn.children('.spinner-border').removeClass('d-none');
+        });
     </script>
     @stack('script')
 </body>

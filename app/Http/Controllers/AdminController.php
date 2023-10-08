@@ -133,23 +133,6 @@ class AdminController extends PanelController
 
         ConfigUtility::changeFresnsConfigItems($fresnsConfigItems);
 
-        // config keys
-        $configKeys = [
-            'webengine_status',
-            'webengine_api_type',
-            'webengine_api_host',
-            'webengine_api_app_id',
-            'webengine_api_app_secret',
-            'webengine_key_id',
-            'webengine_view_desktop',
-            'webengine_view_mobile',
-            'webengine_interaction_status',
-            'webengine_interaction_number',
-            'webengine_interaction_percentage',
-        ];
-
-        CacheHelper::forgetFresnsConfigs($configKeys);
-
         return $this->updateSuccess();
     }
 }
