@@ -10,7 +10,6 @@ namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Fresns\Panel\Http\Controllers\Controller as PanelController;
 use App\Helpers\AppHelper;
-use App\Helpers\CacheHelper;
 use App\Models\Config;
 use App\Models\Plugin;
 use App\Models\SessionKey;
