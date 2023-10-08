@@ -190,7 +190,7 @@ composer require fresns/web-engine
 | fresns.editor.post | editor/editor.blade.php | Post Editor |
 | fresns.editor.comment | editor/editor.blade.php | Comment Editor |
 
-## Template Tags
+## View Tags
 
 ### Route
 
