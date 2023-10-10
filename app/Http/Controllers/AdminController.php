@@ -37,6 +37,7 @@ class AdminController extends PanelController
         ];
         $configs = Config::whereIn('item_key', $configKeys)->get();
 
+        $params = [];
         foreach ($configs as $config) {
             $params[$config->item_key] = $config->item_value;
         }
