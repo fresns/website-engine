@@ -34,8 +34,8 @@ class SetHeaders
         if (empty($keyInfo)) {
             return Response::view('error', [
                 'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                'code' => 500,
-            ], 500);
+                'code' => 403,
+            ], 403);
         }
 
         $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');

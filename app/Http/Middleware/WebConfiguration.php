@@ -27,8 +27,12 @@ class WebConfiguration
     public function handle(Request $request, Closure $next)
     {
         if (! fs_status('activate')) {
+            $langTag = current_lang_tag();
+
+            $deactivateDescription = fs_status('deactivateDescription')[$langTag] ?? fs_status('deactivateDescription')['default'] ?? '';
+
             return Response::view('error', [
-                'message' => '<p>'.fs_status('deactivateDescription').'</p>',
+                'message' => "<p>{$deactivateDescription}</p>",
                 'code' => 503,
             ], 503);
         }
@@ -40,16 +44,16 @@ class WebConfiguration
         if (! $clientFskey) {
             return Response::view('error', [
                 'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                'code' => 500,
-            ], 500);
+                'code' => 400,
+            ], 400);
         } else {
             $plugin = new Plugin($clientFskey);
 
             if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
                 return Response::view('error', [
                     'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 500,
-                ], 500);
+                    'code' => 405,
+                ], 405);
             }
         }
 
@@ -57,8 +61,8 @@ class WebConfiguration
             if (! fs_db_config('webengine_key_id')) {
                 return Response::view('error', [
                     'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 500,
-                ], 500);
+                    'code' => 403,
+                ], 403);
             }
 
             $keyId = fs_db_config('webengine_key_id');
@@ -76,8 +80,8 @@ class WebConfiguration
             if (! $keyInfo) {
                 return Response::view('error', [
                     'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 500,
-                ], 500);
+                    'code' => 403,
+                ], 403);
             }
         }
 
@@ -85,8 +89,8 @@ class WebConfiguration
             if (! fs_db_config('webengine_api_host') || ! fs_db_config('webengine_api_app_id') || ! fs_db_config('webengine_api_app_secret')) {
                 return Response::view('error', [
                     'message' => '<p>'.__('WebEngine::tips.errorApi').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 500,
-                ], 500);
+                    'code' => 403,
+                ], 403);
             }
         }
 

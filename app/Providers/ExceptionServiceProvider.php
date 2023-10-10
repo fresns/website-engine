@@ -81,16 +81,16 @@ class ExceptionServiceProvider extends ServiceProvider
                 if (! $clientFskey) {
                     return Response::view('error', [
                         'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                        'code' => 500,
-                    ], 500);
+                        'code' => 400,
+                    ], 400);
                 } else {
                     $plugin = new Plugin($clientFskey);
 
                     if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
                         return Response::view('error', [
                             'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                            'code' => 500,
-                        ], 500);
+                            'code' => 405,
+                        ], 405);
                     }
                 }
 
