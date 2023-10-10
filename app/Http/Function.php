@@ -79,14 +79,7 @@ if (! function_exists('fs_status')) {
             CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, now()->addMinutes(10));
         }
 
-        $langTag = current_lang_tag();
-
-        $status = [
-            'activate' => $statusJson['activate'] ?? true,
-            'deactivateDescription' => $statusJson['deactivateDescription'][$langTag] ?? $statusJson['deactivateDescription']['default'] ?? '',
-        ];
-
-        return $status[$key];
+        return $statusJson[$key] ?? null;
     }
 }
 
