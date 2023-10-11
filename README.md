@@ -7,6 +7,8 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-green" alt="License">
 </p>
 
+[简体中文](README_zh-Hans.md)
+
 ## About Fresns
 
 Fresns is a free and open source social network service software, a general-purpose community product designed for cross-platform, and supports flexible and diverse content forms. It conforms to the trend of the times, satisfies a variety of operating scenarios, is more open and easier to re-development.
