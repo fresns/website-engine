@@ -212,7 +212,7 @@ composer require fresns/web-engine
 
 **接口配置**
 
-从 API [全局配置信息](https://docs.fresns.cn/api/global/configs.html)获取配置值
+从 API [全局配置信息](https://zh-hans.fresns.org/api/global/configs.html)获取配置值
 
 ```php
 {{ fs_api_config('配置键名') }}
@@ -220,7 +220,7 @@ composer require fresns/web-engine
 
 **数据库配置**
 
-从本地数据库 [configs](https://docs.fresns.cn/database/systems/configs.html) 表获取配置值
+从本地数据库 [configs](https://zh-hans.fresns.org/database/systems/configs.html) 表获取配置值
 
 ```php
 {{ fs_db_config('配置键名') }}
@@ -228,14 +228,14 @@ composer require fresns/web-engine
 
 ### 语言配置
 
-- [语言包信息](https://docs.fresns.cn/database/dictionary/language-pack.html)
+- [语言包信息](https://zh-hans.fresns.org/database/dictionary/language-pack.html)
 - 配置位置 `控制面板 > 客户端 > 语言包配置`
 
 ```php
 {{ fs_lang('语言键名') }}
 ```
 
-- [状态码信息](https://docs.fresns.cn/api/error-code.html)
+- [状态码信息](https://zh-hans.fresns.org/api/error-code.html)
 - 配置位置 `控制面板 > 客户端 > 状态码配置`
 
 ```php
@@ -263,8 +263,8 @@ fs_user('参数名')
 ```
 
 - 参数名来自 API `data` 参数。
-- [账号 API](https://docs.fresns.cn/api/account/detail.html)
-- [用户 API](https://docs.fresns.cn/api/user/detail.html)
+- [账号 API](https://zh-hans.fresns.org/api/account/detail.html)
+- [用户 API](https://zh-hans.fresns.org/api/user/detail.html)
 
 ### 频道扩展
 
@@ -282,7 +282,7 @@ fs_user_panel('key')
 fs_user_panel('key.key')
 ```
 
-- 参数来自[用户面板](https://docs.fresns.cn/api/user/panel.html)接口 `data`
+- 参数来自[用户面板](https://zh-hans.fresns.org/api/user/panel.html)接口 `data`
 
 **小组**
 
@@ -400,4 +400,4 @@ fs_stickers()
 
 ### 列表和详情页
 
-参数名详见对应接口的 API 数据和[通用数据结构](https://docs.fresns.cn/api/data-structure.html)。
+参数名详见对应接口的 API 数据和[通用数据结构](https://zh-hans.fresns.org/api/data-structure.html)。
