@@ -70,7 +70,7 @@ if (! function_exists('fs_status')) {
                 $statusJson = [
                     'name' => 'Fresns',
                     'activate' => true,
-                    'deactivateDescription' => [
+                    'deactivateDescribe' => [
                         'default' => '',
                     ],
                 ];

@@ -29,10 +29,10 @@ class WebConfiguration
         if (! fs_status('activate')) {
             $langTag = current_lang_tag();
 
-            $deactivateDescription = fs_status('deactivateDescription')[$langTag] ?? fs_status('deactivateDescription')['default'] ?? '';
+            $deactivateDescribe = fs_status('deactivateDescribe')[$langTag] ?? fs_status('deactivateDescribe')['default'] ?? '';
 
             return Response::view('error', [
-                'message' => "<p>{$deactivateDescription}</p>",
+                'message' => "<p>{$deactivateDescribe}</p>",
                 'code' => 503,
             ], 503);
         }
