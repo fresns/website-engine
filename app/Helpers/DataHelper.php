@@ -128,7 +128,7 @@ class DataHelper
     // get fresns user panel
     public static function getFresnsUserPanel(?string $key = null)
     {
-        if (fs_user()->guest()) {
+        if (fs_user()->guest() || ! fs_user()->check()) {
             return null;
         }
 

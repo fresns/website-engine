@@ -12,9 +12,10 @@ use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
 use Browser;
 use Fresns\PluginManager\Plugin;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionServiceProvider extends ServiceProvider
@@ -25,7 +26,7 @@ class ExceptionServiceProvider extends ServiceProvider
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-        \Fresns\WebEngine\Exceptions\ErrorException::class,
+        ErrorException::class,
     ];
 
     /**
@@ -72,6 +73,11 @@ class ExceptionServiceProvider extends ServiceProvider
     public function renderable()
     {
         return function (\Throwable $e) {
+            // ErrorException
+            if ($e->getPrevious() instanceof ErrorException) {
+                return $e->getPrevious()->render();
+            }
+
             // 404 page
             if ($e instanceof NotFoundHttpException) {
                 $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');

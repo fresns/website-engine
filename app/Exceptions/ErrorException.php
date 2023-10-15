@@ -8,27 +8,29 @@
 
 namespace Fresns\WebEngine\Exceptions;
 
+use App\Helpers\AppHelper;
+use App\Helpers\PluginHelper;
+use Browser;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class ErrorException extends \Exception
 {
     public function render()
     {
+        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+
+        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
+
+        View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
+        View::share('clientFskey', $clientFskey);
+        View::share('clientVersion', $clientVersion);
+
         if (\request()->wantsJson()) {
             return \response()->json([
                 'code' => $this->getCode(),
                 'message' => $this->getMessage(),
             ]);
-        }
-
-        // 404 Not Found
-        if (in_array($this->getCode(), [
-            37100, 37200, 37300, 37302, 37400, 37402, 38100,
-        ])) {
-            return Response::view('error', [
-                'code' => $this->getCode(),
-                'message' => $this->getMessage(),
-            ], 404);
         }
 
         // 403 Forbidden
@@ -41,9 +43,18 @@ class ErrorException extends \Exception
             ], 403);
         }
 
-        // 500 Internal Server Error
+        // 404 Not Found
         if (in_array($this->getCode(), [
-            500,
+            37100, 37200, 37300, 37302, 37400, 37402, 38100,
+        ])) {
+            return Response::view('error', [
+                'code' => $this->getCode(),
+                'message' => $this->getMessage(),
+            ], 404);
+        }
+
+        // 500 Header Error
+        if (in_array($this->getCode(), [
             31000,
             31101, 31102, 31103,
             31201, 31202,
@@ -52,8 +63,12 @@ class ErrorException extends \Exception
             31501, 31502, 31503, 31504, 31505,
             31601, 31602, 31603,
             31701, 31702, 31703,
-            34201, 36300,
         ])) {
+            $finder = app('view')->getFinder();
+            $originalPaths = $finder->getPaths();
+
+            $finder->setPaths([resource_path('views')]);
+
             if (in_array($this->getCode(), [31501, 31502, 31503, 31504, 31505])) {
                 fs_account()->logout();
             }
@@ -62,6 +77,20 @@ class ErrorException extends \Exception
                 fs_user()->logout();
             }
 
+            $response = Response::view('error', [
+                'code' => $this->getCode(),
+                'message' => $this->getMessage(),
+            ], 500);
+
+            $finder->setPaths($originalPaths);
+
+            return $response;
+        }
+
+        // 500 Internal Server Error
+        if (in_array($this->getCode(), [
+            500, 34201, 36300,
+        ])) {
             return Response::view('error', [
                 'code' => $this->getCode(),
                 'message' => $this->getMessage(),
