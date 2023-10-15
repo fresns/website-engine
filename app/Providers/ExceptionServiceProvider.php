@@ -12,9 +12,9 @@ use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
 use Browser;
 use Fresns\PluginManager\Plugin;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Plugins\FresnsEngine\Exceptions\ErrorException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
