@@ -105,6 +105,12 @@ class WebConfiguration
         View::share('clientFskey', $clientFskey);
         View::share('clientVersion', $clientVersion);
 
+        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $uid = Cookie::get("{$cookiePrefix}uid");
+        if ($uid && ! ctype_digit($uid)) {
+            fs_account()->logout();
+        }
+
         return $next($request);
     }
 
