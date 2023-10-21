@@ -32,7 +32,7 @@ class MessageController extends Controller
 
         $conversations = QueryHelper::convertApiDataToPaginate(
             items: $results['conversations']['data']['list'],
-            paginate: $results['conversations']['data']['paginate'],
+            pagination: $results['conversations']['data']['pagination'],
         );
 
         $pinConversations = $results['pinConversations']['data']['list'];
@@ -45,7 +45,7 @@ class MessageController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['conversations']['data']['paginate'],
+                'pagination' => $results['conversations']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -78,7 +78,7 @@ class MessageController extends Controller
 
         $messages = QueryHelper::convertApiDataToPaginate(
             items: $results['messages']['data']['list'],
-            paginate: $results['messages']['data']['paginate'],
+            pagination: $results['messages']['data']['pagination'],
         );
 
         // ajax
@@ -89,7 +89,7 @@ class MessageController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['messages']['data']['paginate'],
+                'pagination' => $results['messages']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -112,7 +112,7 @@ class MessageController extends Controller
 
         $notifications = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -123,7 +123,7 @@ class MessageController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }

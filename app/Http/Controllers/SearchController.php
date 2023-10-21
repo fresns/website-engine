@@ -71,7 +71,7 @@ class SearchController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('search.users', compact('users'));
@@ -90,7 +90,7 @@ class SearchController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('search.groups', compact('groups'));
@@ -109,7 +109,7 @@ class SearchController extends Controller
 
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('search.hashtags', compact('hashtags'));
@@ -128,7 +128,7 @@ class SearchController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('search.posts', compact('posts'));
@@ -147,7 +147,7 @@ class SearchController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('search.comments', compact('comments'));

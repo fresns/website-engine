@@ -39,7 +39,7 @@ class ProfileController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            pagination: $results['posts']['data']['pagination'],
         );
 
         // ajax
@@ -50,7 +50,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['posts']['data']['paginate'],
+                'pagination' => $results['posts']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -82,7 +82,7 @@ class ProfileController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -93,7 +93,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -124,7 +124,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -135,7 +135,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -166,7 +166,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -177,7 +177,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -208,7 +208,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -219,7 +219,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -250,7 +250,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -261,7 +261,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -292,7 +292,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -303,7 +303,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -338,7 +338,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -349,7 +349,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -380,7 +380,7 @@ class ProfileController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $results['groups']['data']['list'],
-            paginate: $results['groups']['data']['paginate'],
+            pagination: $results['groups']['data']['pagination'],
         );
 
         // ajax
@@ -391,7 +391,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['groups']['data']['paginate'],
+                'pagination' => $results['groups']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -422,7 +422,7 @@ class ProfileController extends Controller
 
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $results['hashtags']['data']['list'],
-            paginate: $results['hashtags']['data']['paginate'],
+            pagination: $results['hashtags']['data']['pagination'],
         );
 
         // ajax
@@ -433,7 +433,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['hashtags']['data']['paginate'],
+                'pagination' => $results['hashtags']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -464,7 +464,7 @@ class ProfileController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            pagination: $results['posts']['data']['pagination'],
         );
 
         // ajax
@@ -475,7 +475,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['posts']['data']['paginate'],
+                'pagination' => $results['posts']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -506,7 +506,7 @@ class ProfileController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -517,7 +517,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -552,7 +552,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -563,7 +563,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -594,7 +594,7 @@ class ProfileController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $results['groups']['data']['list'],
-            paginate: $results['groups']['data']['paginate'],
+            pagination: $results['groups']['data']['pagination'],
         );
 
         // ajax
@@ -605,7 +605,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['groups']['data']['paginate'],
+                'pagination' => $results['groups']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -636,7 +636,7 @@ class ProfileController extends Controller
 
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $results['hashtags']['data']['list'],
-            paginate: $results['hashtags']['data']['paginate'],
+            pagination: $results['hashtags']['data']['pagination'],
         );
 
         // ajax
@@ -647,7 +647,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['hashtags']['data']['paginate'],
+                'pagination' => $results['hashtags']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -678,7 +678,7 @@ class ProfileController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            pagination: $results['posts']['data']['pagination'],
         );
 
         // ajax
@@ -689,7 +689,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['posts']['data']['paginate'],
+                'pagination' => $results['posts']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -720,7 +720,7 @@ class ProfileController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -731,7 +731,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -766,7 +766,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -777,7 +777,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -808,7 +808,7 @@ class ProfileController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $results['groups']['data']['list'],
-            paginate: $results['groups']['data']['paginate'],
+            pagination: $results['groups']['data']['pagination'],
         );
 
         // ajax
@@ -819,7 +819,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['groups']['data']['paginate'],
+                'pagination' => $results['groups']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -850,7 +850,7 @@ class ProfileController extends Controller
 
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $results['hashtags']['data']['list'],
-            paginate: $results['hashtags']['data']['paginate'],
+            pagination: $results['hashtags']['data']['pagination'],
         );
 
         // ajax
@@ -861,7 +861,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['hashtags']['data']['paginate'],
+                'pagination' => $results['hashtags']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -892,7 +892,7 @@ class ProfileController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            pagination: $results['posts']['data']['pagination'],
         );
 
         // ajax
@@ -903,7 +903,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['posts']['data']['paginate'],
+                'pagination' => $results['posts']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -934,7 +934,7 @@ class ProfileController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -945,7 +945,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -980,7 +980,7 @@ class ProfileController extends Controller
 
         $users = QueryHelper::convertApiDataToPaginate(
             items: $results['users']['data']['list'],
-            paginate: $results['users']['data']['paginate'],
+            pagination: $results['users']['data']['pagination'],
         );
 
         // ajax
@@ -991,7 +991,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['users']['data']['paginate'],
+                'pagination' => $results['users']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -1022,7 +1022,7 @@ class ProfileController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $results['groups']['data']['list'],
-            paginate: $results['groups']['data']['paginate'],
+            pagination: $results['groups']['data']['pagination'],
         );
 
         // ajax
@@ -1033,7 +1033,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['groups']['data']['paginate'],
+                'pagination' => $results['groups']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -1064,7 +1064,7 @@ class ProfileController extends Controller
 
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $results['hashtags']['data']['list'],
-            paginate: $results['hashtags']['data']['paginate'],
+            pagination: $results['hashtags']['data']['pagination'],
         );
 
         // ajax
@@ -1075,7 +1075,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['hashtags']['data']['paginate'],
+                'pagination' => $results['hashtags']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -1106,7 +1106,7 @@ class ProfileController extends Controller
 
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $results['posts']['data']['list'],
-            paginate: $results['posts']['data']['paginate'],
+            pagination: $results['posts']['data']['pagination'],
         );
 
         // ajax
@@ -1117,7 +1117,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['posts']['data']['paginate'],
+                'pagination' => $results['posts']['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -1148,7 +1148,7 @@ class ProfileController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -1159,7 +1159,7 @@ class ProfileController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }

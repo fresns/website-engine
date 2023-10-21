@@ -81,7 +81,7 @@ class AccountController extends Controller
 
         $logs = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('account.wallet', compact('logs'));
@@ -98,7 +98,7 @@ class AccountController extends Controller
 
         $logs = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         $extcreditsId = (int) $request->extcreditsId;

@@ -26,7 +26,7 @@ class DataHelper
             'code' => 0,
             'message' => "[35303] {$message}",
             'data' => [
-                'paginate' => [
+                'pagination' => [
                     'total' => 0,
                     'pageSize' => 15,
                     'currentPage' => 1,

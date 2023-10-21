@@ -50,7 +50,7 @@ class GroupController extends Controller
 
             $groups = QueryHelper::convertApiDataToPaginate(
                 items: $result['data']['list'],
-                paginate: $result['data']['paginate'],
+                pagination: $result['data']['pagination'],
             );
 
             // ajax
@@ -61,7 +61,7 @@ class GroupController extends Controller
                 }
 
                 return response()->json([
-                    'paginate' => $result['data']['paginate'],
+                    'pagination' => $result['data']['pagination'],
                     'html' => $html,
                 ]);
             }
@@ -88,7 +88,7 @@ class GroupController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -99,7 +99,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -121,7 +121,7 @@ class GroupController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -132,7 +132,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -154,7 +154,7 @@ class GroupController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -165,7 +165,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -187,7 +187,7 @@ class GroupController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -198,7 +198,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -220,7 +220,7 @@ class GroupController extends Controller
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -231,7 +231,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -258,9 +258,9 @@ class GroupController extends Controller
 
                 $posts = QueryHelper::convertApiDataToPaginate(
                     items: $results['posts']['data']['list'],
-                    paginate: $results['posts']['data']['paginate'],
+                    pagination: $results['posts']['data']['pagination'],
                 );
-                $paginate = $results['posts']['data']['paginate'];
+                $pagination = $results['posts']['data']['pagination'];
 
                 $comments = [];
                 break;
@@ -270,9 +270,9 @@ class GroupController extends Controller
 
                 $comments = QueryHelper::convertApiDataToPaginate(
                     items: $results['comments']['data']['list'],
-                    paginate: $results['comments']['data']['paginate'],
+                    pagination: $results['comments']['data']['pagination'],
                 );
-                $paginate = $results['comments']['data']['paginate'];
+                $pagination = $results['comments']['data']['pagination'];
 
                 $posts = [];
                 break;
@@ -304,7 +304,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'paginate' => $paginate,
+                'pagination' => $pagination,
                 'html' => $html,
             ]);
         }

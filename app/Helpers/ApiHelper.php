@@ -48,15 +48,15 @@ class ApiHelper
 
     public function paginate()
     {
-        if (! data_get($this->result, 'data.paginate', false)) {
+        if (! data_get($this->result, 'data.pagination', false)) {
             return null;
         }
 
         $paginate = new LengthAwarePaginator(
             items: data_get($this->result, 'data.list'),
-            total: data_get($this->result, 'data.paginate.total'),
-            perPage: data_get($this->result, 'data.paginate.pageSize'),
-            currentPage: data_get($this->result, 'data.paginate.currentPage'),
+            total: data_get($this->result, 'data.pagination.total'),
+            perPage: data_get($this->result, 'data.pagination.pageSize'),
+            currentPage: data_get($this->result, 'data.pagination.currentPage'),
         );
 
         $paginate->withPath(Str::of(request()->path())->start('/'))->withQueryString();

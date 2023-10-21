@@ -79,11 +79,11 @@ class QueryHelper
         return $params;
     }
 
-    public static function convertApiDataToPaginate($items, $paginate)
+    public static function convertApiDataToPaginate($items, $pagination)
     {
         $items = (array) $items;
-        $total = $paginate['total'] ?? 0;
-        $pageSize = $paginate['pageSize'] ?? 15;
+        $total = $pagination['total'] ?? 0;
+        $pageSize = $pagination['pageSize'] ?? 15;
 
         $paginate = new LengthAwarePaginator(
             items: $items,

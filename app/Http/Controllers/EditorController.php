@@ -39,7 +39,7 @@ class EditorController extends Controller
 
         $drafts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         return view('editor.drafts', compact('drafts', 'type'));

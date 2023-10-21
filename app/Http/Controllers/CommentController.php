@@ -41,7 +41,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -52,7 +52,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -79,7 +79,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -90,7 +90,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -117,7 +117,7 @@ class CommentController extends Controller
         if (empty($request->mapLng) || empty($request->mapLat)) {
             $result = [
                 'data' => [
-                    'paginate' => [
+                    'pagination' => [
                         'total' => 0,
                         'pageSize' => 15,
                         'currentPage' => 1,
@@ -132,7 +132,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -143,7 +143,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -176,7 +176,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -187,7 +187,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -205,7 +205,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -216,7 +216,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -234,7 +234,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -245,7 +245,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -263,7 +263,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -274,7 +274,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -292,7 +292,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
-            paginate: $result['data']['paginate'],
+            pagination: $result['data']['pagination'],
         );
 
         // ajax
@@ -303,7 +303,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $result['data']['paginate'],
+                'pagination' => $result['data']['pagination'],
                 'html' => $html,
             ]);
         }
@@ -341,7 +341,7 @@ class CommentController extends Controller
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],
-            paginate: $results['comments']['data']['paginate'],
+            pagination: $results['comments']['data']['pagination'],
         );
 
         // ajax
@@ -352,7 +352,7 @@ class CommentController extends Controller
             }
 
             return response()->json([
-                'paginate' => $results['comments']['data']['paginate'],
+                'pagination' => $results['comments']['data']['pagination'],
                 'html' => $html,
             ]);
         }
