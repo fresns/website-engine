@@ -39,14 +39,29 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text">{{ __('FsLang::panel.table_platform') }}</label>
-                        <select class="form-select" disabled>
-                            <option value="4" selected>Responsive Web</option>
+                        <span class="input-group-text">{{ __('FsLang::panel.table_platform') }}</span>
+                        <select class="form-select">
+                            @foreach ($params['platforms'] as $platform)
+                                <option value="{{ $platform['id'] }}" @if ($platform['id'] != 4) disabled @else selected @endif>{{ $platform['name'] }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text">{{ __('FsLang::panel.table_type') }}</label>
-                        <input class="form-control" type="text" value="{{ __('FsLang::panel.key_option_main_api') }}" disabled>
+                        <span class="input-group-text">{{ __('FsLang::panel.table_type') }}</span>
+                        <div class="form-control bg-white">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="1" id="fresns_key" checked>
+                                <label class="form-check-label" for="fresns_key">{{ __('FsLang::panel.key_option_main_api') }}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="2" id="admin_key" disabled>
+                                <label class="form-check-label" for="admin_key">{{ __('FsLang::panel.key_option_manage_api') }}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="3" id="plugin_key" disabled>
+                                <label class="form-check-label" for="plugin_key">{{ __('FsLang::panel.key_option_plugin_api') }}</label>
+                            </div>
+                        </div>
                     </div>
                     <!--api_type config-->
                     <!--api_local-->
