@@ -114,7 +114,7 @@ class ApiHelper
 
             $message = $data['message'] ?? $data['exception'] ?? '';
 
-            if ($data['trace']) {
+            if ($data['trace'] ?? null) {
                 $message = json_encode([
                     'file' => $data['file'] ?? null,
                     'line' => $data['line'] ?? null,
