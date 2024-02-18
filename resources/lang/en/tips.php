@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Configuration exception, can\'t get the theme template on computer side.',
     'errorMobileFskey' => 'Configuration exception, can\'t get the theme template for cell phone.',
 
-    'settingTip' => 'Set Path: Admin Panel -> App Center -> Plugins -> Setting(Client Plugin) -> Engine Config',
+    'settingTip' => 'Set Path: Admin Panel -> App Center -> Themes -> API Config',
 ];

@@ -21,17 +21,17 @@ class HashtagInterface
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/hashtag/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
                 'query' => $query,
             ]);
         }
 
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         try {
-            $request = Request::create('/api/v2/hashtag/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/hashtag/list', 'GET', $query);
 
             $apiController = new HashtagController();
             $response = $apiController->list($request);
@@ -53,7 +53,7 @@ class HashtagInterface
             default => 'posts',
         };
 
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
                 'hashtag' => DataHelper::getApiDataTemplate('detail'),
                 'posts' => CommentInterface::list($query),
@@ -69,8 +69,8 @@ class HashtagInterface
             switch ($type) {
                 case 'posts':
                     $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/v2/hashtag/{$hid}/detail"),
-                        'posts' => $client->getAsync('/api/v2/post/list', [
+                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$hid}/detail"),
+                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
                             'query' => $query,
                         ]),
                     ]);
@@ -78,8 +78,8 @@ class HashtagInterface
 
                 case 'comments':
                     $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/v2/hashtag/{$hid}/detail"),
-                        'comments' => $client->getAsync('/api/v2/comment/list', [
+                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$hid}/detail"),
+                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
                             'query' => $query,
                         ]),
                     ]);
@@ -98,7 +98,7 @@ class HashtagInterface
 
             switch ($type) {
                 case 'posts':
-                    $request = Request::create('/api/v2/post/list', 'GET', $query);
+                    $request = Request::create('/api/fresns/v1/post/list', 'GET', $query);
                     $apiPostController = new PostController();
 
                     $response = $apiPostController->list($request);
@@ -112,7 +112,7 @@ class HashtagInterface
                     break;
 
                 case 'comments':
-                    $request = Request::create('/api/v2/comment/list', 'GET', $query);
+                    $request = Request::create('/api/fresns/v1/comment/list', 'GET', $query);
                     $apiCommentController = new CommentController();
 
                     $response = $apiCommentController->list($request);

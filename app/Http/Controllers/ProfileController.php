@@ -22,11 +22,6 @@ class ProfileController extends Controller
         $query = $request->all();
         $query['uidOrUsername'] = $uidOrUsername;
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'posts', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -65,11 +60,6 @@ class ProfileController extends Controller
         $query = $request->all();
         $query['uidOrUsername'] = $uidOrUsername;
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'comments', 'comments', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -106,11 +96,6 @@ class ProfileController extends Controller
     public function followersYouFollow(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'followersYouFollow', 'users', $query);
 
@@ -149,11 +134,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'interaction', 'likers', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -190,11 +170,6 @@ class ProfileController extends Controller
     public function dislikers(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'interaction', 'dislikers', $query);
 
@@ -233,11 +208,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'interaction', 'followers', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -274,11 +244,6 @@ class ProfileController extends Controller
     public function blockers(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'interaction', 'blockers', $query);
 
@@ -321,11 +286,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'like', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -362,11 +322,6 @@ class ProfileController extends Controller
     public function likeGroups(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'like', 'groups', $query);
 
@@ -405,11 +360,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'like', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -447,11 +397,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'like', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -488,11 +433,6 @@ class ProfileController extends Controller
     public function likeComments(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'like', 'comments', $query);
 
@@ -535,11 +475,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'dislike', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -576,11 +511,6 @@ class ProfileController extends Controller
     public function dislikeGroups(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'dislike', 'groups', $query);
 
@@ -619,11 +549,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'dislike', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -661,11 +586,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'dislike', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -702,11 +622,6 @@ class ProfileController extends Controller
     public function dislikeComments(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'dislike', 'comments', $query);
 
@@ -749,11 +664,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'follow', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -790,11 +700,6 @@ class ProfileController extends Controller
     public function followingGroups(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'follow', 'groups', $query);
 
@@ -833,11 +738,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'follow', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -875,11 +775,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'follow', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -916,11 +811,6 @@ class ProfileController extends Controller
     public function followingComments(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'follow', 'comments', $query);
 
@@ -963,11 +853,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'block', 'users', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -1004,11 +889,6 @@ class ProfileController extends Controller
     public function blockingGroups(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'block', 'groups', $query);
 
@@ -1047,11 +927,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'block', 'hashtags', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -1089,11 +964,6 @@ class ProfileController extends Controller
     {
         $query = $request->all();
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = UserInterface::detail($uidOrUsername, 'block', 'posts', $query);
 
         if ($results['profile']['code'] != 0) {
@@ -1130,11 +1000,6 @@ class ProfileController extends Controller
     public function blockingComments(Request $request, string $uidOrUsername)
     {
         $query = $request->all();
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $results = UserInterface::detail($uidOrUsername, 'block', 'comments', $query);
 

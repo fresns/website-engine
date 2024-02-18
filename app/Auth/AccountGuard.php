@@ -9,6 +9,7 @@
 namespace Fresns\WebEngine\Auth;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\ConfigHelper;
 use App\Models\File;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
@@ -113,7 +114,7 @@ class AccountGuard implements Guard
      *
      * @throws GuzzleException
      */
-    public function get(?string $key = null)
+    public function get(?string $key = null): mixed
     {
         if ($this->loggedOut) {
             return null;
@@ -123,10 +124,11 @@ class AccountGuard implements Guard
             return $key ? Arr::get($this->account, $key) : $this->account;
         }
 
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $aid = Cookie::get("{$cookiePrefix}aid");
         $token = Cookie::get("{$cookiePrefix}aid_token");
+
         $langTag = current_lang_tag();
 
         if ($aid && $token) {
@@ -137,7 +139,7 @@ class AccountGuard implements Guard
                 $result = CacheHelper::get($cacheKey, $cacheTag);
 
                 if (empty($result)) {
-                    $result = ApiHelper::make()->get('/api/v2/account/detail');
+                    $result = ApiHelper::make()->get('/api/fresns/v1/account/detail');
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
                     CacheHelper::put($result, $cacheKey, $cacheTag, null, $cacheTime);
@@ -170,7 +172,7 @@ class AccountGuard implements Guard
     {
         DataHelper::cacheForgetAccountAndUser();
 
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         Cookie::queue(Cookie::forget("{$cookiePrefix}aid"));
         Cookie::queue(Cookie::forget("{$cookiePrefix}aid_token"));

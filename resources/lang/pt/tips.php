@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Exceção de Configuração, não é possível obter o site de desktop associado.',
     'errorMobileFskey' => 'Exceção de Configuração, não é possível obter o site móvel associado.',
 
-    'settingTip' => 'Localização da configuração: Backend de Administração -> Centro de Aplicações -> Plugin de Extensão -> Configurações (Plugin de Cliente) -> Configuração do Motor Web',
+    'settingTip' => 'Localização da configuração: Backend de Administração -> Centro de Aplicações -> Temas -> Configuração da API',
 ];

@@ -19,13 +19,13 @@ class AccountInterface
     public static function walletLogs(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/account/wallet-logs', [
+            return ApiHelper::make()->get('/api/fresns/v1/account/wallet-logs', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/account/wallet-logs', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/account/wallet-logs', 'GET', $query);
 
             $apiController = new AccountController();
             $response = $apiController->walletLogs($request);
@@ -42,13 +42,13 @@ class AccountInterface
     public static function extcreditsLogs(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/user/extcredits-logs', [
+            return ApiHelper::make()->get('/api/fresns/v1/user/extcredits-logs', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/user/extcredits-logs', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/user/extcredits-logs', 'GET', $query);
 
             $apiController = new UserController();
             $response = $apiController->extcreditsLogs($request);

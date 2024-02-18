@@ -9,6 +9,7 @@
 namespace Fresns\WebEngine\Helpers;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\ConfigHelper;
 use App\Models\File;
 use App\Utilities\ConfigUtility;
 use Illuminate\Support\Arr;
@@ -125,32 +126,6 @@ class DataHelper
         return $uploadInfo;
     }
 
-    // get fresns user panel
-    public static function getFresnsUserPanel(?string $key = null)
-    {
-        if (fs_user()->guest() || ! fs_user()->check()) {
-            return null;
-        }
-
-        $langTag = current_lang_tag();
-        $uid = fs_user('detail.uid');
-
-        $cacheKey = "fresns_web_user_panel_{$uid}_{$langTag}";
-        $cacheTag = 'fresnsWeb';
-
-        $userPanel = CacheHelper::get($cacheKey, $cacheTag);
-
-        if (empty($userPanel)) {
-            $result = ApiHelper::make()->get('/api/v2/user/panel');
-
-            $userPanel = data_get($result, 'data');
-
-            CacheHelper::put($userPanel, $cacheKey, $cacheTag, null, now()->addMinutes());
-        }
-
-        return data_get($userPanel, $key);
-    }
-
     // get fresns groups
     public static function getFresnsGroups(string $listKey): array
     {
@@ -187,7 +162,7 @@ class DataHelper
             switch ($listKey) {
                 // categories
                 case 'categories':
-                    $result = ApiHelper::make()->get('/api/v2/group/categories', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/group/categories', [
                         'query' => [
                             'pageSize' => 100,
                             'page' => 1,
@@ -199,7 +174,7 @@ class DataHelper
 
                     // tree
                 case 'tree':
-                    $result = ApiHelper::make()->get('/api/v2/group/tree');
+                    $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
 
                     $listArr = data_get($result, 'data', []);
                     break;
@@ -248,7 +223,7 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_api_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
+            if (fs_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
                 return [];
             }
 
@@ -256,7 +231,7 @@ class DataHelper
                 // users
                 case 'users':
                     $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER);
-                    $result = ApiHelper::make()->get('/api/v2/user/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/user/list', [
                         'query' => $userQuery,
                     ]);
                     break;
@@ -264,7 +239,7 @@ class DataHelper
                     // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP);
-                    $result = ApiHelper::make()->get('/api/v2/group/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/group/list', [
                         'query' => $groupQuery,
                     ]);
                     break;
@@ -272,7 +247,7 @@ class DataHelper
                     // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG);
-                    $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
                     break;
@@ -280,7 +255,7 @@ class DataHelper
                     // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST);
-                    $result = ApiHelper::make()->get('/api/v2/post/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
                         'query' => $postQuery,
                     ]);
                     break;
@@ -288,7 +263,7 @@ class DataHelper
                     // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT);
-                    $result = ApiHelper::make()->get('/api/v2/comment/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                         'query' => $commentQuery,
                     ]);
                     break;
@@ -339,7 +314,7 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_api_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
+            if (fs_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
                 return [];
             }
 
@@ -347,7 +322,7 @@ class DataHelper
                 // users
                 case 'users':
                     $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER_LIST);
-                    $result = ApiHelper::make()->get('/api/v2/user/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/user/list', [
                         'query' => $userQuery,
                     ]);
                     break;
@@ -355,7 +330,7 @@ class DataHelper
                     // groups
                 case 'groups':
                     $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP_LIST);
-                    $result = ApiHelper::make()->get('/api/v2/group/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/group/list', [
                         'query' => $groupQuery,
                     ]);
                     break;
@@ -363,7 +338,7 @@ class DataHelper
                     // hashtags
                 case 'hashtags':
                     $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG_LIST);
-                    $result = ApiHelper::make()->get('/api/v2/hashtag/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
                         'query' => $hashtagQuery,
                     ]);
                     break;
@@ -371,7 +346,7 @@ class DataHelper
                     // posts
                 case 'posts':
                     $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST_LIST);
-                    $result = ApiHelper::make()->get('/api/v2/post/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
                         'query' => $postQuery,
                     ]);
                     break;
@@ -379,7 +354,7 @@ class DataHelper
                     // comments
                 case 'comments':
                     $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT_LIST);
-                    $result = ApiHelper::make()->get('/api/v2/comment/list', [
+                    $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                         'query' => $commentQuery,
                     ]);
                     break;
@@ -424,11 +399,11 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_api_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
+            if (fs_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
                 return [];
             }
 
-            $result = ApiHelper::make()->get('/api/v2/post/list', [
+            $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
                 'query' => $query,
             ]);
 
@@ -459,11 +434,11 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_api_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
+            if (fs_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
                 return [];
             }
 
-            $result = ApiHelper::make()->get('/api/v2/comment/list', [
+            $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                 'query' => [
                     'pid' => $pid,
                     'sticky' => true,
@@ -479,67 +454,10 @@ class DataHelper
         return $listArr ?? [];
     }
 
-    // get fresns content types
-    public static function getFresnsContentTypes(string $type): array
-    {
-        $langTag = current_lang_tag();
-
-        $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($listArr)) {
-            $result = ApiHelper::make()->get("/api/v2/global/{$type}/content-types");
-
-            $listArr = data_get($result, 'data', []);
-
-            CacheHelper::put($listArr, $cacheKey, $cacheTags);
-        }
-
-        return $listArr ?? [];
-    }
-
-    // get fresns stickers
-    public static function getFresnsStickers(): array
-    {
-        $langTag = current_lang_tag();
-
-        $cacheKey = "fresns_web_stickers_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($listArr)) {
-            $result = ApiHelper::make()->get('/api/v2/global/stickers');
-
-            $listArr = data_get($result, 'data', []);
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
-        }
-
-        return $listArr ?? [];
-    }
-
     // cache forget account and user
     public static function cacheForgetAccountAndUser()
     {
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $aid = Cookie::get("{$cookiePrefix}aid");
         $uid = Cookie::get("{$cookiePrefix}uid");

@@ -47,7 +47,7 @@ class AccountController extends Controller
 
         fs_account()->logout();
 
-        ApiHelper::make()->delete('/api/v2/account/logout');
+        ApiHelper::make()->delete('/api/fresns/v1/account/logout');
 
         return redirect()->intended($redirectURL);
     }

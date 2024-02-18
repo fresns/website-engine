@@ -22,7 +22,8 @@ class GroupController extends Controller
     // index
     public function index(Request $request)
     {
-        if (! fs_db_config('menu_group_status')) {
+        $status = ConfigHelper::fresnsConfigByItemKey('menu_group_status');
+        if (! $status) {
             return Response::view('404', [], 404);
         }
 
@@ -74,7 +75,8 @@ class GroupController extends Controller
     // list
     public function list(Request $request)
     {
-        if (! fs_db_config('menu_group_list_status')) {
+        $status = ConfigHelper::fresnsConfigByItemKey('menu_group_list_status');
+        if (! $status) {
             return Response::view('404', [], 404);
         }
 

@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Konfigurationsfehler, kann nicht auf den zugehörigen Desktop-Website-Endpunkt zugreifen.',
     'errorMobileFskey' => 'Konfigurationsfehler, kann nicht auf den zugehörigen mobilen Website-Endpunkt zugreifen.',
 
-    'settingTip' => 'Einstellungsort: Admin-Panel -> App Center -> Erweiterungs-Plugin -> Einstellungen (Client-Plugin) -> Website-Motor-Konfiguration',
+    'settingTip' => 'Einstellungsort: Admin-Panel -> App Center -> Themen -> API-Konfiguration',
 ];

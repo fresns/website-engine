@@ -8,6 +8,7 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
+use App\Helpers\ConfigHelper;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -20,10 +21,6 @@ class UserController extends Controller
     // index
     public function index(Request $request)
     {
-        if (! fs_db_config('menu_user_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_USER, $request->all());
 
         $result = UserInterface::list($query);
@@ -57,10 +54,6 @@ class UserController extends Controller
     // list
     public function list(Request $request)
     {
-        if (! fs_db_config('menu_user_list_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_USER_LIST, $request->all());
 
         $result = UserInterface::list($query);

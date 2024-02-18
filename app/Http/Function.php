@@ -8,7 +8,10 @@
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
+use App\Helpers\PluginHelper;
 use App\Models\File;
+use App\Utilities\ArrUtility;
+use Browser;
 use Fresns\WebEngine\Auth\UserGuard;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
@@ -17,7 +20,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 // is_local_api
 if (! function_exists('is_local_api')) {
-    function is_local_api()
+    function is_local_api(): bool
     {
         $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
 
@@ -27,7 +30,7 @@ if (! function_exists('is_local_api')) {
 
 // is_remote_api
 if (! function_exists('is_remote_api')) {
-    function is_remote_api()
+    function is_remote_api(): bool
     {
         $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
 
@@ -35,9 +38,62 @@ if (! function_exists('is_remote_api')) {
     }
 }
 
+// fs_route
+if (! function_exists('fs_route')) {
+    function fs_route(string $url = null, string|bool $locale = null): string
+    {
+        return LaravelLocalization::localizeUrl($url, $locale);
+    }
+}
+
+// fs_theme
+if (! function_exists('fs_theme')) {
+    function fs_theme(string $type): ?string
+    {
+        $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
+
+        $info = match ($type) {
+            'fskey' => $themeFskey,
+            'version' => PluginHelper::fresnsPluginVersionByFskey($themeFskey),
+            default => null,
+        };
+
+        return $info;
+    }
+}
+
+// fs_helpers
+if (! function_exists('fs_helpers')) {
+    function fs_helpers(string $helper, string $method, mixed $data = null, ?array $options = []): mixed
+    {
+        $helperData = null;
+
+        if ($helper == 'Arr' || $helper == 'arr') {
+            $availableMethod = match ($method) {
+                'get' => 'get',
+                'forget' => 'forget',
+                'pull' => 'pull',
+                default => null,
+            };
+
+            $key = $options['key'] ?? null;
+            $values = $options['values'] ?? null;
+            $asArray = $options['asArray'] ?? true;
+
+            if (empty($availableMethod) || empty($key) || empty($values)) {
+                return [];
+            }
+
+            $helperData = ArrUtility::$availableMethod($data, $key, $values, $asArray);
+        }
+
+        return $helperData;
+    }
+}
+
 // current_lang_tag
 if (! function_exists('current_lang_tag')) {
-    function current_lang_tag()
+    function current_lang_tag(): string
     {
         return App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language');
     }
@@ -45,7 +101,7 @@ if (! function_exists('current_lang_tag')) {
 
 // fs_status
 if (! function_exists('fs_status')) {
-    function fs_status(string $key)
+    function fs_status(string $key): mixed
     {
         $cacheKey = 'fresns_web_status';
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -83,93 +139,61 @@ if (! function_exists('fs_status')) {
     }
 }
 
-// fs_api_config
-if (! function_exists('fs_api_config')) {
-    function fs_api_config(string $itemKey, mixed $default = null)
+// fs_config
+if (! function_exists('fs_config')) {
+    function fs_config(string $itemKey, mixed $default = null): mixed
     {
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_api_config_all_{$langTag}";
+        $cacheKey = "fresns_web_configs_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-        $apiConfig = CacheHelper::get($cacheKey, $cacheTags);
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
 
-        if (empty($apiConfig)) {
-            $result = ApiHelper::make()->get('/api/v2/global/configs');
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/configs');
 
-            $apiConfig = data_get($result, 'data');
+            $configs = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($apiConfig, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return $apiConfig[$itemKey] ?? $default;
-    }
-}
-
-// fs_db_config
-if (! function_exists('fs_db_config')) {
-    function fs_db_config(string $itemKey, mixed $default = null)
-    {
-        $langTag = current_lang_tag();
-
-        return ConfigHelper::fresnsConfigApiByItemKey($itemKey, $langTag) ?? $default;
+        return $configs[$itemKey] ?? $default;
     }
 }
 
 // fs_lang
 if (! function_exists('fs_lang')) {
-    function fs_lang(string $langKey, ?string $default = null): ?string
-    {
-        $langArr = fs_api_config('language_pack_contents');
-        $result = $langArr[$langKey] ?? $default;
-
-        return $result;
-    }
-}
-
-// fs_code_message
-if (! function_exists('fs_code_message')) {
-    function fs_code_message(int $code, ?string $fskey = 'Fresns', ?string $default = null): ?string
+    function fs_lang(?string $langKey = null, ?string $default = null): ?string
     {
         $langTag = current_lang_tag();
 
-        $cacheKey = "fresns_web_code_message_all_{$fskey}_{$langTag}";
+        $cacheKey = "fresns_web_languages_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-        $codeMessages = CacheHelper::get($cacheKey, $cacheTags);
+        $languages = CacheHelper::get($cacheKey, $cacheTags);
 
-        if (empty($codeMessages)) {
-            $codeMessages = ApiHelper::make()->get('/api/v2/global/code-messages', [
-                'query' => [
-                    'fskey' => $fskey,
-                    'isAll' => true,
-                ],
-            ]);
+        if (empty($languages)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/language-pack');
 
-            CacheHelper::put($codeMessages, $cacheKey, $cacheTags);
+            $languages = data_get($result, 'data');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
+            CacheHelper::put($languages, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        return data_get($codeMessages, "data.{$code}") ?? $default;
-    }
-}
+        if (empty($langKey)) {
+            return $languages;
+        }
 
-// fs_route
-if (! function_exists('fs_route')) {
-    /**
-     * @param  string|null  $url
-     * @param  string|bool|null  $locale
-     * @return string
-     */
-    function fs_route(string $url = null, string|bool $locale = null): string
-    {
-        return LaravelLocalization::localizeUrl($url, $locale);
+        return $languages[$langKey] ?? $default;
     }
 }
 
 // fs_channels
 if (! function_exists('fs_channels')) {
-    function fs_channels()
+    function fs_channels(): ?array
     {
         $langTag = current_lang_tag();
 
@@ -190,7 +214,7 @@ if (! function_exists('fs_channels')) {
         $channels = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($channels)) {
-            $result = ApiHelper::make()->get('/api/v2/global/channels');
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/channels');
 
             $channels = data_get($result, 'data');
 
@@ -198,6 +222,71 @@ if (! function_exists('fs_channels')) {
         }
 
         return $channels ?? [];
+    }
+}
+
+// fs_content_types
+if (! function_exists('fs_content_types')) {
+    function fs_content_types(string $type): ?array
+    {
+        $langTag = current_lang_tag();
+
+        $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        // get cache
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($listArr)) {
+            $result = ApiHelper::make()->get("/api/fresns/v1/global/{$type}/content-types");
+
+            $listArr = data_get($result, 'data', []);
+
+            CacheHelper::put($listArr, $cacheKey, $cacheTags);
+        }
+
+        return $listArr ?? [];
+    }
+}
+
+// fs_stickers
+if (! function_exists('fs_stickers')) {
+    function fs_stickers(): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        $langTag = current_lang_tag();
+
+        $cacheKey = "fresns_web_stickers_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        // get cache
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($listArr)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/stickers');
+
+            $listArr = data_get($result, 'data', []);
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
+        }
+
+        return $listArr ?? [];
     }
 }
 
@@ -231,25 +320,45 @@ if (! function_exists('fs_user')) {
     }
 }
 
-// fs_user_panel
-if (! function_exists('fs_user_panel')) {
-    /**
-     * @param  string|null  $key
-     * @return array
-     */
-    function fs_user_panel(?string $key = null)
+// fs_user_overview
+if (! function_exists('fs_user_overview')) {
+    function fs_user_overview(?string $key = null, ?string $uidOrUsername = null): mixed
     {
-        return DataHelper::getFresnsUserPanel($key);
+        if (fs_user()->guest()) {
+            return null;
+        }
+
+        $langTag = current_lang_tag();
+        $uid = $uidOrUsername ?? fs_user('detail.uid');
+
+        $cacheKey = "fresns_web_user_overview_{$uid}_{$langTag}";
+        $cacheTag = 'fresnsWeb';
+
+        $userOverview = CacheHelper::get($cacheKey, $cacheTag);
+
+        if (empty($userOverview)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/user/overview', [
+                'query' => [
+                    'uidOrUsername' => $uid,
+                ],
+            ]);
+
+            $userOverview = data_get($result, 'data');
+
+            CacheHelper::put($userOverview, $cacheKey, $cacheTag, null, now()->addMinutes());
+        }
+
+        if ($key) {
+            return data_get($userOverview, $key);
+        }
+
+        return $userOverview;
     }
 }
 
 // fs_groups
 if (! function_exists('fs_groups')) {
-    /**
-     * @param  string  $listKey
-     * @return array
-     */
-    function fs_groups(string $listKey)
+    function fs_groups(string $listKey): ?array
     {
         return DataHelper::getFresnsGroups($listKey);
     }
@@ -257,13 +366,9 @@ if (! function_exists('fs_groups')) {
 
 // fs_index_list
 if (! function_exists('fs_index_list')) {
-    /**
-     * @param  string  $listKey
-     * @return array
-     */
-    function fs_index_list(string $listKey)
+    function fs_index_list(string $listKey): ?array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
             return [];
         }
 
@@ -273,13 +378,9 @@ if (! function_exists('fs_index_list')) {
 
 // fs_list
 if (! function_exists('fs_list')) {
-    /**
-     * @param  string  $listKey
-     * @return array
-     */
-    function fs_list(string $listKey)
+    function fs_list(string $listKey): ?array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
             return [];
         }
 
@@ -289,13 +390,9 @@ if (! function_exists('fs_list')) {
 
 // fs_sticky_posts
 if (! function_exists('fs_sticky_posts')) {
-    /**
-     * @param  string|null  $gid
-     * @return array
-     */
-    function fs_sticky_posts(?string $gid = null)
+    function fs_sticky_posts(?string $gid = null): ?array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
             return [];
         }
 
@@ -305,43 +402,12 @@ if (! function_exists('fs_sticky_posts')) {
 
 // fs_sticky_comments
 if (! function_exists('fs_sticky_comments')) {
-    /**
-     * @param  string  $pid
-     * @return array
-     */
-    function fs_sticky_comments(string $pid)
+    function fs_sticky_comments(string $pid): ?array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
             return [];
         }
 
         return DataHelper::getFresnsStickyComments($pid);
-    }
-}
-
-// fs_content_types
-if (! function_exists('fs_content_types')) {
-    /**
-     * @param  string  $type
-     * @return array
-     */
-    function fs_content_types(string $type)
-    {
-        return DataHelper::getFresnsContentTypes($type);
-    }
-}
-
-// fs_stickers
-if (! function_exists('fs_stickers')) {
-    /**
-     * @return array
-     */
-    function fs_stickers()
-    {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsStickers();
     }
 }

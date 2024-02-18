@@ -18,7 +18,7 @@ class GroupInterface
     public static function tree(): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/group/tree');
+            return ApiHelper::make()->get('/api/fresns/v1/group/tree');
         }
 
         try {
@@ -37,13 +37,13 @@ class GroupInterface
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/group/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/group/list', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/group/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/group/list', 'GET', $query);
 
             $apiController = new GroupController();
             $response = $apiController->list($request);
@@ -71,8 +71,8 @@ class GroupInterface
             switch ($type) {
                 case 'posts':
                     $results = $client->unwrapRequests([
-                        'group' => $client->getAsync("/api/v2/group/{$gid}/detail"),
-                        'posts' => $client->getAsync('/api/v2/post/list', [
+                        'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
+                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
                             'query' => $query,
                         ]),
                     ]);
@@ -80,8 +80,8 @@ class GroupInterface
 
                 case 'comments':
                     $results = $client->unwrapRequests([
-                        'group' => $client->getAsync("/api/v2/group/{$gid}/detail"),
-                        'comments' => $client->getAsync('/api/v2/comment/list', [
+                        'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
+                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
                             'query' => $query,
                         ]),
                     ]);

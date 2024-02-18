@@ -11,10 +11,8 @@ namespace Fresns\WebEngine\Helpers;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use App\Helpers\PluginHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
-use Browser;
 use Fresns\WebEngine\Client\Clientable;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Illuminate\Http\RedirectResponse;
@@ -151,31 +149,40 @@ class ApiHelper
 
         $keyConfig = CacheHelper::get($cacheKey, $cacheTags);
 
-        if (empty($keyConfig['platformId']) || empty($keyConfig['appId']) || empty($keyConfig['appSecret'])) {
-            if (is_local_api()) {
-                $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
-                $keyInfo = SessionKey::find($keyId);
+        if (empty($keyConfig)) {
+            $apiConfigs = ConfigHelper::fresnsConfigByItemKeys([
+                'webengine_key_id',
+                'webengine_api_type',
+                'webengine_api_app_id',
+                'webengine_api_app_key',
+            ]);
 
-                $platformId = $keyInfo?->platform_id;
-                $appId = $keyInfo?->app_id;
-                $appSecret = $keyInfo?->app_secret;
-            } else {
-                $platformId = 4;
-                $appId = ConfigHelper::fresnsConfigByItemKey('webengine_api_app_id');
-                $appSecret = ConfigHelper::fresnsConfigByItemKey('webengine_api_app_secret');
-            }
+            $keyInfo = SessionKey::find($apiConfigs['webengine_key_id']);
 
-            $keyConfig = [
-                'platformId' => $platformId,
-                'appId' => $appId,
-                'appSecret' => $appSecret,
-            ];
+            $keyConfig = match ($apiConfigs['webengine_api_type']) {
+                'local' => [
+                    'platformId' => $keyInfo?->platform_id,
+                    'appId' => $keyInfo?->app_id,
+                    'appKey' => $keyInfo?->app_key,
+                ],
+                'remote' => [
+                    'platformId' => SessionKey::PLATFORM_WEB_RESPONSIVE,
+                    'appId' => $apiConfigs['webengine_api_app_id'],
+                    'appKey' => $apiConfigs['webengine_api_app_key'],
+                ],
+                default => [
+                    'platformId' => SessionKey::PLATFORM_WEB_RESPONSIVE,
+                    'appId' => null,
+                    'appKey' => null,
+                ],
+            };
 
             CacheHelper::put($keyConfig, $cacheKey, $cacheTags);
         }
 
         // cookie key name
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
+
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -187,9 +194,6 @@ class ApiHelper
             $aidAndToken = CacheHelper::get("fresns_web_{$ulid}", ['fresnsWeb', 'fresnsWebAccountTokens']);
         }
 
-        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
-        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
-
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
 
@@ -198,7 +202,7 @@ class ApiHelper
             'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
-            'X-Fresns-Client-Version' => $clientVersion,
+            'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
@@ -210,7 +214,7 @@ class ApiHelper
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => $nowTimestamp,
         ];
-        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyConfig['appSecret']);
+        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyConfig['appKey']);
 
         return $headers;
     }

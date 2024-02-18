@@ -18,18 +18,18 @@ class CommentInterface
 {
     public static function list(?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/comment/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/comment/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/comment/list', 'GET', $query);
 
             $apiController = new CommentController();
             $response = $apiController->list($request);
@@ -49,18 +49,18 @@ class CommentInterface
 
     public static function nearby(?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/comment/nearby', [
+            return ApiHelper::make()->get('/api/fresns/v1/comment/nearby', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/comment/nearby', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/comment/nearby', 'GET', $query);
 
             $apiController = new CommentController();
             $response = $apiController->nearby($request);
@@ -80,7 +80,7 @@ class CommentInterface
 
     public static function detail(string $cid, ?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
                 'comment' => DataHelper::getApiDataTemplate('detail'),
                 'comments' => CommentInterface::list($query),
@@ -93,8 +93,8 @@ class CommentInterface
             $client = ApiHelper::make();
 
             $results = $client->unwrapRequests([
-                'comment' => $client->getAsync("/api/v2/comment/{$cid}/detail"),
-                'comments' => $client->getAsync('/api/v2/comment/list', [
+                'comment' => $client->getAsync("/api/fresns/v1/comment/{$cid}/detail"),
+                'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
                     'query' => $query,
                 ]),
             ]);
@@ -103,7 +103,7 @@ class CommentInterface
         }
 
         try {
-            $request = Request::create("/api/v2/comment/{$cid}/detail", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/comment/{$cid}/detail", 'GET', $query);
 
             $apiController = new CommentController();
             $response = $apiController->detail($cid, $request);

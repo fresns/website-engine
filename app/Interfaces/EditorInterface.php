@@ -18,13 +18,13 @@ class EditorInterface
     public static function drafts(string $draftType, ?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/v2/editor/{$draftType}/drafts", [
+            return ApiHelper::make()->get("/api/fresns/v1/editor/{$draftType}/drafts", [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/v2/editor/{$draftType}/drafts", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/editor/{$draftType}/drafts", 'GET', $query);
 
             $apiController = new EditorController();
             $response = $apiController->drafts($draftType, $request);
@@ -43,10 +43,10 @@ class EditorInterface
         if (is_remote_api()) {
             $client = ApiHelper::make();
 
-            $params['config'] = $client->getAsync("/api/v2/editor/{$type}/config");
+            $params['config'] = $client->getAsync("/api/fresns/v1/editor/{$type}/config");
 
             if ($draftId) {
-                $params['draft'] = $client->getAsync("/api/v2/editor/{$type}/{$draftId}");
+                $params['draft'] = $client->getAsync("/api/fresns/v1/editor/{$type}/{$draftId}");
             }
 
             $results = $client->unwrapRequests($params);

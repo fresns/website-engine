@@ -22,16 +22,7 @@ class CommentController extends Controller
     // index
     public function index(Request $request)
     {
-        if (! fs_db_config('menu_comment_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT, $request->all());
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = CommentInterface::list($query);
 
@@ -64,16 +55,7 @@ class CommentController extends Controller
     // list
     public function list(Request $request)
     {
-        if (! fs_db_config('menu_comment_list_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT_LIST, $request->all());
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = CommentInterface::list($query);
 
@@ -108,11 +90,6 @@ class CommentController extends Controller
         $query['mapLat'] = $request->mapLat ?? null;
         $query['unit'] = $request->unit ?? null;
         $query['length'] = $request->length ?? null;
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         if (empty($request->mapLng) || empty($request->mapLat)) {
             $result = [
@@ -166,11 +143,6 @@ class CommentController extends Controller
         $query['mapLat'] = $location['latitude'] ?? null;
         $query['unit'] = 'km';
         $query['length'] = 1;
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = CommentInterface::nearby($query);
 
@@ -319,11 +291,6 @@ class CommentController extends Controller
         $query['cid'] = $cid;
         $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = CommentInterface::detail($cid, $query);
 
         if ($results['comment']['code'] != 0) {
@@ -332,12 +299,6 @@ class CommentController extends Controller
 
         $items = $results['comment']['data']['items'];
         $comment = $results['comment']['data']['detail'];
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $websitePercentage = intval(fs_db_config('webengine_interaction_percentage')) / 100;
-            $websiteContentLength = intval($comment['contentLength'] * $websitePercentage);
-            $comment['content'] = Str::limit($comment['content'], $websiteContentLength);
-        }
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],

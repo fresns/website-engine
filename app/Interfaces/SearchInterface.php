@@ -18,18 +18,18 @@ class SearchInterface
 {
     public static function search(string $type, ?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/v2/search/{$type}", [
+            return ApiHelper::make()->get("/api/fresns/v1/search/{$type}", [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/v2/search/{$type}", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/search/{$type}", 'GET', $query);
 
             $apiController = new SearchController();
             $response = $apiController->$type($request);

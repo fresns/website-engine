@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Konfigurasi luar biasa, tidak dapat memperoleh situs web desktop terkait.',
     'errorMobileFskey' => 'Konfigurasi luar biasa, tidak dapat memperoleh situs web ponsel terkait.',
 
-    'settingTip' => 'Lokasi pengaturan: Panel Admin -> Pusat Aplikasi -> Plugin Ekstensi -> Pengaturan (Plugin Klien) -> Konfigurasi Mesin Situs Web',
+    'settingTip' => 'Lokasi pengaturan: Panel Admin -> Pusat Aplikasi -> Tema -> Konfigurasi API',
 ];

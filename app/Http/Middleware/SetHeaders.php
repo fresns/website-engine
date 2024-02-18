@@ -11,10 +11,8 @@ namespace Fresns\WebEngine\Http\Middleware;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use App\Helpers\PluginHelper;
 use App\Helpers\PrimaryHelper;
 use App\Helpers\SignHelper;
-use Browser;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -38,11 +36,9 @@ class SetHeaders
             ], 403);
         }
 
-        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
-        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
-
         // cookie key name
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
+
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -60,7 +56,7 @@ class SetHeaders
         $headers = [
             'X-Fresns-App-Id' => $keyInfo->app_id,
             'X-Fresns-Client-Platform-Id' => $keyInfo->platform_id,
-            'X-Fresns-Client-Version' => $clientVersion,
+            'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
@@ -72,7 +68,7 @@ class SetHeaders
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => $nowTimestamp,
         ];
-        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyInfo->app_secret);
+        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyInfo->app_key);
 
         $request->headers->set('X-Fresns-App-Id', $headers['X-Fresns-App-Id']);
         $request->headers->set('X-Fresns-Client-Platform-Id', $headers['X-Fresns-Client-Platform-Id']);

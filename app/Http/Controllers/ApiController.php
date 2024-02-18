@@ -9,6 +9,7 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\ConfigHelper;
 use App\Utilities\ConfigUtility;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
@@ -43,7 +44,7 @@ class ApiController extends Controller
     // plugin callback
     public function pluginCallback(Request $request): JsonResponse
     {
-        $result = ApiHelper::make()->get('/api/v2/common/callback', [
+        $result = ApiHelper::make()->get('/api/fresns/v1/common/callback', [
             'query' => $request->all(),
         ]);
 
@@ -63,7 +64,7 @@ class ApiController extends Controller
 
         $query = QueryHelper::convertOptionToRequestParam($queryType, $request->all());
 
-        $result = ApiHelper::make()->get("/api/v2/{$queryType}/list", [
+        $result = ApiHelper::make()->get("/api/fresns/v1/{$queryType}/list", [
             'query' => $query,
         ]);
 
@@ -91,7 +92,7 @@ class ApiController extends Controller
             'comments' => 'comment',
         };
 
-        $result = ApiHelper::make()->get("/api/v2/{$type}/list", [
+        $result = ApiHelper::make()->get("/api/fresns/v1/{$type}/list", [
             'query' => $query,
         ]);
 
@@ -101,7 +102,7 @@ class ApiController extends Controller
     // sub groups
     public function subGroups(string $gid): JsonResponse
     {
-        $response = ApiHelper::make()->get('/api/v2/group/list', [
+        $response = ApiHelper::make()->get('/api/fresns/v1/group/list', [
             'query' => [
                 'gid' => $gid,
                 'pageSize' => request()->get('pageSize'),
@@ -116,7 +117,7 @@ class ApiController extends Controller
     public function getInputTips(Request $request): JsonResponse
     {
         if ($request->get('type') && $request->get('key')) {
-            $result = ApiHelper::make()->get('/api/v2/common/input-tips', [
+            $result = ApiHelper::make()->get('/api/fresns/v1/common/input-tips', [
                 'query' => [
                     'type' => $request->get('type'),
                     'key' => $request->get('key'),
@@ -136,7 +137,7 @@ class ApiController extends Controller
     // get archives
     public function getArchives(Request $request, string $type)
     {
-        $response = ApiHelper::make()->get("/api/v2/global/{$type}/archives", [
+        $response = ApiHelper::make()->get("/api/fresns/v1/global/{$type}/archives", [
             'query' => [
                 'fskey' => $request->get('fskey'),
             ],
@@ -160,7 +161,7 @@ class ApiController extends Controller
             \request()->offsetSet('phone', fs_account()->get('detail.phone'));
         }
 
-        $response = ApiHelper::make()->post('/api/v2/common/send-verify-code', [
+        $response = ApiHelper::make()->post('/api/fresns/v1/common/send-verify-code', [
             'json' => \request()->all(),
         ]);
 
@@ -189,7 +190,7 @@ class ApiController extends Controller
             $multipart[] = compact('name', 'contents', 'headers');
         }
 
-        $response = ApiHelper::make()->post('/api/v2/common/upload-file', [
+        $response = ApiHelper::make()->post('/api/fresns/v1/common/upload-file', [
             'multipart' => $multipart,
         ]);
 
@@ -203,7 +204,7 @@ class ApiController extends Controller
     // account register
     public function accountRegister(Request $request)
     {
-        $result = ApiHelper::make()->post('/api/v2/account/register', [
+        $result = ApiHelper::make()->post('/api/fresns/v1/account/register', [
             'json' => [
                 'type' => $request->type,
                 'account' => $request->{$request->type},
@@ -224,7 +225,7 @@ class ApiController extends Controller
         $user = $data['detail']['users'][0];
 
         // cookie key name
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -255,7 +256,7 @@ class ApiController extends Controller
         DataHelper::cacheForgetAccountAndUser();
 
         // user login
-        $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
+        $userResult = ApiHelper::make()->post('/api/fresns/v1/user/auth', [
             'json' => [
                 'uidOrUsername' => strval($user['uid']),
                 'password' => null,
@@ -291,7 +292,7 @@ class ApiController extends Controller
     // account login
     public function accountLogin(Request $request)
     {
-        $result = ApiHelper::make()->post('/api/v2/account/login', [
+        $result = ApiHelper::make()->post('/api/fresns/v1/account/login', [
             'json' => [
                 'type' => $request->type,
                 'account' => $request->{$request->type},
@@ -314,7 +315,7 @@ class ApiController extends Controller
         $redirectURL = $request->redirectURL;
 
         // cookie key name
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -358,12 +359,12 @@ class ApiController extends Controller
                         'code' => 0,
                         'message' => data_get($result, 'message', 'success'),
                         'data' => [
-                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                         ],
                     ]);
                 }
 
-                return redirect()->intended(fs_route(route('fresns.account.login')));
+                return redirect()->intended(fs_route(route('fresns.home')));
             } else {
                 // User does not have a password
                 \request()->offsetSet($fresnsAid, $data['sessionToken']['aid']);
@@ -371,7 +372,7 @@ class ApiController extends Controller
 
                 DataHelper::cacheForgetAccountAndUser();
 
-                $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
+                $userResult = ApiHelper::make()->post('/api/fresns/v1/user/auth', [
                     'json' => [
                         'uidOrUsername' => strval($user['uid']),
                         'password' => null,
@@ -413,12 +414,12 @@ class ApiController extends Controller
                     'code' => 0,
                     'message' => data_get($result, 'message', 'success'),
                     'data' => [
-                        'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                        'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                     ],
                 ]);
             }
 
-            return redirect()->intended($redirectURL ?? fs_route(route('fresns.account.login')));
+            return redirect()->intended($redirectURL ?? fs_route(route('fresns.home')));
         }
     }
 
@@ -441,7 +442,7 @@ class ApiController extends Controller
         }
 
         // cookie key name
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $fresnsAid = "{$cookiePrefix}aid";
         $fresnsAidToken = "{$cookiePrefix}aid_token";
         $fresnsUid = "{$cookiePrefix}uid";
@@ -482,12 +483,12 @@ class ApiController extends Controller
                         'code' => 0,
                         'message' => $accountMessage,
                         'data' => [
-                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                            'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                         ],
                     ]);
                 }
 
-                return redirect()->intended(fs_route(route('fresns.account.login')));
+                return redirect()->intended(fs_route(route('fresns.home')));
             } else {
                 // User does not have a password
                 \request()->offsetSet($fresnsAid, $accountData['sessionToken']['aid']);
@@ -495,7 +496,7 @@ class ApiController extends Controller
 
                 DataHelper::cacheForgetAccountAndUser();
 
-                $userResult = ApiHelper::make()->post('/api/v2/user/auth', [
+                $userResult = ApiHelper::make()->post('/api/fresns/v1/user/auth', [
                     'json' => [
                         'uidOrUsername' => strval($user['uid']),
                         'password' => null,
@@ -537,12 +538,12 @@ class ApiController extends Controller
                     'code' => 0,
                     'message' => $accountMessage,
                     'data' => [
-                        'redirectURL' => $redirectURL ?? fs_route(route('fresns.account.login')),
+                        'redirectURL' => $redirectURL ?? fs_route(route('fresns.home')),
                     ],
                 ]);
             }
 
-            return redirect()->intended($redirectURL ?? fs_route(route('fresns.account.login')));
+            return redirect()->intended($redirectURL ?? fs_route(route('fresns.home')));
         }
     }
 
@@ -557,7 +558,7 @@ class ApiController extends Controller
             ]);
         }
 
-        $response = ApiHelper::make()->put('/api/v2/account/reset-password', [
+        $response = ApiHelper::make()->put('/api/fresns/v1/account/reset-password', [
             'json' => [
                 'type' => $request->type,
                 'account' => $request->{$request->type},
@@ -573,7 +574,7 @@ class ApiController extends Controller
     // account verify identity
     public function accountVerifyIdentity(Request $request)
     {
-        $response = ApiHelper::make()->post('/api/v2/account/verify-identity', [
+        $response = ApiHelper::make()->post('/api/fresns/v1/account/verify-identity', [
             'json' => \request()->all(),
         ]);
 
@@ -588,7 +589,7 @@ class ApiController extends Controller
             \request()->offsetSet('verifyCode', '');
         }
 
-        $response = ApiHelper::make()->put('/api/v2/account/edit', [
+        $response = ApiHelper::make()->put('/api/fresns/v1/account/edit', [
             'json' => $request->all(),
         ]);
 
@@ -600,7 +601,7 @@ class ApiController extends Controller
     // account apply delete
     public function accountApplyDelete(Request $request)
     {
-        $result = ApiHelper::make()->post('/api/v2/account/apply-delete', [
+        $result = ApiHelper::make()->post('/api/fresns/v1/account/apply-delete', [
             'json' => [
                 'password' => $request->password ?? null,
                 'verifyCode' => $request->verifyCode ?? null,
@@ -618,7 +619,7 @@ class ApiController extends Controller
     // account recall delete
     public function accountRecallDelete(Request $request)
     {
-        $result = ApiHelper::make()->post('/api/v2/account/recall-delete');
+        $result = ApiHelper::make()->post('/api/fresns/v1/account/recall-delete');
 
         if ($result['code'] != 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -630,7 +631,7 @@ class ApiController extends Controller
     // user auth
     public function userAuth(Request $request)
     {
-        $result = ApiHelper::make()->post('/api/v2/user/auth', [
+        $result = ApiHelper::make()->post('/api/fresns/v1/user/auth', [
             'json' => [
                 'uidOrUsername' => $request->uidOrUsername,
                 'password' => $request->password ?? null,
@@ -642,7 +643,7 @@ class ApiController extends Controller
             throw new ErrorException($result['message'], $result['code']);
         }
 
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $userExpiredHours = data_get($result, 'data.sessionToken.expiredHours') ?? 8760;
         $userTokenMinutes = $userExpiredHours * 60;
@@ -671,7 +672,7 @@ class ApiController extends Controller
     // user edit
     public function userEdit()
     {
-        $response = ApiHelper::make()->put('/api/v2/user/edit', [
+        $response = ApiHelper::make()->put('/api/fresns/v1/user/edit', [
             'json' => \request()->all(),
         ]);
 
@@ -683,7 +684,7 @@ class ApiController extends Controller
     // user mark
     public function userMark(Request $request)
     {
-        $response = ApiHelper::make()->post('/api/v2/user/mark', [
+        $response = ApiHelper::make()->post('/api/fresns/v1/user/mark', [
             'json' => $request->all(),
         ]);
 
@@ -701,7 +702,7 @@ class ApiController extends Controller
     // message mark-as-read
     public function messageMarkAsRead(Request $request, string $type)
     {
-        $response = ApiHelper::make()->put("/api/v2/{$type}/mark-as-read", [
+        $response = ApiHelper::make()->put("/api/fresns/v1/{$type}/mark-as-read", [
             'json' => \request()->all(),
         ]);
 
@@ -715,7 +716,7 @@ class ApiController extends Controller
     // message delete
     public function messageDelete(Request $request, string $type)
     {
-        $response = ApiHelper::make()->delete("/api/v2/{$type}/delete", [
+        $response = ApiHelper::make()->delete("/api/fresns/v1/{$type}/delete", [
             'json' => \request()->all(),
         ]);
 
@@ -729,7 +730,7 @@ class ApiController extends Controller
     // send message
     public function messageSend(Request $request)
     {
-        $response = ApiHelper::make()->post('/api/v2/conversation/send-message', [
+        $response = ApiHelper::make()->post('/api/fresns/v1/conversation/send-message', [
             'json' => \request()->all(),
         ]);
 
@@ -739,7 +740,7 @@ class ApiController extends Controller
     // messages
     public function messages(Request $request, $conversationId)
     {
-        $response = ApiHelper::make()->get("/api/v2/conversation/{$conversationId}/messages", [
+        $response = ApiHelper::make()->get("/api/fresns/v1/conversation/{$conversationId}/messages", [
             'query' => [
                 'orderDirection' => $request->get('orderDirection'),
                 'pageListDirection' => $request->get('pageListDirection'),
@@ -754,7 +755,7 @@ class ApiController extends Controller
     // content download file
     public function contentFileLink(Request $request, $fid)
     {
-        $response = ApiHelper::make()->get("/api/v2/common/file/{$fid}/link", [
+        $response = ApiHelper::make()->get("/api/fresns/v1/common/file/{$fid}/link", [
             'query' => [
                 'type' => $request->get('type'),
                 'fsid' => $request->get('fsid'),
@@ -767,7 +768,7 @@ class ApiController extends Controller
     // content download users
     public function contentFileUsers(Request $request, $fid)
     {
-        $response = ApiHelper::make()->get("/api/v2/common/file/{$fid}/users", [
+        $response = ApiHelper::make()->get("/api/fresns/v1/common/file/{$fid}/users", [
             'query' => [
                 'pageSize' => $request->get('pageSize') ?? 30,
                 'page' => $request->get('page') ?? 1,
@@ -788,7 +789,7 @@ class ApiController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->delete("/api/v2/{$type}/{$fsid}");
+        $response = ApiHelper::make()->delete("/api/fresns/v1/{$type}/{$fsid}");
 
         return \response()->json($response);
     }
@@ -799,8 +800,8 @@ class ApiController extends Controller
         $validator = Validator::make($request->post(),
             [
                 'content' => 'required',
-                'postGid' => ($type === 'post' && fs_api_config('post_editor_group_required')) ? 'required' : 'nullable',
-                'postTitle' => ($type === 'post' && fs_api_config('post_editor_title_required')) ? 'required' : 'nullable',
+                'postGid' => ($type === 'post' && fs_config('post_editor_group_required')) ? 'required' : 'nullable',
+                'postTitle' => ($type === 'post' && fs_config('post_editor_title_required')) ? 'required' : 'nullable',
                 'commentPid' => ($type === 'comment') ? 'required' : 'nullable',
             ], [
                 'postGid.required' => ConfigUtility::getCodeMessage(38208, 'Fresns', current_lang_tag()),
@@ -864,7 +865,7 @@ class ApiController extends Controller
             ];
         }
 
-        $result = ApiHelper::make()->post("/api/v2/editor/{$type}/quick-publish", [
+        $result = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/quick-publish", [
             'multipart' => array_filter($multipart, fn ($val) => isset($val['contents'])),
         ]);
 
@@ -922,7 +923,7 @@ class ApiController extends Controller
                 'contents' => $file->getContent(),
                 'headers' => ['Content-Type' => $file->getClientMimeType()],
             ];
-            $postAsyncs[] = ApiHelper::make()->postAsync('/api/v2/common/upload-file', [
+            $postAsyncs[] = ApiHelper::make()->postAsync('/api/fresns/v1/common/upload-file', [
                 'multipart' => array_filter($params, fn ($val) => isset($val['contents'])),
             ]);
         }
@@ -943,7 +944,7 @@ class ApiController extends Controller
     // editor update
     public function editorUpdate(Request $request, string $type, int $draftId)
     {
-        $response = ApiHelper::make()->put("/api/v2/editor/{$type}/{$draftId}", [
+        $response = ApiHelper::make()->put("/api/fresns/v1/editor/{$type}/{$draftId}", [
             'json' => $request->all(),
         ]);
 
@@ -961,7 +962,7 @@ class ApiController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->post("/api/v2/editor/{$type}/{$draftId}");
+        $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/{$draftId}");
 
         DataHelper::cacheForgetAccountAndUser();
 
@@ -979,7 +980,7 @@ class ApiController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->patch("/api/v2/editor/{$type}/{$draftId}");
+        $response = ApiHelper::make()->patch("/api/fresns/v1/editor/{$type}/{$draftId}");
 
         return \response()->json($response);
     }
@@ -995,7 +996,7 @@ class ApiController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->delete("/api/v2/editor/{$type}/{$draftId}");
+        $response = ApiHelper::make()->delete("/api/fresns/v1/editor/{$type}/{$draftId}");
 
         $uid = fs_user('detail.uid');
 

@@ -23,7 +23,6 @@ class WebEngineServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerTranslations();
-        $this->registerViews();
     }
 
     /**
@@ -31,11 +30,9 @@ class WebEngineServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // web engine admin
-        $this->app->register(AdminRouteServiceProvider::class);
-
         // web engine client
-        if (! fs_db_config('webengine_status', false)) {
+        $webEngineStatus = ConfigHelper::fresnsConfigByItemKey('webengine_status') ?? false;
+        if (! $webEngineStatus) {
             return;
         }
 
@@ -112,13 +109,5 @@ class WebEngineServiceProvider extends ServiceProvider
     public function registerTranslations(): void
     {
         $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'WebEngine');
-    }
-
-    /**
-     * Register views.
-     */
-    public function registerViews(): void
-    {
-        $this->loadViewsFrom(dirname(__DIR__, 2).'/resources/views', 'WebEngine');
     }
 }

@@ -11,7 +11,6 @@ namespace Fresns\WebEngine\Providers;
 use App\Helpers\AppHelper;
 use App\Helpers\PluginHelper;
 use Browser;
-use Fresns\PluginManager\Plugin;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
@@ -80,32 +79,17 @@ class ExceptionServiceProvider extends ServiceProvider
 
             // 404 page
             if ($e instanceof NotFoundHttpException) {
-                $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+                if (! fs_theme('fskey')) {
+                    $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
 
-                $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
-
-                if (! $clientFskey) {
                     return Response::view('error', [
                         'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
                         'code' => 400,
                     ], 400);
-                } else {
-                    $plugin = new Plugin($clientFskey);
-
-                    if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
-                        return Response::view('error', [
-                            'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                            'code' => 405,
-                        ], 405);
-                    }
                 }
-
-                $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
 
                 return Response::view(404, [
                     'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
-                    'clientFskey' => $clientFskey,
-                    'clientVersion' => $clientVersion,
                 ], 404);
             }
         };

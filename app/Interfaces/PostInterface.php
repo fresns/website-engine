@@ -18,18 +18,18 @@ class PostInterface
 {
     public static function list(?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/post/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/post/list', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/post/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/post/list', 'GET', $query);
 
             $apiController = new PostController();
             $response = $apiController->list($request);
@@ -49,18 +49,18 @@ class PostInterface
 
     public static function nearby(?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/post/nearby', [
+            return ApiHelper::make()->get('/api/fresns/v1/post/nearby', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/post/nearby', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/post/nearby', 'GET', $query);
 
             $apiController = new PostController();
             $response = $apiController->nearby($request);
@@ -80,7 +80,7 @@ class PostInterface
 
     public static function detail(string $pid, ?array $query = []): array
     {
-        if (fs_api_config('site_mode') == 'private' && fs_api_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
+        if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
                 'post' => DataHelper::getApiDataTemplate('detail'),
                 'comments' => CommentInterface::list($query),
@@ -94,11 +94,11 @@ class PostInterface
             $client = ApiHelper::make();
 
             $results = $client->unwrapRequests([
-                'post' => $client->getAsync("/api/v2/post/{$pid}/detail"),
-                'comments' => $client->getAsync('/api/v2/comment/list', [
+                'post' => $client->getAsync("/api/fresns/v1/post/{$pid}/detail"),
+                'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
                     'query' => $query,
                 ]),
-                'stickies' => $client->getAsync('/api/v2/comment/list', [
+                'stickies' => $client->getAsync('/api/fresns/v1/comment/list', [
                     'query' => [
                         'pid' => $pid,
                         'sticky' => true,
@@ -110,7 +110,7 @@ class PostInterface
         }
 
         try {
-            $request = Request::create("/api/v2/post/{$pid}/detail", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/post/{$pid}/detail", 'GET', $query);
 
             $apiController = new PostController();
             $response = $apiController->detail($pid, $request);

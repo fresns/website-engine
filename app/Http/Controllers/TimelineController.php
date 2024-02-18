@@ -14,7 +14,7 @@ use Fresns\WebEngine\Interfaces\FollowInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
-class FollowController extends Controller
+class TimelineController extends Controller
 {
     // all posts
     public function allPosts(Request $request)

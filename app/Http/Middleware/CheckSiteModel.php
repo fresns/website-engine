@@ -15,7 +15,7 @@ class CheckSiteModel
 {
     public function handle(Request $request, Closure $next)
     {
-        if (fs_api_config('site_mode') == 'private' && fs_user()->guest()) {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
             return \response()->view('portal.private');
         }
 

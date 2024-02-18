@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Configuración excepcional, no se puede obtener el sitio web de escritorio asociado.',
     'errorMobileFskey' => 'Configuración excepcional, no se puede obtener el sitio web móvil asociado.',
 
-    'settingTip' => 'Ubicación de la configuración: Panel de administración -> Centro de aplicaciones -> Plugin de extensión -> Configuración (Plugin de cliente) -> Configuración del motor del sitio web',
+    'settingTip' => 'Ubicación de la configuración: Panel de administración -> Centro de aplicaciones -> Temas -> Configuración API',
 ];

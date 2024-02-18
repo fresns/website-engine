@@ -59,8 +59,8 @@ class EditorController extends Controller
 
         // Editor Plugin Configuration
         $editorPlugin = match ($type) {
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
+            'post' => fs_config('post_editor_service'),
+            'comment' => fs_config('comment_editor_service'),
             default => null,
         };
 
@@ -81,7 +81,7 @@ class EditorController extends Controller
 
         // If it is a comment ignore the draft logic
         if ($type == 'comment') {
-            $response = ApiHelper::make()->post('/api/v2/editor/comment/create', [
+            $response = ApiHelper::make()->post('/api/fresns/v1/editor/comment/create', [
                 'json' => [
                     'createType' => 2,
                     'commentPid' => $request->commentPid,
@@ -102,8 +102,8 @@ class EditorController extends Controller
         // Editor request data
         $client = ApiHelper::make();
         $results = $client->unwrapRequests([
-            'config' => $client->getAsync("/api/v2/editor/{$type}/config"),
-            'drafts' => $client->getAsync("/api/v2/editor/{$type}/drafts"),
+            'config' => $client->getAsync("/api/fresns/v1/editor/{$type}/config"),
+            'drafts' => $client->getAsync("/api/fresns/v1/editor/{$type}/drafts"),
         ]);
 
         $config = $results['config']['data'];
@@ -111,7 +111,7 @@ class EditorController extends Controller
 
         // User without drafts, automatically create drafts and enter the editor
         if (empty($drafts)) {
-            $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
+            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
                     'postGid' => $request->postGid,
@@ -150,8 +150,8 @@ class EditorController extends Controller
 
         // Editor Plugin Configuration
         $editorPlugin = match ($type) {
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
+            'post' => fs_config('post_editor_service'),
+            'comment' => fs_config('comment_editor_service'),
             default => null,
         };
 
@@ -164,9 +164,9 @@ class EditorController extends Controller
 
         // Determine whether to edit content, or create a draft
         if ($fsid) {
-            $response = ApiHelper::make()->post("/api/v2/editor/{$type}/generate/{$fsid}");
+            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/generate/{$fsid}");
         } else {
-            $response = ApiHelper::make()->post("/api/v2/editor/{$type}/create", [
+            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/create", [
                 'json' => [
                     'createType' => 2,
                     'postQuotePid' => $request->input('postQuotePid'),
@@ -210,8 +210,8 @@ class EditorController extends Controller
 
         // Editor Plugin Configuration
         $editorPlugin = match ($type) {
-            'post' => fs_api_config('post_editor_service'),
-            'comment' => fs_api_config('comment_editor_service'),
+            'post' => fs_config('post_editor_service'),
+            'comment' => fs_config('comment_editor_service'),
             default => null,
         };
 
@@ -262,7 +262,7 @@ class EditorController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->put("/api/v2/editor/{$type}/{$draftId}", [
+        $response = ApiHelper::make()->put("/api/fresns/v1/editor/{$type}/{$draftId}", [
             'json' => [
                 'postGid' => $request->post('postGid'),
                 'postTitle' => $request->post('postTitle'),
@@ -290,7 +290,7 @@ class EditorController extends Controller
             throw new ErrorException($response['message'], $response['code']);
         }
 
-        $response = ApiHelper::make()->post("/api/v2/editor/{$type}/{$draftId}");
+        $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/{$draftId}");
 
         if ($response['code'] == 38200) {
             return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);

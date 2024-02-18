@@ -11,11 +11,9 @@ namespace Fresns\WebEngine\Http\Middleware;
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use App\Helpers\PluginHelper;
-use App\Models\SessionKey;
+use App\Helpers\PrimaryHelper;
 use Browser;
 use Closure;
-use Fresns\PluginManager\Plugin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
@@ -37,45 +35,20 @@ class WebConfiguration
             ], 503);
         }
 
-        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
+        $themeFskey = fs_theme('fskey');
 
-        $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
+        if (! $themeFskey) {
+            $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
 
-        if (! $clientFskey) {
             return Response::view('error', [
                 'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
                 'code' => 400,
             ], 400);
-        } else {
-            $plugin = new Plugin($clientFskey);
-
-            if (! $plugin->isAvailablePlugin() || ! $plugin->isActivate()) {
-                return Response::view('error', [
-                    'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 405,
-                ], 405);
-            }
         }
 
         if (is_local_api()) {
-            if (! fs_db_config('webengine_key_id')) {
-                return Response::view('error', [
-                    'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 403,
-                ], 403);
-            }
-
-            $keyId = fs_db_config('webengine_key_id');
-            $cacheKey = "fresns_web_key_{$keyId}";
-            $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-            $keyInfo = CacheHelper::get($cacheKey, $cacheTags);
-
-            if (empty($keyInfo)) {
-                $keyInfo = SessionKey::find($keyId);
-
-                CacheHelper::put($keyInfo, $cacheKey, $cacheTags);
-            }
+            $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
+            $keyInfo = PrimaryHelper::fresnsModelById('key', $keyId);
 
             if (! $keyInfo) {
                 return Response::view('error', [
@@ -85,8 +58,14 @@ class WebConfiguration
             }
         }
 
-        if (! is_local_api()) {
-            if (! fs_db_config('webengine_api_host') || ! fs_db_config('webengine_api_app_id') || ! fs_db_config('webengine_api_app_secret')) {
+        if (is_remote_api()) {
+            $apiConfigs = ConfigHelper::fresnsConfigByItemKeys([
+                'webengine_api_host',
+                'webengine_api_app_id',
+                'webengine_api_app_key',
+            ]);
+
+            if (! $apiConfigs['webengine_api_host'] || ! $apiConfigs['webengine_api_app_id'] || ! $apiConfigs['webengine_api_app_key']) {
                 return Response::view('error', [
                     'message' => '<p>'.__('WebEngine::tips.errorApi').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
                     'code' => 403,
@@ -95,17 +74,13 @@ class WebConfiguration
         }
 
         $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("plugins/{$clientFskey}/resources/views"));
+        $finder->prependLocation(base_path("themes/{$themeFskey}"));
         $this->loadLanguages();
         $this->webLangTag();
 
-        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
-
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-        View::share('clientFskey', $clientFskey);
-        View::share('clientVersion', $clientVersion);
 
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $uid = Cookie::get("{$cookiePrefix}uid");
         if ($uid && ! ctype_digit($uid)) {
             fs_account()->logout();
@@ -122,7 +97,7 @@ class WebConfiguration
         $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($supportedLocales)) {
-            $menus = fs_api_config('language_menus') ?? [];
+            $menus = fs_config('language_menus') ?? [];
 
             $supportedLocales = [];
             foreach ($menus as $menu) {
@@ -152,7 +127,7 @@ class WebConfiguration
             }
         }
 
-        $cookiePrefix = fs_db_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
 
         // ulid

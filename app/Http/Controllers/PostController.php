@@ -22,16 +22,7 @@ class PostController extends Controller
     // index
     public function index(Request $request)
     {
-        if (! fs_db_config('menu_post_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST, $request->all());
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = PostInterface::list($query);
 
@@ -64,16 +55,7 @@ class PostController extends Controller
     // list
     public function list(Request $request)
     {
-        if (! fs_db_config('menu_post_list_status')) {
-            return Response::view('404', [], 404);
-        }
-
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST_LIST, $request->all());
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = PostInterface::list($query);
 
@@ -112,11 +94,6 @@ class PostController extends Controller
         $query['mapLat'] = $request->mapLat ?? null;
         $query['unit'] = $request->unit ?? null;
         $query['length'] = $request->length ?? null;
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         if (empty($request->mapLng) || empty($request->mapLat)) {
             $result = [
@@ -170,11 +147,6 @@ class PostController extends Controller
         $query['mapLat'] = $location['latitude'] ?? null;
         $query['unit'] = 'km';
         $query['length'] = 1;
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
 
         $result = PostInterface::nearby($query);
 
@@ -323,11 +295,6 @@ class PostController extends Controller
         $query['pid'] = $pid;
         $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
-        if (! fs_db_config('webengine_interaction_status')) {
-            $query['pageSize'] = fs_db_config('webengine_interaction_number');
-            $query['page'] = 1;
-        }
-
         $results = PostInterface::detail($pid, $query);
 
         if ($results['post']['code'] != 0) {
@@ -336,12 +303,6 @@ class PostController extends Controller
 
         $items = $results['post']['data']['items'];
         $post = $results['post']['data']['detail'];
-
-        if (! fs_db_config('webengine_interaction_status')) {
-            $websitePercentage = intval(fs_db_config('webengine_interaction_percentage')) / 100;
-            $websiteContentLength = intval($post['contentLength'] * $websitePercentage);
-            $post['content'] = Str::limit($post['content'], $websiteContentLength);
-        }
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $results['comments']['data']['list'],

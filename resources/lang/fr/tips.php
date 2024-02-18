@@ -13,5 +13,5 @@ return [
     'errorDesktopFskey' => 'Configuration exceptionnelle, impossible d’obtenir le site Web de bureau associé.',
     'errorMobileFskey' => 'Configuration exceptionnelle, impossible d’obtenir le site Web mobile associé.',
 
-    'settingTip' => 'Emplacement des paramètres: Panneau d’administration -> Centre d’applications -> Plugin d’extension -> Paramètres (Plugin client) -> Configuration du moteur du site Web',
+    'settingTip' => 'Emplacement des paramètres: Panneau d’administration -> Centre d’applications -> Thèmes -> Configuration de l\'API',
 ];

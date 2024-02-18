@@ -22,12 +22,12 @@ class MessageInterface
             $client = ApiHelper::make();
 
             $results = $client->unwrapRequests([
-                'conversations' => $client->getAsync('/api/v2/conversation/list', [
+                'conversations' => $client->getAsync('/api/fresns/v1/conversation/list', [
                     'query' => [
                         'isPin' => false,
                     ],
                 ]),
-                'pinConversations' => $client->getAsync('/api/v2/conversation/list', [
+                'pinConversations' => $client->getAsync('/api/fresns/v1/conversation/list', [
                     'query' => [
                         'isPin' => true,
                     ],
@@ -38,10 +38,10 @@ class MessageInterface
         }
 
         try {
-            $request = Request::create('/api/v2/conversation/list', 'GET', [
+            $request = Request::create('/api/fresns/v1/conversation/list', 'GET', [
                 'isPin' => false,
             ]);
-            $pinRequest = Request::create('/api/v2/conversation/list', 'GET', [
+            $pinRequest = Request::create('/api/fresns/v1/conversation/list', 'GET', [
                 'isPin' => true,
             ]);
 
@@ -69,11 +69,11 @@ class MessageInterface
             $client = ApiHelper::make();
 
             $results = $client->unwrapRequests([
-                'conversation' => $client->getAsync("/api/v2/conversation/{$conversationId}/detail"),
-                'messages' => $client->getAsync("/api/v2/conversation/{$conversationId}/messages", [
+                'conversation' => $client->getAsync("/api/fresns/v1/conversation/{$conversationId}/detail"),
+                'messages' => $client->getAsync("/api/fresns/v1/conversation/{$conversationId}/messages", [
                     'query' => $query,
                 ]),
-                'markAllAsRead' => $client->putAsync('/api/v2/conversation/mark-as-read', [
+                'markAllAsRead' => $client->putAsync('/api/fresns/v1/conversation/mark-as-read', [
                     'json' => [
                         'type' => 'conversation',
                         'conversationId' => $conversationId,
@@ -91,7 +91,7 @@ class MessageInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
 
-            $request = Request::create("/api/v2/conversation/{$conversationId}/messages", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/conversation/{$conversationId}/messages", 'GET', $query);
             $messagesResponse = $apiController->messages($conversationId, $request);
 
             $messagesResultContent = $messagesResponse->getContent();
@@ -102,7 +102,7 @@ class MessageInterface
                 'messages' => $messagesResult,
             ];
 
-            $markAllAsReadRequest = Request::create('/api/v2/conversation/mark-as-read', 'GET', [
+            $markAllAsReadRequest = Request::create('/api/fresns/v1/conversation/mark-as-read', 'GET', [
                 'type' => 'conversation',
                 'conversationId' => $conversationId,
             ]);
@@ -117,13 +117,13 @@ class MessageInterface
     public static function notifications(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/v2/notification/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/notification/list', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create('/api/v2/notification/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/notification/list', 'GET', $query);
 
             $apiController = new NotificationController();
             $response = $apiController->list($request);

@@ -8,6 +8,7 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
+use App\Helpers\ConfigHelper;
 use Browser;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
@@ -16,9 +17,9 @@ class PortalController extends Controller
 {
     public function index()
     {
-        $content = fs_db_config('portal_4') ?? (
-            Browser::isMobile() ? fs_db_config('portal_3') : fs_db_config('portal_2')
-        );
+        $portalContent = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('portal_3') : ConfigHelper::fresnsConfigByItemKey('portal_2');
+
+        $content = ConfigHelper::fresnsConfigByItemKey('portal_4') ?? $portalContent;
 
         return view('portal.index', compact('content'));
     }

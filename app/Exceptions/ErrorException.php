@@ -9,8 +9,6 @@
 namespace Fresns\WebEngine\Exceptions;
 
 use App\Helpers\AppHelper;
-use App\Helpers\PluginHelper;
-use Browser;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
@@ -18,13 +16,7 @@ class ErrorException extends \Exception
 {
     public function render()
     {
-        $clientFskey = Browser::isMobile() ? fs_db_config('webengine_view_mobile') : fs_db_config('webengine_view_desktop');
-
-        $clientVersion = PluginHelper::fresnsPluginVersionByFskey($clientFskey);
-
         View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-        View::share('clientFskey', $clientFskey);
-        View::share('clientVersion', $clientVersion);
 
         if (\request()->wantsJson()) {
             return \response()->json([
