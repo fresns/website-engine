@@ -209,7 +209,8 @@ Route::prefix(LaravelLocalization::setLocale())
                 $profilePath = ConfigHelper::fresnsConfigByItemKey('profile_default_homepage');
 
                 Route::get('/', [ProfileController::class, Str::camel($profilePath)])->name('index');
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
 
             Route::get('posts', [ProfileController::class, 'posts'])->name('posts');
             Route::get('comments', [ProfileController::class, 'comments'])->name('comments');

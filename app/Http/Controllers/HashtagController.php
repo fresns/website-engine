@@ -13,7 +13,6 @@ use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\HashtagInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
 class HashtagController extends Controller
