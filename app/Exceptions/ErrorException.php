@@ -8,16 +8,12 @@
 
 namespace Fresns\WebEngine\Exceptions;
 
-use App\Helpers\AppHelper;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 
 class ErrorException extends \Exception
 {
     public function render()
     {
-        View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
-
         if (\request()->wantsJson()) {
             return \response()->json([
                 'code' => $this->getCode(),

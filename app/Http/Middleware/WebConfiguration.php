@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Middleware;
 
-use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PrimaryHelper;
@@ -17,7 +16,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class WebConfiguration
@@ -25,7 +23,7 @@ class WebConfiguration
     public function handle(Request $request, Closure $next)
     {
         if (! fs_status('activate')) {
-            $langTag = current_lang_tag();
+            $langTag = fs_theme('lang');
 
             $deactivateDescribe = fs_status('deactivateDescribe')[$langTag] ?? fs_status('deactivateDescribe')['default'] ?? '';
 
@@ -77,8 +75,6 @@ class WebConfiguration
         $finder->prependLocation(base_path("themes/{$themeFskey}"));
         $this->loadLanguages();
         $this->webLangTag();
-
-        View::share('fresnsVersion', AppHelper::VERSION_MD5_16BIT);
 
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $uid = Cookie::get("{$cookiePrefix}uid");

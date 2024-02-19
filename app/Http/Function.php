@@ -16,6 +16,7 @@ use Fresns\WebEngine\Auth\UserGuard;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 // is_local_api
@@ -50,11 +51,17 @@ if (! function_exists('fs_route')) {
 if (! function_exists('fs_theme')) {
     function fs_theme(string $type): ?string
     {
-        $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
+        $converted = Str::lower($type);
 
-        $info = match ($type) {
+        $themeFskey = null;
+        if ($converted != 'lang') {
+            $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
+        }
+
+        $info = match ($converted) {
             'fskey' => $themeFskey,
             'version' => PluginHelper::fresnsPluginVersionByFskey($themeFskey),
+            'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
             default => null,
         };
 
@@ -88,14 +95,6 @@ if (! function_exists('fs_helpers')) {
         }
 
         return $helperData;
-    }
-}
-
-// current_lang_tag
-if (! function_exists('current_lang_tag')) {
-    function current_lang_tag(): string
-    {
-        return App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language');
     }
 }
 
@@ -143,7 +142,7 @@ if (! function_exists('fs_status')) {
 if (! function_exists('fs_config')) {
     function fs_config(string $itemKey, mixed $default = null): mixed
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $cacheKey = "fresns_web_configs_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -167,7 +166,7 @@ if (! function_exists('fs_config')) {
 if (! function_exists('fs_lang')) {
     function fs_lang(?string $langKey = null, ?string $default = null): ?string
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $cacheKey = "fresns_web_languages_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -195,7 +194,7 @@ if (! function_exists('fs_lang')) {
 if (! function_exists('fs_channels')) {
     function fs_channels(): ?array
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $uid = 'guest';
         if (fs_user()->check()) {
@@ -229,7 +228,7 @@ if (! function_exists('fs_channels')) {
 if (! function_exists('fs_content_types')) {
     function fs_content_types(string $type): ?array
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -263,7 +262,7 @@ if (! function_exists('fs_stickers')) {
             return [];
         }
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $cacheKey = "fresns_web_stickers_{$langTag}";
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -328,7 +327,7 @@ if (! function_exists('fs_user_overview')) {
             return null;
         }
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
         $uid = $uidOrUsername ?? fs_user('detail.uid');
 
         $cacheKey = "fresns_web_user_overview_{$uid}_{$langTag}";

@@ -804,9 +804,9 @@ class ApiController extends Controller
                 'postTitle' => ($type === 'post' && fs_config('post_editor_title_required')) ? 'required' : 'nullable',
                 'commentPid' => ($type === 'comment') ? 'required' : 'nullable',
             ], [
-                'postGid.required' => ConfigUtility::getCodeMessage(38208, 'Fresns', current_lang_tag()),
-                'postTitle.required' => ConfigUtility::getCodeMessage(38202, 'Fresns', current_lang_tag()),
-                'commentPid.required' => ConfigUtility::getCodeMessage(37300, 'Fresns', current_lang_tag()),
+                'postGid.required' => ConfigUtility::getCodeMessage(38208, 'Fresns', fs_theme('lang')),
+                'postTitle.required' => ConfigUtility::getCodeMessage(38202, 'Fresns', fs_theme('lang')),
+                'commentPid.required' => ConfigUtility::getCodeMessage(37300, 'Fresns', fs_theme('lang')),
             ]
         );
 

@@ -21,7 +21,7 @@ class DataHelper
     // get api data
     public static function getApiDataTemplate(?string $type = 'list'): array
     {
-        $message = ConfigUtility::getCodeMessage(35303, 'Fresns', current_lang_tag()) ?? 'Unknown Warning';
+        $message = ConfigUtility::getCodeMessage(35303, 'Fresns', fs_theme('lang')) ?? 'Unknown Warning';
 
         $data = [
             'code' => 0,
@@ -138,7 +138,7 @@ class DataHelper
             return [];
         }
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
@@ -202,7 +202,7 @@ class DataHelper
             return [];
         }
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
@@ -293,7 +293,7 @@ class DataHelper
             return [];
         }
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
@@ -372,7 +372,7 @@ class DataHelper
     // get fresns sticky posts
     public static function getFresnsStickyPosts(?string $gid = null): array
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         if (empty($gid)) {
             $cacheKey = "fresns_web_sticky_posts_{$langTag}";
@@ -419,7 +419,7 @@ class DataHelper
     // get fresns sticky comments
     public static function getFresnsStickyComments(string $pid): array
     {
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $cacheKey = "fresns_web_post_{$pid}_sticky_comments_{$langTag}";
         $cacheTag = 'fresnsWeb';

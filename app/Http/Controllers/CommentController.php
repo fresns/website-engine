@@ -133,7 +133,7 @@ class CommentController extends Controller
         $locationData = urldecode(base64_decode($encode));
         $location = json_decode($locationData, true) ?? [];
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         $query = $request->all();
         $query['mapId'] = $location['mapId'] ?? null;

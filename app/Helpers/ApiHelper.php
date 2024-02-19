@@ -205,7 +205,7 @@ class ApiHelper
             'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
-            'X-Fresns-Client-Lang-Tag' => current_lang_tag(),
+            'X-Fresns-Client-Lang-Tag' => fs_theme('lang'),
             'X-Fresns-Client-Content-Format' => null,
             'X-Fresns-Aid' => Cookie::get($fresnsAid) ?? $aidAndToken['aid'] ?? null,
             'X-Fresns-Aid-Token' => Cookie::get($fresnsAidToken) ?? $aidAndToken['aidToken'] ?? null,

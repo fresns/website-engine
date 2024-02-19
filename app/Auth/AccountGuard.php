@@ -129,7 +129,7 @@ class AccountGuard implements Guard
         $aid = Cookie::get("{$cookiePrefix}aid");
         $token = Cookie::get("{$cookiePrefix}aid_token");
 
-        $langTag = current_lang_tag();
+        $langTag = fs_theme('lang');
 
         if ($aid && $token) {
             try {

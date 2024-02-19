@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Providers;
 
-use App\Helpers\AppHelper;
 use Browser;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
@@ -87,9 +86,7 @@ class ExceptionServiceProvider extends ServiceProvider
                     ], 400);
                 }
 
-                return Response::view(404, [
-                    'fresnsVersion' => AppHelper::VERSION_MD5_16BIT,
-                ], 404);
+                return Response::view(404, [], 404);
             }
         };
     }
