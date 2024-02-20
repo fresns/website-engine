@@ -1,4 +1,4 @@
-<p align="center"><a href="https://fresns.org" target="_blank"><img src="https://images.fresns.com/logo-2021.png" width="300"></a></p>
+<p align="center"><a href="https://fresns.org" target="_blank"><img src="https://assets.fresns.com/images/logos/fresns.png" width="300"></a></p>
 
 <p align="center">
 <img src="https://img.shields.io/badge/Platform-Web-blue" alt="Platform">
