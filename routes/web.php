@@ -66,10 +66,14 @@ Route::prefix(LaravelLocalization::setLocale())
         }
 
         // portal
-        Route::get($configs['website_portal_path'], [PortalController::class, 'index'])->name('portal')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
-        Route::get('portal/about', [PortalController::class, 'about'])->name('about')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
-        Route::get('portal/policies', [PortalController::class, 'policies'])->name('policies')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
-        Route::get('portal/{name}', [PortalController::class, 'customPage'])->name('custom.page')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
+        Route::prefix($configs['website_portal_path'])->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
+            Route::get('/', [PortalController::class, 'index'])->name('portal');
+            Route::get('about', [PortalController::class, 'about'])->name('about');
+            Route::get('policies', [PortalController::class, 'policies'])->name('policies');
+            Route::get('login', [PortalController::class, 'login'])->name('login');
+            Route::get('private', [PortalController::class, 'private'])->name('private');
+            Route::get('{name}', [PortalController::class, 'customPage'])->name('custom.page');
+        });
 
         // users
         Route::name('user.')->prefix($configs['website_user_path'])->group(function () {
@@ -192,6 +196,7 @@ Route::prefix(LaravelLocalization::setLocale())
             Route::get('users', [AccountController::class, 'users'])->name('users')->withoutMiddleware([UserAuthorize::class]);
             Route::get('wallet', [AccountController::class, 'wallet'])->name('wallet')->withoutMiddleware([UserAuthorize::class]);
             Route::get('settings', [AccountController::class, 'settings'])->name('settings')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('logout', [AccountController::class, 'logout'])->name('logout')->withoutMiddleware([UserAuthorize::class]);
         });
 
         // messages

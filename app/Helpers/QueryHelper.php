@@ -65,7 +65,7 @@ class QueryHelper
 
     public static function configToQuery(string $type)
     {
-        $queryConfig = ConfigHelper::fresnsConfigByItemKey("menu_{$type}_query_config");
+        $queryConfig = ConfigHelper::fresnsConfigByItemKey("channel_{$type}_query_config");
 
         $params = [];
         if ($queryConfig) {

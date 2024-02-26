@@ -125,11 +125,5 @@ class WebConfiguration
 
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
-
-        // ulid
-        $ulid = Cookie::get("{$cookiePrefix}ulid");
-        if (empty($ulid)) {
-            Cookie::queue("{$cookiePrefix}ulid", Str::ulid());
-        }
     }
 }

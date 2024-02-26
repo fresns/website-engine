@@ -11,6 +11,7 @@ namespace Fresns\WebEngine\Helpers;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Models\File;
+use App\Models\Post;
 use App\Utilities\ConfigUtility;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
@@ -49,11 +50,11 @@ class DataHelper
     }
 
     // get editor url
-    public static function getEditorUrl(string $url, string $type, ?int $draftId = null, ?string $fsid = null)
+    public static function getEditorUrl(string $url, string $type, ?string $did = null, ?string $fsid = null): string
     {
         $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
 
-        $authorization = urlencode(base64_encode(json_encode($headers)));
+        $accessToken = urlencode(base64_encode(json_encode($headers)));
 
         $scene = match ($type) {
             'post' => 'postEditor',
@@ -61,17 +62,14 @@ class DataHelper
             default => 'postEditor',
         };
 
-        $pluginUrl = Str::replace('{authorization}', $authorization, $url);
+        $pluginUrl = Str::replace('{accessToken}', $accessToken, $url);
         $pluginUrl = Str::replace('{type}', $type, $pluginUrl);
         $pluginUrl = Str::replace('{scene}', $scene, $pluginUrl);
-        if ($draftId) {
-            $logIdName = match ($type) {
-                'post' => '{plid}',
-                'comment' => '{clid}',
-                default => '{plid}',
-            };
-            $pluginUrl = Str::replace($logIdName, $draftId, $pluginUrl);
+
+        if ($did) {
+            $pluginUrl = Str::replace('{did}', $did, $pluginUrl);
         }
+
         if ($fsid) {
             $fsidName = match ($type) {
                 'post' => '{pid}',
@@ -85,69 +83,17 @@ class DataHelper
         return $pluginUrl;
     }
 
-    // get upload info
-    public static function getUploadInfo(?int $usageType = null, ?string $tableName = null, ?string $tableColumn = null, ?int $tableId = null, ?string $tableKey = null)
+    // get fresns group tree
+    public static function getFresnsGroupTree(): ?array
     {
-        $uploadInfo = [
-            'image' => [
-                'usageType' => $usageType,
-                'tableName' => $tableName,
-                'tableColumn' => $tableColumn,
-                'tableId' => $tableId,
-                'tableKey' => $tableKey,
-                'type' => 'image',
-            ],
-            'video' => [
-                'usageType' => $usageType,
-                'tableName' => $tableName,
-                'tableColumn' => $tableColumn,
-                'tableId' => $tableId,
-                'tableKey' => $tableKey,
-                'type' => 'video',
-            ],
-            'audio' => [
-                'usageType' => $usageType,
-                'tableName' => $tableName,
-                'tableColumn' => $tableColumn,
-                'tableId' => $tableId,
-                'tableKey' => $tableKey,
-                'type' => 'audio',
-            ],
-            'document' => [
-                'usageType' => $usageType,
-                'tableName' => $tableName,
-                'tableColumn' => $tableColumn,
-                'tableId' => $tableId,
-                'tableKey' => $tableKey,
-                'type' => 'document',
-            ],
-        ];
-
-        return $uploadInfo;
-    }
-
-    // get fresns groups
-    public static function getFresnsGroups(string $listKey): array
-    {
-        $listKeyArr = [
-            'categories',
-            'tree',
-        ];
-
-        if (! in_array($listKey, $listKeyArr)) {
-            return [];
-        }
-
         $langTag = fs_theme('lang');
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
-            $cacheKey = "fresns_web_group_{$listKey}_by_{$uid}_{$langTag}";
+            $cacheKey = "fresns_web_group_tree_by_{$uid}_{$langTag}";
         } else {
-            $cacheKey = "fresns_web_group_{$listKey}_by_guest_{$langTag}";
+            $cacheKey = "fresns_web_group_tree_by_guest_{$langTag}";
         }
-
-        $cacheTag = 'fresnsWeb';
 
         // is known to be empty
         $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
@@ -155,50 +101,41 @@ class DataHelper
             return [];
         }
 
+        $cacheTag = 'fresnsWeb';
+
         // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTag);
+        $groupTree = CacheHelper::get($cacheKey, $cacheTag);
 
-        if (empty($listArr)) {
-            switch ($listKey) {
-                // categories
-                case 'categories':
-                    $result = ApiHelper::make()->get('/api/fresns/v1/group/categories', [
-                        'query' => [
-                            'pageSize' => 100,
-                            'page' => 1,
-                        ],
-                    ]);
+        if (empty($groupTree)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
 
-                    $listArr = data_get($result, 'data.list', []);
-                    break;
-
-                    // tree
-                case 'tree':
-                    $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
-
-                    $listArr = data_get($result, 'data', []);
-                    break;
-            }
+            $groupTree = data_get($result, 'data', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($groupTree, $cacheKey, $cacheTag, null, $cacheTime);
         }
 
-        return $listArr ?? [];
+        return $groupTree ?? [];
     }
 
-    // get fresns index list
-    public static function getFresnsIndexList(string $listKey): array
+    // get fresns content list
+    public static function getFresnsContentList(string $channel, string $type): ?array
     {
-        $listKeyArr = [
-            'users',
-            'groups',
-            'hashtags',
-            'posts',
-            'comments',
+        $channelArr = [
+            'user',
+            'group',
+            'hashtag',
+            'geotag',
+            'post',
+            'comment',
         ];
 
-        if (! in_array($listKey, $listKeyArr)) {
+        $typeArr = [
+            'home',
+            'list',
+        ];
+
+        if (! in_array($channel, $channelArr) || ! in_array($type, $typeArr)) {
             return [];
         }
 
@@ -206,9 +143,9 @@ class DataHelper
 
         if (fs_user()->check()) {
             $uid = fs_user('detail.uid');
-            $cacheKey = "fresns_web_{$listKey}_index_list_by_{$uid}_{$langTag}";
+            $cacheKey = "fresns_web_content_{$channel}_{$type}_by_{$uid}_{$langTag}";
         } else {
-            $cacheKey = "fresns_web_{$listKey}_index_list_by_guest_{$langTag}";
+            $cacheKey = "fresns_web_content_{$channel}_{$type}_by_guest_{$langTag}";
         }
 
         // is known to be empty
@@ -223,142 +160,16 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
-                return [];
+            $queryType = $channel;
+            if ($type == 'list') {
+                $queryType = $channel.'_list';
             }
 
-            switch ($listKey) {
-                // users
-                case 'users':
-                    $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/user/list', [
-                        'query' => $userQuery,
-                    ]);
-                    break;
+            $queryConfig = QueryHelper::configToQuery($queryType);
 
-                    // groups
-                case 'groups':
-                    $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/group/list', [
-                        'query' => $groupQuery,
-                    ]);
-                    break;
-
-                    // hashtags
-                case 'hashtags':
-                    $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
-                        'query' => $hashtagQuery,
-                    ]);
-                    break;
-
-                    // posts
-                case 'posts':
-                    $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
-                        'query' => $postQuery,
-                    ]);
-                    break;
-
-                    // comments
-                case 'comments':
-                    $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
-                        'query' => $commentQuery,
-                    ]);
-                    break;
-            }
-
-            $listArr = data_get($result, 'data.list', []);
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
-        }
-
-        return $listArr ?? [];
-    }
-
-    // get fresns list
-    public static function getFresnsList(string $listKey): array
-    {
-        $listKeyArr = [
-            'users',
-            'groups',
-            'hashtags',
-            'posts',
-            'comments',
-        ];
-
-        if (! in_array($listKey, $listKeyArr)) {
-            return [];
-        }
-
-        $langTag = fs_theme('lang');
-
-        if (fs_user()->check()) {
-            $uid = fs_user('detail.uid');
-            $cacheKey = "fresns_web_{$listKey}_list_by_{$uid}_{$langTag}";
-        } else {
-            $cacheKey = "fresns_web_{$listKey}_list_by_guest_{$langTag}";
-        }
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        $cacheTag = 'fresnsWeb';
-
-        // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTag);
-
-        if (empty($listArr)) {
-            if (fs_config('site_mode') == 'private' && $listKey != 'groups' && ! fs_user('detail.expiryDateTime')) {
-                return [];
-            }
-
-            switch ($listKey) {
-                // users
-                case 'users':
-                    $userQuery = QueryHelper::configToQuery(QueryHelper::TYPE_USER_LIST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/user/list', [
-                        'query' => $userQuery,
-                    ]);
-                    break;
-
-                    // groups
-                case 'groups':
-                    $groupQuery = QueryHelper::configToQuery(QueryHelper::TYPE_GROUP_LIST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/group/list', [
-                        'query' => $groupQuery,
-                    ]);
-                    break;
-
-                    // hashtags
-                case 'hashtags':
-                    $hashtagQuery = QueryHelper::configToQuery(QueryHelper::TYPE_HASHTAG_LIST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
-                        'query' => $hashtagQuery,
-                    ]);
-                    break;
-
-                    // posts
-                case 'posts':
-                    $postQuery = QueryHelper::configToQuery(QueryHelper::TYPE_POST_LIST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
-                        'query' => $postQuery,
-                    ]);
-                    break;
-
-                    // comments
-                case 'comments':
-                    $commentQuery = QueryHelper::configToQuery(QueryHelper::TYPE_COMMENT_LIST);
-                    $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
-                        'query' => $commentQuery,
-                    ]);
-                    break;
-            }
+            $result = ApiHelper::make()->get("/api/fresns/v1/{$channel}/list", [
+                'query' => $queryConfig,
+            ]);
 
             $listArr = data_get($result, 'data.list', []);
 
@@ -375,15 +186,15 @@ class DataHelper
         $langTag = fs_theme('lang');
 
         if (empty($gid)) {
-            $cacheKey = "fresns_web_sticky_posts_{$langTag}";
+            $cacheKey = "fresns_web_sticky_posts_by_global_{$langTag}";
             $query = [
-                'stickyState' => 3,
+                'stickyState' => Post::STICKY_GLOBAL,
             ];
         } else {
-            $cacheKey = "fresns_web_group_{$gid}_sticky_posts_{$langTag}";
+            $cacheKey = "fresns_web_sticky_posts_by_group_{$gid}_{$langTag}";
             $query = [
                 'gid' => $gid,
-                'stickyState' => 2,
+                'stickyState' => Post::STICKY_GROUP,
             ];
         }
 
@@ -399,10 +210,6 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
-                return [];
-            }
-
             $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
                 'query' => $query,
             ]);
@@ -421,7 +228,7 @@ class DataHelper
     {
         $langTag = fs_theme('lang');
 
-        $cacheKey = "fresns_web_post_{$pid}_sticky_comments_{$langTag}";
+        $cacheKey = "fresns_web_sticky_comments_by_{$pid}_{$langTag}";
         $cacheTag = 'fresnsWeb';
 
         // is known to be empty
@@ -434,10 +241,6 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            if (fs_config('site_mode') == 'private' && ! fs_user('detail.expiryDateTime')) {
-                return [];
-            }
-
             $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                 'query' => [
                     'pid' => $pid,

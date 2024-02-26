@@ -23,7 +23,7 @@ class ErrorException extends \Exception
 
         // 403 Forbidden
         if (in_array($this->getCode(), [
-            36201, 37101, 37201, 37301, 37401,
+            36201, 37101, 37201, 37301, 37401, 37501,
         ])) {
             return Response::view('error', [
                 'code' => $this->getCode(),
@@ -33,7 +33,7 @@ class ErrorException extends \Exception
 
         // 404 Not Found
         if (in_array($this->getCode(), [
-            37100, 37200, 37300, 37302, 37400, 37402, 38100,
+            37100, 37200, 37300, 37302, 37400, 37402, 37500, 37502, 38100,
         ])) {
             return Response::view('error', [
                 'code' => $this->getCode(),

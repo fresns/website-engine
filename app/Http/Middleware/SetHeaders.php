@@ -9,7 +9,6 @@
 namespace Fresns\WebEngine\Http\Middleware;
 
 use App\Helpers\AppHelper;
-use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PrimaryHelper;
 use App\Helpers\SignHelper;
@@ -44,12 +43,6 @@ class SetHeaders
         $fresnsUid = "{$cookiePrefix}uid";
         $fresnsUidToken = "{$cookiePrefix}uid_token";
 
-        $ulid = Cookie::get("{$cookiePrefix}ulid");
-        $aidAndToken = [];
-        if ($ulid) {
-            $aidAndToken = CacheHelper::get("fresns_web_{$ulid}", ['fresnsWeb', 'fresnsWebAccountTokens']);
-        }
-
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
 
@@ -61,8 +54,8 @@ class SetHeaders
             'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
             'X-Fresns-Client-Lang-Tag' => fs_theme('lang'),
             'X-Fresns-Client-Content-Format' => null,
-            'X-Fresns-Aid' => Cookie::get($fresnsAid) ?? $aidAndToken['aid'] ?? null,
-            'X-Fresns-Aid-Token' => Cookie::get($fresnsAidToken) ?? $aidAndToken['aidToken'] ?? null,
+            'X-Fresns-Aid' => Cookie::get($fresnsAid) ?? null,
+            'X-Fresns-Aid-Token' => Cookie::get($fresnsAidToken) ?? null,
             'X-Fresns-Uid' => Cookie::get($fresnsUid),
             'X-Fresns-Uid-Token' => Cookie::get($fresnsUidToken),
             'X-Fresns-Signature' => null,

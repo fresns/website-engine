@@ -128,9 +128,7 @@ class EditorController extends Controller
             return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
         }
 
-        $uploadInfo = DataHelper::getUploadInfo();
-
-        return view('editor.index', compact('type', 'config', 'drafts', 'uploadInfo'));
+        return view('editor.index', compact('type', 'config', 'drafts'));
     }
 
     // request: create or edit
@@ -236,19 +234,7 @@ class EditorController extends Controller
             $clid = $draftId;
         }
 
-        $usageType = match ($type) {
-            'post' => FileUsage::TYPE_POST,
-            'comment' => FileUsage::TYPE_COMMENT,
-        };
-
-        $tableName = match ($type) {
-            'post' => 'post_logs',
-            'comment' => 'comment_logs',
-        };
-
-        $uploadInfo = DataHelper::getUploadInfo($usageType, $tableName, 'id', $draftId, null);
-
-        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft', 'uploadInfo'));
+        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft'));
     }
 
     // request: publish

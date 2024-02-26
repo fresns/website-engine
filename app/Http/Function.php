@@ -39,65 +39,6 @@ if (! function_exists('is_remote_api')) {
     }
 }
 
-// fs_route
-if (! function_exists('fs_route')) {
-    function fs_route(string $url = null, string|bool $locale = null): string
-    {
-        return LaravelLocalization::localizeUrl($url, $locale);
-    }
-}
-
-// fs_theme
-if (! function_exists('fs_theme')) {
-    function fs_theme(string $type): ?string
-    {
-        $converted = Str::lower($type);
-
-        $themeFskey = null;
-        if ($converted != 'lang') {
-            $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
-        }
-
-        $info = match ($converted) {
-            'fskey' => $themeFskey,
-            'version' => PluginHelper::fresnsPluginVersionByFskey($themeFskey),
-            'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
-            default => null,
-        };
-
-        return $info;
-    }
-}
-
-// fs_helpers
-if (! function_exists('fs_helpers')) {
-    function fs_helpers(string $helper, string $method, mixed $data = null, ?array $options = []): mixed
-    {
-        $helperData = null;
-
-        if ($helper == 'Arr' || $helper == 'arr') {
-            $availableMethod = match ($method) {
-                'get' => 'get',
-                'forget' => 'forget',
-                'pull' => 'pull',
-                default => null,
-            };
-
-            $key = $options['key'] ?? null;
-            $values = $options['values'] ?? null;
-            $asArray = $options['asArray'] ?? true;
-
-            if (empty($availableMethod) || empty($key) || empty($values)) {
-                return [];
-            }
-
-            $helperData = ArrUtility::$availableMethod($data, $key, $values, $asArray);
-        }
-
-        return $helperData;
-    }
-}
-
 // fs_status
 if (! function_exists('fs_status')) {
     function fs_status(string $key): mixed
@@ -135,6 +76,74 @@ if (! function_exists('fs_status')) {
         }
 
         return $statusJson[$key] ?? null;
+    }
+}
+
+// fs_route
+if (! function_exists('fs_route')) {
+    function fs_route(?string $url = null, string|bool $locale = null): string
+    {
+        return LaravelLocalization::localizeUrl($url, $locale);
+    }
+}
+
+// fs_helpers
+if (! function_exists('fs_helpers')) {
+    function fs_helpers(string $helper, string $method, mixed $data = null, ?array $options = []): mixed
+    {
+        $helperData = null;
+
+        $helper = Str::lower($helper);
+        $method = Str::lower($method);
+
+        switch ($helper) {
+            case 'arr':
+                $availableMethod = match ($method) {
+                    'get' => 'get',
+                    'forget' => 'forget',
+                    'pull' => 'pull',
+                    default => null,
+                };
+
+                $key = $options['key'] ?? null;
+                $values = $options['values'] ?? null;
+                $asArray = $options['asArray'] ?? true;
+
+                if (empty($availableMethod) || empty($key) || empty($values)) {
+                    return [];
+                }
+
+                $helperData = ArrUtility::$availableMethod($data, $key, $values, $asArray);
+                break;
+
+            default:
+                $helperData = null;
+        }
+
+        return $helperData;
+    }
+}
+
+// fs_theme
+if (! function_exists('fs_theme')) {
+    function fs_theme(string $type): ?string
+    {
+        $converted = Str::lower($type);
+
+        $themeFskey = null;
+        if ($converted != 'lang') {
+            $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
+        }
+
+        $info = match ($converted) {
+            'fskey' => $themeFskey,
+            'version' => PluginHelper::fresnsPluginVersionByFskey($themeFskey),
+            'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
+            'assets' => "/assets/{$themeFskey}/",
+            default => null,
+        };
+
+        return $info;
     }
 }
 
@@ -224,36 +233,6 @@ if (! function_exists('fs_channels')) {
     }
 }
 
-// fs_content_types
-if (! function_exists('fs_content_types')) {
-    function fs_content_types(string $type): ?array
-    {
-        $langTag = fs_theme('lang');
-
-        $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($listArr)) {
-            $result = ApiHelper::make()->get("/api/fresns/v1/global/{$type}/content-types");
-
-            $listArr = data_get($result, 'data', []);
-
-            CacheHelper::put($listArr, $cacheKey, $cacheTags);
-        }
-
-        return $listArr ?? [];
-    }
-}
-
 // fs_stickers
 if (! function_exists('fs_stickers')) {
     function fs_stickers(): ?array
@@ -286,6 +265,84 @@ if (! function_exists('fs_stickers')) {
         }
 
         return $listArr ?? [];
+    }
+}
+
+// fs_content_types
+if (! function_exists('fs_content_types')) {
+    function fs_content_types(string $type): ?array
+    {
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_{$type}_content_types_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        // get cache
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($listArr)) {
+            $result = ApiHelper::make()->get("/api/fresns/v1/global/{$type}/content-types");
+
+            $listArr = data_get($result, 'data', []);
+
+            CacheHelper::put($listArr, $cacheKey, $cacheTags);
+        }
+
+        return $listArr ?? [];
+    }
+}
+
+// fs_group_tree
+if (! function_exists('fs_group_tree')) {
+    function fs_group_tree(): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        return DataHelper::getFresnsGroupTree();
+    }
+}
+
+// fs_content_list
+if (! function_exists('fs_content_list')) {
+    function fs_content_list(string $channel, string $type): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        return DataHelper::getFresnsContentList($channel, $type);
+    }
+}
+
+// fs_sticky_posts
+if (! function_exists('fs_sticky_posts')) {
+    function fs_sticky_posts(?string $gid = null): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        return DataHelper::getFresnsStickyPosts($gid);
+    }
+}
+
+// fs_sticky_comments
+if (! function_exists('fs_sticky_comments')) {
+    function fs_sticky_comments(string $pid): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        return DataHelper::getFresnsStickyComments($pid);
     }
 }
 
@@ -352,61 +409,5 @@ if (! function_exists('fs_user_overview')) {
         }
 
         return $userOverview;
-    }
-}
-
-// fs_groups
-if (! function_exists('fs_groups')) {
-    function fs_groups(string $listKey): ?array
-    {
-        return DataHelper::getFresnsGroups($listKey);
-    }
-}
-
-// fs_index_list
-if (! function_exists('fs_index_list')) {
-    function fs_index_list(string $listKey): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsIndexList($listKey);
-    }
-}
-
-// fs_list
-if (! function_exists('fs_list')) {
-    function fs_list(string $listKey): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsList($listKey);
-    }
-}
-
-// fs_sticky_posts
-if (! function_exists('fs_sticky_posts')) {
-    function fs_sticky_posts(?string $gid = null): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsStickyPosts($gid);
-    }
-}
-
-// fs_sticky_comments
-if (! function_exists('fs_sticky_comments')) {
-    function fs_sticky_comments(string $pid): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsStickyComments($pid);
     }
 }

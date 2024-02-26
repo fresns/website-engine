@@ -16,30 +16,6 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    // register
-    public function register(Request $request)
-    {
-        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
-
-        if (fs_account()->check() || fs_user()->check()) {
-            return redirect()->intended($redirectURL);
-        }
-
-        return view('account.register');
-    }
-
-    // login
-    public function login(Request $request)
-    {
-        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
-
-        if (fs_account()->check() && fs_user()->check()) {
-            return redirect()->intended($redirectURL);
-        }
-
-        return view('account.login');
-    }
-
     // logout
     public function logout(Request $request)
     {
@@ -50,18 +26,6 @@ class AccountController extends Controller
         ApiHelper::make()->delete('/api/fresns/v1/account/logout');
 
         return redirect()->intended($redirectURL);
-    }
-
-    // reset password
-    public function resetPassword(Request $request)
-    {
-        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
-
-        if (fs_account()->check() || fs_user()->check()) {
-            return redirect()->intended($redirectURL);
-        }
-
-        return view('account.reset-password');
     }
 
     // index

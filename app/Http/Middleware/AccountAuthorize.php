@@ -39,7 +39,7 @@ class AccountAuthorize
         if (request()->ajax()) {
             return Response::json(compact('message', 'code'), $code);
         } else {
-            return redirect(fs_route(route('fresns.home')))->withErrors($message);
+            return redirect(fs_route(route('fresns.login')))->withErrors($message);
         }
     }
 }
