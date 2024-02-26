@@ -16,7 +16,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Str;
 
 class WebConfiguration
 {
