@@ -22,6 +22,7 @@ class WebEngineServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->registerViews();
         $this->registerTranslations();
     }
 
@@ -101,6 +102,14 @@ class WebEngineServiceProvider extends ServiceProvider
         app()->singleton('fresns.user', function ($app) {
             return new UserGuard($app);
         });
+    }
+
+    /**
+     * Register views.
+     */
+    protected function registerViews(): void
+    {
+        $this->loadViewsFrom(dirname(__DIR__, 2).'/resources/views', 'FsTheme');
     }
 
     /**

@@ -20,24 +20,9 @@ class RouteServiceProvider extends ServiceProvider
 
     public function map()
     {
-        $url = config('app.url');
-        $host = str_replace(['http://', 'https://'], '', rtrim($url, '/'));
-        $currentAccessHost = \request()->httpHost();
-
-        $host = parse_url('//'.$host, PHP_URL_HOST);
-        $currentAccessHost = parse_url('//'.$currentAccessHost, PHP_URL_HOST);
-
-        // Avoid home page conflicts when customizing domain names with plugins
-        if ($host != $currentAccessHost) {
-            $host = null;
-        }
-
-        Route::group([
-            'domain' => $host,
-        ], function () {
-            $this->mapApiRoutes();
-            $this->mapWebRoutes();
-        });
+        $this->mapApiRoutes();
+        $this->mapWebRoutes();
+        $this->mapAdminRoutes();
     }
 
     protected function mapApiRoutes()
@@ -48,5 +33,10 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::name('fresns.')->group(dirname(__DIR__, 2).'/routes/web.php');
+    }
+
+    protected function mapAdminRoutes()
+    {
+        Route::name('fresns.')->group(dirname(__DIR__, 2).'/routes/admin.php');
     }
 }
