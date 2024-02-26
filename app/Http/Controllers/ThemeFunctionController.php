@@ -18,9 +18,9 @@ use App\Models\File as FileModel;
 use App\Models\FileUsage;
 use App\Models\SessionKey;
 use App\Utilities\ConfigUtility;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
-use Illuminate\Http\Request;
 
 class ThemeFunctionController extends Controller
 {
@@ -135,8 +135,8 @@ class ThemeFunctionController extends Controller
                 // ];
 
                 usort($itemValue, function ($a, $b) {
-                    $orderA = $a['order'] === '' ? 9 : (int)$a['order'];
-                    $orderB = $b['order'] === '' ? 9 : (int)$b['order'];
+                    $orderA = $a['order'] === '' ? 9 : (int) $a['order'];
+                    $orderB = $b['order'] === '' ? 9 : (int) $b['order'];
 
                     return $orderA <=> $orderB;
                 });
