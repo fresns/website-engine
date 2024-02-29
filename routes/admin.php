@@ -15,6 +15,6 @@ Route::middleware(['panel', 'panelAuth'])->group(function () {
     });
 
     Route::name('api.')->prefix('api/theme')->group(function () {
-        Route::get('{fskey}/functions', [ThemeFunctionController::class, 'functions'])->name('functions');
+        Route::put('{fskey}/functions', [ThemeFunctionController::class, 'functions'])->name('functions');
     });
 });

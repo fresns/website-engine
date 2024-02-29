@@ -26,10 +26,14 @@ class UserAuthorize
 
                 $userLoginTip = ConfigUtility::getCodeMessage(31601, 'Fresns', \request()->cookie($langTag));
 
-                return redirect()->to(fs_route(route('fresns.login')))->withErrors($userLoginTip); //FsLang
+                $redirectURL = url()->current();
+
+                return redirect()->to(fs_route(route('fresns.login', ['redirectURL' => $redirectURL])))->withErrors($userLoginTip); //FsLang
             }
         } catch (\Exception $exception) {
-            return redirect()->to(fs_route(route('fresns.login')))->withErrors($exception->getMessage());
+            $redirectURL = url()->current();
+
+            return redirect()->to(fs_route(route('fresns.login', ['redirectURL' => $redirectURL])))->withErrors($exception->getMessage());
         }
     }
 }

@@ -78,7 +78,7 @@ class ApiController extends Controller
     {
         $endpointPath = '/'.$path;
 
-        switch ($path) {
+        switch ($endpointPath) {
             case '/api/fresns/v1/common/file/uploads':
                 $result = ApiHelper::make()->post($endpointPath, [
                     'multipart' => $request->all(),

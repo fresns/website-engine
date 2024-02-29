@@ -10,7 +10,7 @@ use Fresns\WebEngine\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('theme')->middleware(['web'])->group(function () {
-    Route::get('access-token', [ApiController::class, 'accessToken'])->name('access-token');
+    Route::post('access-token', [ApiController::class, 'accessToken'])->name('access-token');
 
     Route::get('actions/{path}', [ApiController::class, 'get'])->where('path', '.*')->name('get');
     Route::post('actions/{path}', [ApiController::class, 'post'])->where('path', '.*')->name('post');

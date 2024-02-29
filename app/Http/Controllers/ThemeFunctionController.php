@@ -21,6 +21,7 @@ use App\Utilities\ConfigUtility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ThemeFunctionController extends Controller
 {
@@ -60,7 +61,15 @@ class ThemeFunctionController extends Controller
         $params = [];
         $fileUrls = [];
         foreach ($functionItems as $item) {
-            $defaultValue = match ($item->itemType) {
+            $itemKey = $item['itemKey'] ?? null;
+
+            if (! $itemKey) {
+                continue;
+            }
+
+            $itemType = $item['itemType'] ? Str::lower($item['itemType']) : null;
+
+            $defaultValue = match ($itemType) {
                 'number' => null,
                 'string' => null,
                 'boolean' => false,
@@ -72,10 +81,10 @@ class ThemeFunctionController extends Controller
                 default => null,
             };
 
-            $params[$item->itemKey] = $configs->where('item_key', $item->itemKey)->first()?->item_value ?? $defaultValue;
+            $params[$itemKey] = $configs->where('item_key', $itemKey)->first()?->item_value ?? $defaultValue;
 
-            if ($item->itemType == 'file') {
-                $fileUrls[$item->itemKey] = ConfigHelper::fresnsConfigFileUrlByItemKey($item->itemKey);
+            if ($itemType == 'file') {
+                $fileUrls[$itemKey] = ConfigHelper::fresnsConfigFileUrlByItemKey($itemKey);
             }
         }
 
@@ -117,15 +126,16 @@ class ThemeFunctionController extends Controller
 
         $fresnsConfigItems = [];
         foreach ($functionItems as $item) {
-            $itemKey = $item->itemKey;
+            $itemKey = $item['itemKey'] ?? null;
+            $itemType = $item['itemType'] ? Str::lower($item['itemType']) : null;
 
-            if (! $request->$itemKey) {
+            if (! $itemKey || ! $itemType || ! $request->$itemKey) {
                 continue;
             }
 
             $itemValue = $request->$itemKey;
 
-            if ($item->itemType == 'plugins') {
+            if ($itemType == 'plugins') {
                 // $itemValue = [
                 //     [
                 //         'order' => '',
@@ -142,7 +152,7 @@ class ThemeFunctionController extends Controller
                 });
             }
 
-            if ($item->itemType == 'file' && $request->hasFile($itemKey)) {
+            if ($itemType == 'file' && $request->hasFile($itemKey)) {
                 $file = $request->file($itemKey);
                 $mime = $file->getMimeType();
 
@@ -182,11 +192,13 @@ class ThemeFunctionController extends Controller
                 $itemValue = PrimaryHelper::fresnsPrimaryId('file', $fresnsResp->getData('fid'));
             }
 
+            $isMultilingual = $item['isMultilingual'] ?? false;
+
             $fresnsConfigItems[] = [
                 'item_key' => $itemKey,
                 'item_value' => $itemValue,
-                'item_type' => $item->itemType,
-                'is_multilingual' => $item->isMultilingual,
+                'item_type' => $isMultilingual ? 'object' : $itemType,
+                'is_multilingual' => $isMultilingual,
                 'is_api' => true,
             ];
 

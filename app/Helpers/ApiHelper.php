@@ -64,12 +64,10 @@ class ApiHelper
 
     public function getBaseUri(): ?string
     {
-        $isLocal = is_local_api();
-
         $localApiHost = config('app.url');
         $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('webengine_api_host');
 
-        $apiHost = $isLocal ? $localApiHost : $remoteApiHost;
+        $apiHost = is_local_api() ? $localApiHost : $remoteApiHost;
 
         return $apiHost;
     }
