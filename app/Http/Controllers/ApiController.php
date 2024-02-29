@@ -18,8 +18,8 @@ use Illuminate\Support\Str;
 
 class ApiController extends Controller
 {
-    // access token
-    public function accessToken(): JsonResponse
+    // make access token
+    public function makeAccessToken(): JsonResponse
     {
         $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
 
