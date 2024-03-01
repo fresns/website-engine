@@ -301,7 +301,6 @@ if (! function_exists('fs_comment_editor')) {
     }
 }
 
-
 // fs_stickers
 if (! function_exists('fs_stickers')) {
     function fs_stickers(): ?array

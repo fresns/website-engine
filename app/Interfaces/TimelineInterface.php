@@ -24,13 +24,13 @@ class TimelineInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/post/timelines", [
+            return ApiHelper::make()->get('/api/fresns/v1/post/timelines', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/fresns/v1/post/timelines", 'GET', $query);
+            $request = Request::create('/api/fresns/v1/post/timelines', 'GET', $query);
 
             $apiController = new PostController();
             $response = $apiController->timelines($request);
@@ -57,13 +57,13 @@ class TimelineInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/comment/timelines", [
+            return ApiHelper::make()->get('/api/fresns/v1/comment/timelines', [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/fresns/v1/comment/timelines", 'GET', $query);
+            $request = Request::create('/api/fresns/v1/comment/timelines', 'GET', $query);
 
             $apiController = new CommentController();
             $response = $apiController->timelines($request);
