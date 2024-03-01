@@ -34,10 +34,10 @@ class ApiController extends Controller
         ]);
     }
 
-    // get
-    public function get(Request $request, string $path): JsonResponse
+    // api get
+    public function apiGet(Request $request, string $path): JsonResponse
     {
-        $endpointPath = '/'.$path;
+        $endpointPath = Str::of($path)->start('/')->toString();
 
         $inArray = in_array($endpointPath, [
             '/status.json',
@@ -73,10 +73,10 @@ class ApiController extends Controller
         return Response::json($result);
     }
 
-    // post
-    public function post(Request $request, string $path): JsonResponse
+    // api post
+    public function apiPost(Request $request, string $path): JsonResponse
     {
-        $endpointPath = '/'.$path;
+        $endpointPath = Str::of($path)->start('/')->toString();
 
         switch ($endpointPath) {
             case '/api/fresns/v1/common/file/uploads':
@@ -106,10 +106,10 @@ class ApiController extends Controller
         return Response::json($result);
     }
 
-    // put
-    public function put(Request $request, string $path): JsonResponse
+    // api put
+    public function apiPut(Request $request, string $path): JsonResponse
     {
-        $endpointPath = '/'.$path;
+        $endpointPath = Str::of($path)->start('/')->toString();
 
         $result = ApiHelper::make()->put($endpointPath, [
             'json' => $request->all(),
@@ -118,10 +118,10 @@ class ApiController extends Controller
         return Response::json($result);
     }
 
-    // patch
-    public function patch(Request $request, string $path): JsonResponse
+    // api patch
+    public function apiPatch(Request $request, string $path): JsonResponse
     {
-        $endpointPath = '/'.$path;
+        $endpointPath = Str::of($path)->start('/')->toString();
 
         $result = ApiHelper::make()->get($endpointPath, [
             'json' => $request->all(),
@@ -130,10 +130,10 @@ class ApiController extends Controller
         return Response::json($result);
     }
 
-    // delete
-    public function delete(Request $request, string $path): JsonResponse
+    // api delete
+    public function apiDelete(Request $request, string $path): JsonResponse
     {
-        $endpointPath = '/'.$path;
+        $endpointPath = Str::of($path)->start('/')->toString();
 
         $result = ApiHelper::make()->delete($endpointPath, [
             'json' => $request->all(),

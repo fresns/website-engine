@@ -14,24 +14,12 @@ use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\AccountInterface;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class MeController extends Controller
 {
-    // logout
-    public function logout(Request $request)
-    {
-        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
-
-        fs_account()->logout();
-
-        ApiHelper::make()->delete('/api/fresns/v1/account/logout');
-
-        return redirect()->intended($redirectURL);
-    }
-
     // index
     public function index()
     {
-        return view('account.index');
+        return view('me.index');
     }
 
     // wallet
@@ -48,7 +36,7 @@ class AccountController extends Controller
             pagination: $result['data']['pagination'],
         );
 
-        return view('account.wallet', compact('logs'));
+        return view('me.wallet', compact('logs'));
     }
 
     // userExtcredits
@@ -67,18 +55,30 @@ class AccountController extends Controller
 
         $extcreditsId = (int) $request->extcreditsId;
 
-        return view('account.user-extcredits', compact('extcreditsId', 'logs'));
+        return view('me.user-extcredits', compact('extcreditsId', 'logs'));
     }
 
     // users
     public function users()
     {
-        return view('account.users');
+        return view('me.users');
     }
 
     // settings
     public function settings()
     {
-        return view('account.settings');
+        return view('me.settings');
+    }
+
+    // logout
+    public function logout(Request $request)
+    {
+        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+
+        fs_account()->logout();
+
+        ApiHelper::make()->delete('/api/fresns/v1/account/logout');
+
+        return redirect()->intended($redirectURL);
     }
 }

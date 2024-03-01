@@ -9,19 +9,19 @@
 namespace Fresns\WebEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\CommentController;
-use App\Fresns\Api\Http\Controllers\HashtagController;
+use App\Fresns\Api\Http\Controllers\GeotagController;
 use App\Fresns\Api\Http\Controllers\PostController;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
 use Illuminate\Http\Request;
 
-class HashtagInterface
+class GeotagInterface
 {
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
+            return ApiHelper::make()->get('/api/fresns/v1/geotag/list', [
                 'query' => $query,
             ]);
         }
@@ -31,9 +31,9 @@ class HashtagInterface
         }
 
         try {
-            $request = Request::create('/api/fresns/v1/hashtag/list', 'GET', $query);
+            $request = Request::create('/api/fresns/v1/geotag/list', 'GET', $query);
 
-            $apiController = new HashtagController();
+            $apiController = new GeotagController();
             $response = $apiController->list($request);
 
             $resultContent = $response->getContent();
@@ -47,7 +47,7 @@ class HashtagInterface
         return $result;
     }
 
-    public static function detail(string $htid, ?string $type = null, ?array $query = []): array
+    public static function detail(string $gtid, ?string $type = null, ?array $query = []): array
     {
         $type = match ($type) {
             'posts' => 'posts',
@@ -57,7 +57,7 @@ class HashtagInterface
 
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
-                'hashtag' => DataHelper::getApiDataTemplate('detail'),
+                'geotag' => DataHelper::getApiDataTemplate('detail'),
                 'posts' => CommentInterface::list($query),
                 'comments' => CommentInterface::list($query),
             ];
@@ -71,7 +71,7 @@ class HashtagInterface
             switch ($type) {
                 case 'posts':
                     $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
+                        'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
                         'posts' => $client->getAsync('/api/fresns/v1/post/list', [
                             'query' => $query,
                         ]),
@@ -80,7 +80,7 @@ class HashtagInterface
 
                 case 'comments':
                     $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
+                        'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
                         'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
                             'query' => $query,
                         ]),
@@ -92,10 +92,10 @@ class HashtagInterface
         }
 
         try {
-            $apiController = new HashtagController();
+            $apiController = new GeotagController();
 
-            $request = Request::create("/api/fresns/v1/hashtag/{$htid}/detail", 'GET', []);
-            $response = $apiController->detail($htid, $request);
+            $request = Request::create("/api/fresns/v1/geotag/{$gtid}/detail", 'GET', []);
+            $response = $apiController->detail($gtid, $request);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
@@ -110,7 +110,7 @@ class HashtagInterface
                     $resultContent = $response->getContent();
 
                     $results = [
-                        'hashtag' => $result,
+                        'geotag' => $result,
                         'posts' => json_decode($resultContent, true),
                     ];
                     break;
@@ -124,7 +124,7 @@ class HashtagInterface
                     $resultContent = $response->getContent();
 
                     $results = [
-                        'hashtag' => $result,
+                        'geotag' => $result,
                         'comments' => json_decode($resultContent, true),
                     ];
                     break;

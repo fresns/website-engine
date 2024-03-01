@@ -11,10 +11,10 @@ use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Models\File;
 use App\Utilities\ArrUtility;
-use Browser;
 use Fresns\WebEngine\Auth\UserGuard;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
+use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -233,6 +233,75 @@ if (! function_exists('fs_channels')) {
     }
 }
 
+// fs_post_editor
+if (! function_exists('fs_post_editor')) {
+    function fs_post_editor(?string $key = null): mixed
+    {
+        if (fs_user()->guest()) {
+            return null;
+        }
+
+        $uid = fs_user('detail.uid');
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_post_editor_configs_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // get cache
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/editor/post/configs');
+
+            $configs = data_get($result, 'data.editor');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
+        }
+
+        if ($key) {
+            return data_get($configs, $key);
+        }
+
+        return $configs;
+    }
+}
+
+// fs_comment_editor
+if (! function_exists('fs_comment_editor')) {
+    function fs_comment_editor(?string $key = null): mixed
+    {
+        if (fs_user()->guest()) {
+            return null;
+        }
+
+        $uid = fs_user('detail.uid');
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_comment_editor_configs_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // get cache
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/editor/comment/configs');
+
+            $configs = data_get($result, 'data.editor');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
+        }
+
+        if ($key) {
+            return data_get($configs, $key);
+        }
+
+        return $configs;
+    }
+}
+
+
 // fs_stickers
 if (! function_exists('fs_stickers')) {
     function fs_stickers(): ?array
@@ -295,18 +364,6 @@ if (! function_exists('fs_content_types')) {
         }
 
         return $listArr ?? [];
-    }
-}
-
-// fs_group_tree
-if (! function_exists('fs_group_tree')) {
-    function fs_group_tree(): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        return DataHelper::getFresnsGroupTree();
     }
 }
 
@@ -378,7 +435,7 @@ if (! function_exists('fs_user')) {
 
 // fs_user_overview
 if (! function_exists('fs_user_overview')) {
-    function fs_user_overview(?string $key = null, ?string $uidOrUsername = null): mixed
+    function fs_user_overview(?string $key = null, mixed $uidOrUsername = null): mixed
     {
         if (fs_user()->guest()) {
             return null;

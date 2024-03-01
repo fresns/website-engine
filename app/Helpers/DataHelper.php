@@ -11,7 +11,6 @@ namespace Fresns\WebEngine\Helpers;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Models\File;
-use App\Models\Post;
 use App\Utilities\ConfigUtility;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cookie;
@@ -81,41 +80,6 @@ class DataHelper
         }
 
         return $pluginUrl;
-    }
-
-    // get fresns group tree
-    public static function getFresnsGroupTree(): ?array
-    {
-        $langTag = fs_theme('lang');
-
-        if (fs_user()->check()) {
-            $uid = fs_user('detail.uid');
-            $cacheKey = "fresns_web_group_tree_by_{$uid}_{$langTag}";
-        } else {
-            $cacheKey = "fresns_web_group_tree_by_guest_{$langTag}";
-        }
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        $cacheTag = 'fresnsWeb';
-
-        // get cache
-        $groupTree = CacheHelper::get($cacheKey, $cacheTag);
-
-        if (empty($groupTree)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
-
-            $groupTree = data_get($result, 'data', []);
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
-            CacheHelper::put($groupTree, $cacheKey, $cacheTag, null, $cacheTime);
-        }
-
-        return $groupTree ?? [];
     }
 
     // get fresns content list
@@ -188,13 +152,13 @@ class DataHelper
         if (empty($gid)) {
             $cacheKey = "fresns_web_sticky_posts_by_global_{$langTag}";
             $query = [
-                'stickyState' => Post::STICKY_GLOBAL,
+                'stickyState' => 3,
             ];
         } else {
             $cacheKey = "fresns_web_sticky_posts_by_group_{$gid}_{$langTag}";
             $query = [
                 'gid' => $gid,
-                'stickyState' => Post::STICKY_GROUP,
+                'stickyState' => 2,
             ];
         }
 
@@ -244,7 +208,7 @@ class DataHelper
             $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
                 'query' => [
                     'pid' => $pid,
-                    'sticky' => true,
+                    'sticky' => 1,
                 ],
             ]);
 

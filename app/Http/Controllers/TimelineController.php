@@ -10,18 +10,36 @@ namespace Fresns\WebEngine\Http\Controllers;
 
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\FollowInterface;
+use Fresns\WebEngine\Interfaces\TimelineInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
 class TimelineController extends Controller
 {
-    // all posts
-    public function allPosts(Request $request)
+    // index
+    public function index()
     {
+        $channelType = fs_config('channel_timeline_type');
+
+        $redirectURL = match ($channelType) {
+            'posts' => fs_route(route('fresns.timeline.posts')),
+            'comments' => fs_route(route('fresns.timeline.comments')),
+        };
+
+        return redirect()->intended($redirectURL);
+    }
+
+    // posts
+    public function posts(Request $request)
+    {
+        if (! fs_config('channel_timeline_posts_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = $request->all();
 
-        $result = FollowInterface::posts('all', $query);
+        $result = TimelineInterface::posts($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -46,15 +64,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.all-posts', compact('posts'));
+        return view('timelines.posts', compact('posts'));
     }
 
     // user posts
     public function userPosts(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_posts_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::posts('user', $query);
+        $query = $request->all();
+        $query['type'] = 'user';
+
+        $result = TimelineInterface::posts($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -79,15 +102,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.user-posts', compact('posts'));
+        return view('timelines.user-posts', compact('posts'));
     }
 
     // group posts
     public function groupPosts(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_posts_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::posts('post', $query);
+        $query = $request->all();
+        $query['type'] = 'group';
+
+        $result = TimelineInterface::posts($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -112,15 +140,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.group-posts', compact('posts'));
+        return view('timelines.group-posts', compact('posts'));
     }
 
     // hashtag posts
     public function hashtagPosts(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_posts_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::posts('hashtag', $query);
+        $query = $request->all();
+        $query['type'] = 'hashtag';
+
+        $result = TimelineInterface::posts($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -145,15 +178,57 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.hashtag-posts', compact('posts'));
+        return view('timelines.hashtag-posts', compact('posts'));
     }
 
-    // all comments
-    public function allComments(Request $request)
+    // geotag posts
+    public function geotagPosts(Request $request)
     {
+        if (! fs_config('channel_timeline_posts_status')) {
+            return Response::view('404', [], 404);
+        }
+
+        $query = $request->all();
+        $query['type'] = 'geotag';
+
+        $result = TimelineInterface::posts($query);
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $post) {
+                $html .= View::make('components.post.list', compact('post'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $result['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        return view('timelines.geotag-posts', compact('posts'));
+    }
+
+    // comments
+    public function comments(Request $request)
+    {
+        if (! fs_config('channel_timeline_comments_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = $request->all();
 
-        $result = FollowInterface::comments('all', $query);
+        $result = TimelineInterface::comments($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -178,15 +253,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.all-comments', compact('comments'));
+        return view('timelines.comments', compact('comments'));
     }
 
     // user comments
     public function userComments(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_comments_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::comments('user', $query);
+        $query = $request->all();
+        $query['type'] = 'user';
+
+        $result = TimelineInterface::comments($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -211,15 +291,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.user-comments', compact('comments'));
+        return view('timelines.user-comments', compact('comments'));
     }
 
     // group comments
     public function groupComments(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_comments_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::comments('group', $query);
+        $query = $request->all();
+        $query['type'] = 'group';
+
+        $result = TimelineInterface::comments($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -244,15 +329,20 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.group-comments', compact('comments'));
+        return view('timelines.group-comments', compact('comments'));
     }
 
     // hashtag comments
     public function hashtagComments(Request $request)
     {
-        $query = $request->all();
+        if (! fs_config('channel_timeline_comments_status')) {
+            return Response::view('404', [], 404);
+        }
 
-        $result = FollowInterface::comments('hashtag', $query);
+        $query = $request->all();
+        $query['type'] = 'hashtag';
+
+        $result = TimelineInterface::comments($query);
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -277,6 +367,44 @@ class TimelineController extends Controller
         }
 
         // view
-        return view('follows.hashtag-comments', compact('comments'));
+        return view('timelines.hashtag-comments', compact('comments'));
+    }
+
+    // geotag comments
+    public function geotagComments(Request $request)
+    {
+        if (! fs_config('channel_timeline_comments_status')) {
+            return Response::view('404', [], 404);
+        }
+
+        $query = $request->all();
+        $query['type'] = 'geotag';
+
+        $result = TimelineInterface::comments($query);
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $comment) {
+                $html .= View::make('components.comment.list', compact('comment'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $result['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        return view('timelines.geotag-comments', compact('comments'));
     }
 }

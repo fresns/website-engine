@@ -18,6 +18,10 @@ class PortalController extends Controller
 {
     public function index()
     {
+        if (! fs_config('channel_portal_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $portalContent = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('portal_3') : ConfigHelper::fresnsConfigByItemKey('portal_2');
 
         $content = ConfigHelper::fresnsConfigByItemKey('portal_4') ?? $portalContent;

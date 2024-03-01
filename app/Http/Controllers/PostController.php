@@ -13,6 +13,7 @@ use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\PostInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
 class PostController extends Controller
@@ -20,6 +21,10 @@ class PostController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_config('channel_post_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST, $request->all());
 
         $result = PostInterface::list($query);
@@ -53,6 +58,10 @@ class PostController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_config('channel_post_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_POST_LIST, $request->all());
 
         $result = PostInterface::list($query);
@@ -81,93 +90,6 @@ class PostController extends Controller
 
         // view
         return view('posts.list', compact('posts'));
-    }
-
-    // nearby
-    public function nearby(Request $request)
-    {
-        $query = $request->all();
-        $query['mapId'] = $request->mapId ?? 1;
-        $query['mapLng'] = $request->mapLng ?? null;
-        $query['mapLat'] = $request->mapLat ?? null;
-        $query['unit'] = $request->unit ?? null;
-        $query['length'] = $request->length ?? null;
-
-        if (empty($request->mapLng) || empty($request->mapLat)) {
-            $result = [
-                'data' => [
-                    'pagination' => [
-                        'total' => 0,
-                        'pageSize' => 15,
-                        'currentPage' => 1,
-                        'lastPage' => 1,
-                    ],
-                    'list' => [],
-                ],
-            ];
-        } else {
-            $result = PostInterface::nearby($query);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        // ajax
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($result['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
-            }
-
-            return response()->json([
-                'pagination' => $result['data']['pagination'],
-                'html' => $html,
-            ]);
-        }
-
-        // view
-        return view('posts.nearby', compact('posts'));
-    }
-
-    // location
-    public function location(Request $request, string $encode)
-    {
-        $locationData = urldecode(base64_decode($encode));
-        $location = json_decode($locationData, true) ?? [];
-
-        $langTag = fs_theme('lang');
-
-        $query = $request->all();
-        $query['mapId'] = $location['mapId'] ?? null;
-        $query['mapLng'] = $location['longitude'] ?? null;
-        $query['mapLat'] = $location['latitude'] ?? null;
-        $query['unit'] = 'km';
-        $query['length'] = 1;
-
-        $result = PostInterface::nearby($query);
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        // ajax
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($result['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
-            }
-
-            return response()->json([
-                'pagination' => $result['data']['pagination'],
-                'html' => $html,
-            ]);
-        }
-
-        // view
-        return view('posts.location', compact('location', 'encode', 'posts'));
     }
 
     // likes

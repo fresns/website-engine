@@ -13,6 +13,7 @@ use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\CommentInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
 class CommentController extends Controller
@@ -20,6 +21,10 @@ class CommentController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_config('channel_comment_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT, $request->all());
 
         $result = CommentInterface::list($query);
@@ -53,6 +58,10 @@ class CommentController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_config('channel_comment_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_COMMENT_LIST, $request->all());
 
         $result = CommentInterface::list($query);
@@ -77,93 +86,6 @@ class CommentController extends Controller
 
         // view
         return view('comments.list', compact('comments'));
-    }
-
-    // nearby
-    public function nearby(Request $request)
-    {
-        $query = $request->all();
-        $query['mapId'] = $request->mapId ?? 1;
-        $query['mapLng'] = $request->mapLng ?? null;
-        $query['mapLat'] = $request->mapLat ?? null;
-        $query['unit'] = $request->unit ?? null;
-        $query['length'] = $request->length ?? null;
-
-        if (empty($request->mapLng) || empty($request->mapLat)) {
-            $result = [
-                'data' => [
-                    'pagination' => [
-                        'total' => 0,
-                        'pageSize' => 15,
-                        'currentPage' => 1,
-                        'lastPage' => 1,
-                    ],
-                    'list' => [],
-                ],
-            ];
-        } else {
-            $result = CommentInterface::nearby($query);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        // ajax
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
-            }
-
-            return response()->json([
-                'pagination' => $result['data']['pagination'],
-                'html' => $html,
-            ]);
-        }
-
-        // view
-        return view('comments.nearby', compact('comments'));
-    }
-
-    // location
-    public function location(Request $request, string $encode)
-    {
-        $locationData = urldecode(base64_decode($encode));
-        $location = json_decode($locationData, true) ?? [];
-
-        $langTag = fs_theme('lang');
-
-        $query = $request->all();
-        $query['mapId'] = $location['mapId'] ?? null;
-        $query['mapLng'] = $location['longitude'] ?? null;
-        $query['mapLat'] = $location['latitude'] ?? null;
-        $query['unit'] = 'km';
-        $query['length'] = 1;
-
-        $result = CommentInterface::nearby($query);
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        // ajax
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
-            }
-
-            return response()->json([
-                'pagination' => $result['data']['pagination'],
-                'html' => $html,
-            ]);
-        }
-
-        // view
-        return view('comments.location', compact('location', 'encode', 'comments'));
     }
 
     // likes

@@ -33,7 +33,9 @@ class AccountInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -56,7 +58,9 @@ class AccountInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;

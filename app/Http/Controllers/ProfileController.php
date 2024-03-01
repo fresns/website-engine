@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\View;
 class ProfileController extends Controller
 {
     // posts
-    public function posts(Request $request, string $uidOrUsername)
+    public function posts(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
         $query['uidOrUsername'] = $uidOrUsername;
@@ -55,7 +55,7 @@ class ProfileController extends Controller
     }
 
     // comments
-    public function comments(Request $request, string $uidOrUsername)
+    public function comments(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
         $query['uidOrUsername'] = $uidOrUsername;
@@ -93,7 +93,7 @@ class ProfileController extends Controller
     }
 
     // followers you follow
-    public function followersYouFollow(Request $request, string $uidOrUsername)
+    public function followersYouFollow(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -130,7 +130,7 @@ class ProfileController extends Controller
     }
 
     // likers
-    public function likers(Request $request, string $uidOrUsername)
+    public function likers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -167,7 +167,7 @@ class ProfileController extends Controller
     }
 
     // dislikers
-    public function dislikers(Request $request, string $uidOrUsername)
+    public function dislikers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -204,7 +204,7 @@ class ProfileController extends Controller
     }
 
     // followers
-    public function followers(Request $request, string $uidOrUsername)
+    public function followers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -241,7 +241,7 @@ class ProfileController extends Controller
     }
 
     // blockers
-    public function blockers(Request $request, string $uidOrUsername)
+    public function blockers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -282,7 +282,7 @@ class ProfileController extends Controller
      */
 
     // likeUsers
-    public function likeUsers(Request $request, string $uidOrUsername)
+    public function likeUsers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -319,7 +319,7 @@ class ProfileController extends Controller
     }
 
     // likeGroups
-    public function likeGroups(Request $request, string $uidOrUsername)
+    public function likeGroups(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -356,7 +356,7 @@ class ProfileController extends Controller
     }
 
     // likeHashtags
-    public function likeHashtags(Request $request, string $uidOrUsername)
+    public function likeHashtags(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -393,7 +393,7 @@ class ProfileController extends Controller
     }
 
     // likePosts
-    public function likePosts(Request $request, string $uidOrUsername)
+    public function likePosts(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -430,7 +430,7 @@ class ProfileController extends Controller
     }
 
     // likeComments
-    public function likeComments(Request $request, string $uidOrUsername)
+    public function likeComments(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -471,7 +471,7 @@ class ProfileController extends Controller
      */
 
     // dislikeUsers
-    public function dislikeUsers(Request $request, string $uidOrUsername)
+    public function dislikeUsers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -508,7 +508,7 @@ class ProfileController extends Controller
     }
 
     // dislikeGroups
-    public function dislikeGroups(Request $request, string $uidOrUsername)
+    public function dislikeGroups(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -545,7 +545,7 @@ class ProfileController extends Controller
     }
 
     // dislikeHashtags
-    public function dislikeHashtags(Request $request, string $uidOrUsername)
+    public function dislikeHashtags(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -582,7 +582,7 @@ class ProfileController extends Controller
     }
 
     // dislikePosts
-    public function dislikePosts(Request $request, string $uidOrUsername)
+    public function dislikePosts(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -619,7 +619,7 @@ class ProfileController extends Controller
     }
 
     // dislikeComments
-    public function dislikeComments(Request $request, string $uidOrUsername)
+    public function dislikeComments(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -660,7 +660,7 @@ class ProfileController extends Controller
      */
 
     // followingUsers
-    public function followingUsers(Request $request, string $uidOrUsername)
+    public function followingUsers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -697,7 +697,7 @@ class ProfileController extends Controller
     }
 
     // followingGroups
-    public function followingGroups(Request $request, string $uidOrUsername)
+    public function followingGroups(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -734,7 +734,7 @@ class ProfileController extends Controller
     }
 
     // followingHashtags
-    public function followingHashtags(Request $request, string $uidOrUsername)
+    public function followingHashtags(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -771,7 +771,7 @@ class ProfileController extends Controller
     }
 
     // followingPosts
-    public function followingPosts(Request $request, string $uidOrUsername)
+    public function followingPosts(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -808,7 +808,7 @@ class ProfileController extends Controller
     }
 
     // followingComments
-    public function followingComments(Request $request, string $uidOrUsername)
+    public function followingComments(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -849,7 +849,7 @@ class ProfileController extends Controller
      */
 
     // blockingUsers
-    public function blockingUsers(Request $request, string $uidOrUsername)
+    public function blockingUsers(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -886,7 +886,7 @@ class ProfileController extends Controller
     }
 
     // blockingGroups
-    public function blockingGroups(Request $request, string $uidOrUsername)
+    public function blockingGroups(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -923,7 +923,7 @@ class ProfileController extends Controller
     }
 
     // blockingHashtags
-    public function blockingHashtags(Request $request, string $uidOrUsername)
+    public function blockingHashtags(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -960,7 +960,7 @@ class ProfileController extends Controller
     }
 
     // blockingPosts
-    public function blockingPosts(Request $request, string $uidOrUsername)
+    public function blockingPosts(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 
@@ -997,7 +997,7 @@ class ProfileController extends Controller
     }
 
     // blockingComments
-    public function blockingComments(Request $request, string $uidOrUsername)
+    public function blockingComments(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
 

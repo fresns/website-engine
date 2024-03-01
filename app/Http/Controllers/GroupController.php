@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use App\Helpers\ConfigHelper;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\GroupInterface;
@@ -22,12 +21,11 @@ class GroupController extends Controller
     // index
     public function index(Request $request)
     {
-        $status = ConfigHelper::fresnsConfigByItemKey('menu_group_status');
-        if (! $status) {
+        if (! fs_config('channel_group_status')) {
             return Response::view('404', [], 404);
         }
 
-        $indexType = ConfigHelper::fresnsConfigByItemKey('menu_group_type');
+        $indexType = fs_config('channel_group_type') ?? 'tree';
 
         $groupTree = [];
         $groups = [];
@@ -40,32 +38,35 @@ class GroupController extends Controller
             }
 
             $groupTree = $result['data'];
-        } else {
-            $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP, $request->all());
 
-            $result = GroupInterface::list($query);
+            // view
+            return view('groups.index', compact('groupTree', 'groups'));
+        }
 
-            if (data_get($result, 'code') !== 0) {
-                throw new ErrorException($result['message'], $result['code']);
+        $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP, $request->all());
+
+        $result = GroupInterface::list($query);
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($result['data']['list'] as $group) {
+                $html .= View::make('components.group.list', compact('group'))->render();
             }
 
-            $groups = QueryHelper::convertApiDataToPaginate(
-                items: $result['data']['list'],
-                pagination: $result['data']['pagination'],
-            );
-
-            // ajax
-            if ($request->ajax()) {
-                $html = '';
-                foreach ($result['data']['list'] as $group) {
-                    $html .= View::make('components.group.list', compact('group'))->render();
-                }
-
-                return response()->json([
-                    'pagination' => $result['data']['pagination'],
-                    'html' => $html,
-                ]);
-            }
+            return response()->json([
+                'pagination' => $result['data']['pagination'],
+                'html' => $html,
+            ]);
         }
 
         // view
@@ -75,8 +76,7 @@ class GroupController extends Controller
     // list
     public function list(Request $request)
     {
-        $status = ConfigHelper::fresnsConfigByItemKey('menu_group_list_status');
-        if (! $status) {
+        if (! fs_config('channel_group_list_status')) {
             return Response::view('404', [], 404);
         }
 
@@ -254,6 +254,9 @@ class GroupController extends Controller
             default => 'posts',
         };
 
+        $posts = [];
+        $comments = [];
+
         switch ($type) {
             case 'posts':
                 $results = GroupInterface::detail($gid, 'posts', $query);
@@ -263,8 +266,6 @@ class GroupController extends Controller
                     pagination: $results['posts']['data']['pagination'],
                 );
                 $pagination = $results['posts']['data']['pagination'];
-
-                $comments = [];
                 break;
 
             case 'comments':
@@ -275,8 +276,6 @@ class GroupController extends Controller
                     pagination: $results['comments']['data']['pagination'],
                 );
                 $pagination = $results['comments']['data']['pagination'];
-
-                $posts = [];
                 break;
         }
 

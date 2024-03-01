@@ -14,6 +14,8 @@ class ErrorException extends \Exception
 {
     public function render()
     {
+        // dd($this->getCode(), $this->getMessage());
+
         if (\request()->wantsJson()) {
             return \response()->json([
                 'code' => $this->getCode(),

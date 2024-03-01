@@ -37,7 +37,9 @@ class UserInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -64,7 +66,9 @@ class UserInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -156,16 +160,19 @@ class UserInterface
         }
 
         try {
-            $request = Request::create("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", 'GET', [
+            $request = Request::create("/api/fresns/v1/user/{$uidOrUsername}/detail", 'GET', []);
+
+            $followersRequest = Request::create("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", 'GET', [
                 'pageSize' => 3,
                 'page' => 1,
             ]);
 
             $apiController = new UserController();
-            $responseDetail = $apiController->detail($uidOrUsername);
-            $responseFollowersYouFollow = $apiController->followersYouFollow($uidOrUsername, $request);
 
+            $responseDetail = $apiController->detail($uidOrUsername, $request);
             $resultDetailContent = $responseDetail->getContent();
+
+            $responseFollowersYouFollow = $apiController->followersYouFollow($uidOrUsername, $followersRequest);
             $resultFollowersYouFollowContent = $responseFollowersYouFollow->getContent();
 
             if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
@@ -244,7 +251,9 @@ class UserInterface
                     break;
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $results;

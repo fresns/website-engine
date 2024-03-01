@@ -15,25 +15,25 @@ use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
 use Illuminate\Http\Request;
 
-class FollowInterface
+class TimelineInterface
 {
-    public static function posts(string $type, ?array $query = []): array
+    public static function posts(?array $query = []): array
     {
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/post/follow/{$type}", [
+            return ApiHelper::make()->get("/api/fresns/v1/post/timelines", [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/fresns/v1/post/follow/{$type}", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/post/timelines", 'GET', $query);
 
             $apiController = new PostController();
-            $response = $apiController->follow($type, $request);
+            $response = $apiController->timelines($request);
 
             if (is_array($response)) {
                 $result = $response;
@@ -42,29 +42,31 @@ class FollowInterface
                 $result = json_decode($resultContent, true);
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
     }
 
-    public static function comments(string $type, ?array $query = []): array
+    public static function comments(?array $query = []): array
     {
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             return DataHelper::getApiDataTemplate();
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/comment/follow/{$type}", [
+            return ApiHelper::make()->get("/api/fresns/v1/comment/timelines", [
                 'query' => $query,
             ]);
         }
 
         try {
-            $request = Request::create("/api/fresns/v1/comment/follow/{$type}", 'GET', $query);
+            $request = Request::create("/api/fresns/v1/comment/timelines", 'GET', $query);
 
             $apiController = new CommentController();
-            $response = $apiController->follow($type, $request);
+            $response = $apiController->timelines($request);
 
             if (is_array($response)) {
                 $result = $response;
@@ -73,7 +75,9 @@ class FollowInterface
                 $result = json_decode($resultContent, true);
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;

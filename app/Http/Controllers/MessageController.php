@@ -55,12 +55,12 @@ class MessageController extends Controller
     }
 
     // conversation
-    public function conversation(Request $request, int $conversationId)
+    public function conversation(Request $request, int|string $uidOrUsername)
     {
         $query = $request->all();
         $query['pageListDirection'] = 'oldest';
 
-        $results = MessageInterface::conversation($conversationId, $query);
+        $results = MessageInterface::conversation($uidOrUsername, $query);
 
         if (data_get($results, 'conversation.code') !== 0) {
             throw new ErrorException($results['conversation']['message'], $results['conversation']['code']);
@@ -129,6 +129,6 @@ class MessageController extends Controller
         }
 
         // view
-        return view('notifications.index', compact('notifications', 'types'));
+        return view('messages.notifications', compact('notifications', 'types'));
     }
 }

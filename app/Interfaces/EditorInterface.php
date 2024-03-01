@@ -32,7 +32,9 @@ class EditorInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -75,7 +77,9 @@ class EditorInterface
             $draftInfo['config'] = data_get($result, 'data');
             $draftInfo['draft'] = $draftResult ? data_get($draftResult, 'data') : null;
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $draftInfo;

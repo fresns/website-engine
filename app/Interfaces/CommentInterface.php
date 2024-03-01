@@ -41,7 +41,9 @@ class CommentInterface
                 $result = json_decode($resultContent, true);
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -72,7 +74,9 @@ class CommentInterface
                 $result = json_decode($resultContent, true);
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -120,7 +124,9 @@ class CommentInterface
                 'comments' => CommentInterface::list($query),
             ];
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $results;

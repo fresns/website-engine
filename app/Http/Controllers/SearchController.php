@@ -41,6 +41,11 @@ class SearchController extends Controller
                 return redirect()->to(fs_route(route('fresns.search.hashtags', ['searchKey' => $searchKey])));
                 break;
 
+                // geotag
+            case 'geotag':
+                return redirect()->to(fs_route(route('fresns.search.geotags', ['searchKey' => $searchKey])));
+                break;
+
                 // post
             case 'post':
                 return redirect()->to(fs_route(route('fresns.search.posts', ['searchKey' => $searchKey])));
@@ -113,6 +118,25 @@ class SearchController extends Controller
         );
 
         return view('search.hashtags', compact('hashtags'));
+    }
+
+    // geotags
+    public function geotags(Request $request)
+    {
+        $query = $request->all();
+
+        $result = SearchInterface::search('geotags', $query);
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        return view('search.geotags', compact('geotags'));
     }
 
     // posts

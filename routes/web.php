@@ -7,13 +7,14 @@
  */
 
 use App\Helpers\ConfigHelper;
-use Fresns\WebEngine\Http\Controllers\AccountController;
 use Fresns\WebEngine\Http\Controllers\CommentController;
 use Fresns\WebEngine\Http\Controllers\EditorController;
 use Fresns\WebEngine\Http\Controllers\GeotagController;
 use Fresns\WebEngine\Http\Controllers\GroupController;
 use Fresns\WebEngine\Http\Controllers\HashtagController;
+use Fresns\WebEngine\Http\Controllers\MeController;
 use Fresns\WebEngine\Http\Controllers\MessageController;
+use Fresns\WebEngine\Http\Controllers\NearbyController;
 use Fresns\WebEngine\Http\Controllers\PortalController;
 use Fresns\WebEngine\Http\Controllers\PostController;
 use Fresns\WebEngine\Http\Controllers\ProfileController;
@@ -183,20 +184,20 @@ Route::prefix(LaravelLocalization::setLocale())
 
         // nearby
         Route::name('nearby.')->prefix('nearby')->group(function () {
-            Route::get('/', [TimelineController::class, 'index'])->name('index');
-            Route::get('posts', [TimelineController::class, 'posts'])->name('posts');
-            Route::get('comments', [TimelineController::class, 'comments'])->name('comments');
+            Route::get('/', [NearbyController::class, 'index'])->name('index');
+            Route::get('posts', [NearbyController::class, 'posts'])->name('posts');
+            Route::get('comments', [NearbyController::class, 'comments'])->name('comments');
         });
 
         // me
         Route::name('me.')->prefix('me')->withoutMiddleware([CheckSiteModel::class])->group(function () {
-            Route::get('/', [AccountController::class, 'index'])->name('index')->withoutMiddleware([UserAuthorize::class]);
-            Route::get('extcredits', [AccountController::class, 'extcredits'])->name('extcredits');
-            Route::get('drafts', [AccountController::class, 'drafts'])->name('drafts');
-            Route::get('users', [AccountController::class, 'users'])->name('users')->withoutMiddleware([UserAuthorize::class]);
-            Route::get('wallet', [AccountController::class, 'wallet'])->name('wallet')->withoutMiddleware([UserAuthorize::class]);
-            Route::get('settings', [AccountController::class, 'settings'])->name('settings')->withoutMiddleware([UserAuthorize::class]);
-            Route::get('logout', [AccountController::class, 'logout'])->name('logout')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('/', [MeController::class, 'index'])->name('index')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('extcredits', [MeController::class, 'extcredits'])->name('extcredits');
+            Route::get('drafts', [MeController::class, 'drafts'])->name('drafts');
+            Route::get('users', [MeController::class, 'users'])->name('users')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('wallet', [MeController::class, 'wallet'])->name('wallet')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('settings', [MeController::class, 'settings'])->name('settings')->withoutMiddleware([UserAuthorize::class]);
+            Route::get('logout', [MeController::class, 'logout'])->name('logout')->withoutMiddleware([UserAuthorize::class]);
         });
 
         // messages

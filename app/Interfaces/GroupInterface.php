@@ -23,12 +23,16 @@ class GroupInterface
 
         try {
             $apiController = new GroupController();
-            $response = $apiController->tree();
+
+            $request = Request::create('/api/fresns/v1/group/tree', 'GET', []);
+            $response = $apiController->tree($request);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -51,7 +55,9 @@ class GroupInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
@@ -93,7 +99,9 @@ class GroupInterface
 
         try {
             $apiController = new GroupController();
-            $response = $apiController->detail($gid);
+
+            $request = Request::create("/api/fresns/v1/group/{$gid}/detail", 'GET', []);
+            $response = $apiController->detail($gid, $request);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
@@ -114,7 +122,9 @@ class GroupInterface
                     break;
             }
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $results;

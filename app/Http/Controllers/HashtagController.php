@@ -13,6 +13,7 @@ use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\HashtagInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
 class HashtagController extends Controller
@@ -20,6 +21,10 @@ class HashtagController extends Controller
     // index
     public function index(Request $request)
     {
+        if (! fs_config('channel_hashtag_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG, $request->all());
 
         $result = HashtagInterface::list($query);
@@ -53,6 +58,10 @@ class HashtagController extends Controller
     // list
     public function list(Request $request)
     {
+        if (! fs_config('channel_hashtag_list_status')) {
+            return Response::view('404', [], 404);
+        }
+
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_HASHTAG_LIST, $request->all());
 
         $result = HashtagInterface::list($query);
@@ -216,10 +225,10 @@ class HashtagController extends Controller
     }
 
     // detail
-    public function detail(Request $request, string $hid, ?string $type = null)
+    public function detail(Request $request, string $htid, ?string $type = null)
     {
         $query = $request->all();
-        $query['hid'] = $hid;
+        $query['htid'] = $htid;
 
         $type = match ($type) {
             'posts' => 'posts',
@@ -227,29 +236,28 @@ class HashtagController extends Controller
             default => 'posts',
         };
 
+        $posts = [];
+        $comments = [];
+
         switch ($type) {
             case 'posts':
-                $results = HashtagInterface::detail($hid, 'posts', $query);
+                $results = HashtagInterface::detail($htid, 'posts', $query);
 
                 $posts = QueryHelper::convertApiDataToPaginate(
                     items: $results['posts']['data']['list'],
                     pagination: $results['posts']['data']['pagination'],
                 );
                 $pagination = $results['posts']['data']['pagination'];
-
-                $comments = [];
                 break;
 
             case 'comments':
-                $results = HashtagInterface::detail($hid, 'comments', $query);
+                $results = HashtagInterface::detail($htid, 'comments', $query);
 
                 $comments = QueryHelper::convertApiDataToPaginate(
                     items: $results['comments']['data']['list'],
                     pagination: $results['comments']['data']['pagination'],
                 );
                 $pagination = $results['comments']['data']['pagination'];
-
-                $posts = [];
                 break;
         }
 

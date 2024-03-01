@@ -57,28 +57,25 @@ class MessageInterface
                 'pinConversations' => json_decode($pinResultContent, true),
             ];
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $results;
     }
 
-    public static function conversation(int $conversationId, ?array $query = []): array
+    public static function conversation(int|string $uidOrUsername, ?array $query = []): array
     {
         if (is_remote_api()) {
             $client = ApiHelper::make();
 
             $results = $client->unwrapRequests([
-                'conversation' => $client->getAsync("/api/fresns/v1/conversation/{$conversationId}/detail"),
-                'messages' => $client->getAsync("/api/fresns/v1/conversation/{$conversationId}/messages", [
+                'conversation' => $client->getAsync("/api/fresns/v1/conversation/{$uidOrUsername}/detail"),
+                'messages' => $client->getAsync("/api/fresns/v1/conversation/{$uidOrUsername}/messages", [
                     'query' => $query,
                 ]),
-                'markAllAsRead' => $client->putAsync('/api/fresns/v1/conversation/mark-as-read', [
-                    'json' => [
-                        'type' => 'conversation',
-                        'conversationId' => $conversationId,
-                    ],
-                ]),
+                'markAllAsRead' => $client->patchAsync("/api/fresns/v1/conversation/{$uidOrUsername}/read-status"),
             ]);
 
             return $results;
@@ -86,13 +83,15 @@ class MessageInterface
 
         try {
             $apiController = new ConversationController();
-            $response = $apiController->detail($conversationId);
+
+            $detailRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/detail", 'GET', []);
+            $response = $apiController->detail($uidOrUsername, $detailRequest);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
 
-            $request = Request::create("/api/fresns/v1/conversation/{$conversationId}/messages", 'GET', $query);
-            $messagesResponse = $apiController->messages($conversationId, $request);
+            $messagesRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/messages", 'GET', $query);
+            $messagesResponse = $apiController->messages($uidOrUsername, $messagesRequest);
 
             $messagesResultContent = $messagesResponse->getContent();
             $messagesResult = json_decode($messagesResultContent, true);
@@ -102,13 +101,12 @@ class MessageInterface
                 'messages' => $messagesResult,
             ];
 
-            $markAllAsReadRequest = Request::create('/api/fresns/v1/conversation/mark-as-read', 'GET', [
-                'type' => 'conversation',
-                'conversationId' => $conversationId,
-            ]);
-            $apiController->markAsRead($markAllAsReadRequest);
+            $markAllAsReadRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/read-status", 'PATCH');
+            $apiController->readStatus($uidOrUsername, $markAllAsReadRequest);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $results;
@@ -131,7 +129,9 @@ class MessageInterface
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
         } catch (\Exception $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode());
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
         }
 
         return $result;
