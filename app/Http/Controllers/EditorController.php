@@ -8,208 +8,211 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
+use App\Helpers\CacheHelper;
+use App\Models\File;
+use App\Utilities\ConfigUtility;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
-use Fresns\WebEngine\Interfaces\EditorInterface;
+use Fresns\WebEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
 
 class EditorController extends Controller
 {
-    // index
-    public function index(Request $request, string $type)
+    // post
+    public function post(Request $request)
     {
-        // Content Type
-        $type = match ($type) {
-            'posts' => 'post',
-            'comments' => 'comment',
-            'post' => 'post',
-            'comment' => 'comment',
-            default => 'post',
-        };
+        $did = $request->did;
+        $pid = $request->pid;
 
-        // Editor Plugin Configuration
-        $editorPlugin = match ($type) {
-            'post' => fs_config('post_editor_service'),
-            'comment' => fs_config('comment_editor_service'),
-            default => null,
-        };
+        // edit draft
+        if ($did) {
+            $result = MeInterface::getDraftDetail('post', $did);
 
-        // If the editor plugin is configured, jump to the plugin page
-        if ($editorPlugin) {
-            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type);
-
-            // Get the query parameters of the original request
-            $queryParams = $request->query();
-
-            // If query parameters exist, append them to $pluginUrl
-            if ($queryParams) {
-                $pluginUrl .= '&'.http_build_query($queryParams);
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
             }
 
-            return redirect()->to($pluginUrl);
+            // post_editor_service
+            if (fs_config('post_editor_service')) {
+                $pluginUrl = DataHelper::getEditorUrl(fs_config('post_editor_service'), 'post', $did, $pid);
+
+                return redirect()->to($pluginUrl);
+            }
+
+            return redirect()->to(fs_route(route('fresns.editor.edit', [
+                'type' => 'post',
+                'did' => $did,
+            ])));
         }
 
-        // If it is a comment ignore the draft logic
-        if ($type == 'comment') {
-            $response = ApiHelper::make()->post('/api/fresns/v1/editor/comment/create', [
+        // edit published post
+        if ($pid) {
+            $postResponse = ApiHelper::make()->post("/api/fresns/v1/editor/post/edit/{$pid}");
+
+            if (data_get($postResponse, 'code') !== 0) {
+                throw new ErrorException($postResponse['message'], $postResponse['code']);
+            }
+
+            $did = $postResponse['data']['detail']['did'];
+
+            // post_editor_service
+            if (fs_config('post_editor_service')) {
+                $pluginUrl = DataHelper::getEditorUrl(fs_config('post_editor_service'), 'post', $did, $pid);
+
+                return redirect()->to($pluginUrl);
+            }
+
+            return redirect()->to(fs_route(route('fresns.editor.edit', [
+                'type' => 'post',
+                'did' => $did,
+            ])));
+        }
+
+        // drafts
+        $drafts = MeInterface::drafts('post');
+        $skipDrafts = $request->skipDrafts;
+
+        if (empty($drafts) || $skipDrafts) {
+            $response = ApiHelper::make()->post('/api/fresns/v1/editor/post/draft', [
                 'json' => [
                     'createType' => 2,
-                    'commentPid' => $request->commentPid,
-                    'commentCid' => $request->commentCid,
+                    'gid' => $request->gid,
+                    'quotePid' => $request->quotePid,
+                    'gtid' => $request->gtid,
                 ],
             ]);
 
             if (data_get($response, 'code') !== 0) {
                 throw new ErrorException($response['message'], $response['code']);
+            }
+
+            $did = $response['data']['detail']['did'];
+
+            // post_editor_service
+            if (fs_config('post_editor_service')) {
+                $pluginUrl = DataHelper::getEditorUrl(fs_config('post_editor_service'), 'post', $did, $pid);
+
+                return redirect()->to($pluginUrl);
+            }
+
+            return redirect()->to(fs_route(route('fresns.editor.edit', [
+                'type' => 'post',
+                'did' => $did,
+            ])));
+        }
+
+        $type = 'post';
+
+        // editor configs
+        $uid = fs_user('detail.uid');
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_post_editor_configs_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // get cache
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/editor/post/configs');
+
+            $configs = data_get($result, 'data');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
+        }
+
+        return view('editor.index', compact('type', 'configs', 'drafts'));
+    }
+
+    // comment
+    public function comment(Request $request)
+    {
+        $did = $request->did;
+        $cid = $request->cid;
+        $pid = $request->pid;
+
+        // edit draft
+        if ($did) {
+            $result = MeInterface::getDraftDetail('comment', $did);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
+
+            // comment_editor_service
+            if (fs_config('comment_editor_service')) {
+                $pluginUrl = DataHelper::getEditorUrl(fs_config('comment_editor_service'), 'comment', $did, $pid);
+
+                return redirect()->to($pluginUrl);
             }
 
             return redirect()->to(fs_route(route('fresns.editor.edit', [
                 'type' => 'comment',
-                'draftId' => $response['data']['detail']['id'],
+                'did' => $did,
             ])));
         }
 
-        // Editor request data
-        $client = ApiHelper::make();
-        $results = $client->unwrapRequests([
-            'config' => $client->getAsync("/api/fresns/v1/editor/{$type}/config"),
-            'drafts' => $client->getAsync("/api/fresns/v1/editor/{$type}/drafts"),
-        ]);
+        // edit published comment
+        if ($cid) {
+            $commentResponse = ApiHelper::make()->post("/api/fresns/v1/editor/comment/edit/{$cid}");
 
-        $config = $results['config']['data'];
-        $drafts = $results['drafts']['data']['list'];
-
-        // User without drafts, automatically create drafts and enter the editor
-        if (empty($drafts)) {
-            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/create", [
-                'json' => [
-                    'createType' => 2,
-                    'postGid' => $request->postGid,
-                    'postQuotePid' => $request->postQuotePid,
-                    'commentPid' => $request->commentPid,
-                    'commentCid' => $request->commentCid,
-                ],
-            ]);
-
-            if (data_get($response, 'code') !== 0) {
-                throw new ErrorException($response['message'], $response['code']);
+            if (data_get($commentResponse, 'code') !== 0) {
+                throw new ErrorException($commentResponse['message'], $commentResponse['code']);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
+            $did = $commentResponse['data']['detail']['did'];
+
+            // comment_editor_service
+            if (fs_config('comment_editor_service')) {
+                $pluginUrl = DataHelper::getEditorUrl(fs_config('comment_editor_service'), 'comment', $did, $cid);
+
+                return redirect()->to($pluginUrl);
+            }
+
+            return redirect()->to(fs_route(route('fresns.editor.edit', [
+                'type' => 'comment',
+                'did' => $did,
+            ])));
         }
 
-        return view('editor.index', compact('type', 'config', 'drafts'));
-    }
+        // new draft
+        if (empty($pid)) {
+            $errorMessage = ConfigUtility::getCodeMessage(30001, 'Fresns', fs_theme('lang'));
 
-    // request: create or edit
-    public function store(Request $request, string $type)
-    {
-        // Content Type
-        $type = match ($type) {
-            'posts' => 'post',
-            'comments' => 'comment',
-            'post' => 'post',
-            'comment' => 'comment',
-            default => 'post',
-        };
-
-        // Edit the pid or cid of the content
-        $fsid = $request->input('fsid');
-
-        // Editor Plugin Configuration
-        $editorPlugin = match ($type) {
-            'post' => fs_config('post_editor_service'),
-            'comment' => fs_config('comment_editor_service'),
-            default => null,
-        };
-
-        // If the editor plugin is configured, jump to the plugin page
-        if ($editorPlugin) {
-            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type, null, $fsid);
-
-            return redirect()->to($pluginUrl);
+            throw new ErrorException($errorMessage, 30001);
         }
 
-        // Determine whether to edit content, or create a draft
-        if ($fsid) {
-            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/generate/{$fsid}");
-        } else {
-            $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/create", [
-                'json' => [
-                    'createType' => 2,
-                    'postQuotePid' => $request->input('postQuotePid'),
-                    'postGid' => $request->input('postGid'),
-                    'postTitle' => $request->input('postTitle'),
-                    'postIsCommentDisabled' => $request->input('postIsCommentDisabled'),
-                    'postIsCommentPrivate' => $request->input('postIsCommentPrivate'),
-                    'commentPid' => $request->input('commentPid'),
-                    'commentCid' => $request->input('commentCid'),
-                    'content' => $request->input('content'),
-                    'isMarkdown' => $request->input('isMarkdown'),
-                    'isAnonymous' => $request->input('isAnonymous'),
-                    'map' => $request->input('map'),
-                    'extends' => $request->input('extends'),
-                    'archives' => $request->input('archives'),
-                ],
-            ]);
-        }
+        $response = ApiHelper::make()->post('/api/fresns/v1/editor/comment/draft', [
+            'json' => [
+                'createType' => 2,
+                'commentPid' => $pid,
+                'gtid' => $request->gtid,
+            ],
+        ]);
 
-        // Process draft and enter the editor
         if (data_get($response, 'code') !== 0) {
             throw new ErrorException($response['message'], $response['code']);
         }
 
-        DataHelper::cacheForgetAccountAndUser();
+        $did = $response['data']['detail']['did'];
 
-        return redirect()->to(fs_route(route('fresns.editor.edit', [$type, $response['data']['detail']['id']])));
-    }
-
-    // edit
-    public function edit(Request $request, string $type, int $draftId)
-    {
-        // Content Type
-        $type = match ($type) {
-            'posts' => 'post',
-            'comments' => 'comment',
-            'post' => 'post',
-            'comment' => 'comment',
-            default => 'post',
-        };
-
-        // Editor Plugin Configuration
-        $editorPlugin = match ($type) {
-            'post' => fs_config('post_editor_service'),
-            'comment' => fs_config('comment_editor_service'),
-            default => null,
-        };
-
-        // If the editor plugin is configured, jump to the plugin page
-        if ($editorPlugin) {
-            $pluginUrl = DataHelper::getEditorUrl($editorPlugin, $type, $draftId);
+        // comment_editor_service
+        if (fs_config('comment_editor_service')) {
+            $pluginUrl = DataHelper::getEditorUrl(fs_config('comment_editor_service'), 'comment', $did, $pid);
 
             return redirect()->to($pluginUrl);
         }
 
-        // Get draft data
-        $draftInfo = EditorInterface::getDraft($type, $draftId);
-
-        $config = $draftInfo['config'];
-        $draft = $draftInfo['draft'];
-
-        $plid = null; // post log id
-        $clid = null; // comment log id
-        if ($type == 'post') {
-            $plid = $draftId;
-        } else {
-            $clid = $draftId;
-        }
-
-        return view('editor.edit', compact('type', 'plid', 'clid', 'config', 'draft'));
+        return redirect()->to(fs_route(route('fresns.editor.edit', [
+            'type' => 'comment',
+            'did' => $did,
+        ])));
     }
 
-    // request: publish
-    public function publish(Request $request, string $type, int $draftId)
+    // edit
+    public function edit(string $type, string $did)
     {
         $type = match ($type) {
             'posts' => 'post',
@@ -219,44 +222,34 @@ class EditorController extends Controller
             default => 'post',
         };
 
-        $response = ApiHelper::make()->put("/api/fresns/v1/editor/{$type}/{$draftId}", [
-            'json' => [
-                'postGid' => $request->post('postGid'),
-                'postTitle' => $request->post('postTitle'),
-                'postIsCommentDisabled' => $request->post('postIsCommentDisabled'),
-                'postIsCommentPrivate' => $request->post('postIsCommentPrivate'),
-                'postQuotePid' => $request->post('postQuotePid'),
-                'commentPid' => $request->post('commentPid'),
-                'commentCid' => $request->post('commentCid'),
-                'content' => $request->post('content'),
-                'isMarkdown' => $request->post('isMarkdown'),
-                'isAnonymous' => $request->post('isAnonymous'),
-                'map' => $request->post('map'),
-                'extends' => $request->post('extends'),
-                'archives' => $request->post('archives'),
-                'deleteMap' => $request->post('deleteMap'),
-                'deleteFile' => $request->post('deleteFile'),
-                'deleteExtend' => $request->post('deleteExtend'),
-                'deleteArchive' => $request->post('deleteArchive'),
-            ],
-        ]);
+        // editor configs
+        $uid = fs_user('detail.uid');
+        $langTag = fs_theme('lang');
 
-        DataHelper::cacheForgetAccountAndUser();
+        $cacheKey = "fresns_web_{$type}_editor_configs_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-        if ($response['code'] !== 0) {
-            throw new ErrorException($response['message'], $response['code']);
+        // get cache
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/configs");
+
+            $configs = data_get($result, 'data');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
-        $response = ApiHelper::make()->post("/api/fresns/v1/editor/{$type}/{$draftId}");
+        // draft
+        $result = MeInterface::getDraftDetail($type, $did);
 
-        if ($response['code'] == 38200) {
-            return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);
+        if ($result['code'] != 0) {
+            throw new ErrorException($result['message'], $result['code']);
         }
 
-        if ($response['code'] !== 0) {
-            throw new ErrorException($response['message'], $response['code']);
-        }
+        $draft = $result['data'];
 
-        return redirect()->to(fs_route(route('fresns.post.index')))->with('success', $response['message']);
+        return view('editor.edit', compact('type', 'configs', 'draft'));
     }
 }

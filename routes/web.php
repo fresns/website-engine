@@ -280,5 +280,9 @@ Route::prefix(LaravelLocalization::setLocale())
             // edit draft: route('fresns.editor.comment', ['did' => ''])
             // edit published comment: route('fresns.editor.comment', ['cid' => ''])
             Route::get('comment', [EditorController::class, 'comment'])->name('comment');
+
+            // edit
+            // fs_route(route('fresns.editor.edit', ['type' => '', 'did' => '']))
+            Route::get('{type}/{did}', [EditorController::class, 'edit'])->name('edit');
         });
     });
