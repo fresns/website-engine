@@ -79,7 +79,7 @@ class NearbyController extends Controller
         }
 
         // view
-        return view('posts.nearby', compact('posts'));
+        return view('nearby.posts', compact('posts'));
     }
 
     // comments
@@ -131,6 +131,6 @@ class NearbyController extends Controller
         }
 
         // view
-        return view('comments.nearby', compact('comments'));
+        return view('nearby.comments', compact('comments'));
     }
 }

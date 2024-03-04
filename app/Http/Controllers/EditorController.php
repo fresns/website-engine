@@ -11,39 +11,11 @@ namespace Fresns\WebEngine\Http\Controllers;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\DataHelper;
-use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\EditorInterface;
 use Illuminate\Http\Request;
 
 class EditorController extends Controller
 {
-    // drafts
-    public function drafts(Request $request, string $type)
-    {
-        $draftType = match ($type) {
-            'posts' => 'post',
-            'comments' => 'comment',
-            'post' => 'post',
-            'comment' => 'comment',
-            default => 'post',
-        };
-
-        $query = $request->all();
-
-        $result = EditorInterface::drafts($draftType, $query);
-
-        if ($result['code'] != 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $drafts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        return view('editor.drafts', compact('drafts', 'type'));
-    }
-
     // index
     public function index(Request $request, string $type)
     {

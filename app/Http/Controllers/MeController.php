@@ -11,7 +11,7 @@ namespace Fresns\WebEngine\Http\Controllers;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\AccountInterface;
+use Fresns\WebEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
 
 class MeController extends Controller
@@ -22,27 +22,10 @@ class MeController extends Controller
         return view('me.index');
     }
 
-    // wallet
-    public function wallet(Request $request)
-    {
-        $result = AccountInterface::walletLogs($request->all());
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $logs = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
-        return view('me.wallet', compact('logs'));
-    }
-
     // userExtcredits
     public function userExtcredits(Request $request)
     {
-        $result = AccountInterface::extcreditsLogs($request->all());
+        $result = MeInterface::extcreditsRecords($request->all());
 
         if (data_get($result, 'code') !== 0) {
             throw new ErrorException($result['message'], $result['code']);
@@ -55,13 +38,59 @@ class MeController extends Controller
 
         $extcreditsId = (int) $request->extcreditsId;
 
-        return view('me.user-extcredits', compact('extcreditsId', 'logs'));
+        return view('me.extcredits', compact('extcreditsId', 'logs'));
+    }
+
+    // drafts
+    public function drafts(Request $request)
+    {
+        $draftType = $request->type;
+
+        $type = match ($draftType) {
+            'posts' => 'post',
+            'comments' => 'comment',
+            'post' => 'post',
+            'comment' => 'comment',
+            default => 'post',
+        };
+
+        $query = $request->all();
+
+        $result = MeInterface::drafts($type, $query);
+
+        if ($result['code'] != 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $drafts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        return view('me.drafts', compact('drafts', 'type'));
     }
 
     // users
     public function users()
     {
         return view('me.users');
+    }
+
+    // wallet
+    public function wallet(Request $request)
+    {
+        $result = MeInterface::walletRecords($request->all());
+
+        if (data_get($result, 'code') !== 0) {
+            throw new ErrorException($result['message'], $result['code']);
+        }
+
+        $logs = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
+        return view('me.wallet', compact('logs'));
     }
 
     // settings

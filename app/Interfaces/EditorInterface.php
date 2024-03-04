@@ -15,37 +15,12 @@ use Illuminate\Http\Request;
 
 class EditorInterface
 {
-    public static function drafts(string $draftType, ?array $query = []): array
-    {
-        if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/editor/{$draftType}/drafts", [
-                'query' => $query,
-            ]);
-        }
-
-        try {
-            $request = Request::create("/api/fresns/v1/editor/{$draftType}/drafts", 'GET', $query);
-
-            $apiController = new EditorController();
-            $response = $apiController->drafts($draftType, $request);
-
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
-        } catch (\Exception $e) {
-            $code = (int) $e->getCode();
-
-            throw new ErrorException($e->getMessage(), $code);
-        }
-
-        return $result;
-    }
-
     public static function getDraft(string $type, ?int $draftId = null): array
     {
         if (is_remote_api()) {
             $client = ApiHelper::make();
 
-            $params['config'] = $client->getAsync("/api/fresns/v1/editor/{$type}/config");
+            $params['configs'] = $client->getAsync("/api/fresns/v1/editor/{$type}/configs");
 
             if ($draftId) {
                 $params['draft'] = $client->getAsync("/api/fresns/v1/editor/{$type}/{$draftId}");
@@ -53,7 +28,7 @@ class EditorInterface
 
             $results = $client->unwrapRequests($params);
 
-            $draftInfo['config'] = data_get($results, 'config.data');
+            $draftInfo['configs'] = data_get($results, 'configs.data');
             $draftInfo['draft'] = data_get($results, 'draft.data');
 
             return $draftInfo;

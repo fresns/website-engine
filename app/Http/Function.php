@@ -41,7 +41,7 @@ if (! function_exists('is_remote_api')) {
 
 // fs_status
 if (! function_exists('fs_status')) {
-    function fs_status(string $key): mixed
+    function fs_status(?string $key = null): mixed
     {
         $cacheKey = 'fresns_web_status';
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
@@ -73,6 +73,10 @@ if (! function_exists('fs_status')) {
             }
 
             CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, now()->addMinutes(10));
+        }
+
+        if (empty($key)) {
+            return $statusJson;
         }
 
         return $statusJson[$key] ?? null;
@@ -149,7 +153,7 @@ if (! function_exists('fs_theme')) {
 
 // fs_config
 if (! function_exists('fs_config')) {
-    function fs_config(string $itemKey, mixed $default = null): mixed
+    function fs_config(?string $itemKey = null, mixed $default = null): mixed
     {
         $langTag = fs_theme('lang');
 
@@ -167,13 +171,17 @@ if (! function_exists('fs_config')) {
             CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
+        if (empty($itemKey)) {
+            return $configs;
+        }
+
         return $configs[$itemKey] ?? $default;
     }
 }
 
 // fs_lang
 if (! function_exists('fs_lang')) {
-    function fs_lang(?string $langKey = null, ?string $default = null): ?string
+    function fs_lang(?string $langKey = null, ?string $default = null): mixed
     {
         $langTag = fs_theme('lang');
 

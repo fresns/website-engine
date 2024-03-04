@@ -192,7 +192,7 @@ Route::prefix(LaravelLocalization::setLocale())
         // me
         Route::name('me.')->prefix('me')->withoutMiddleware([CheckSiteModel::class])->group(function () {
             Route::get('/', [MeController::class, 'index'])->name('index')->withoutMiddleware([UserAuthorize::class]);
-            Route::get('extcredits', [MeController::class, 'extcredits'])->name('extcredits');
+            Route::get('extcredits', [MeController::class, 'userExtcredits'])->name('extcredits');
             Route::get('drafts', [MeController::class, 'drafts'])->name('drafts');
             Route::get('users', [MeController::class, 'users'])->name('users')->withoutMiddleware([UserAuthorize::class]);
             Route::get('wallet', [MeController::class, 'wallet'])->name('wallet')->withoutMiddleware([UserAuthorize::class]);
@@ -269,7 +269,16 @@ Route::prefix(LaravelLocalization::setLocale())
 
         // editor
         Route::name('editor.')->prefix('editor')->group(function () {
-            Route::get('post/{did?}', [EditorController::class, 'post'])->name('post');
-            Route::get('comment/{pid}/{did?}', [EditorController::class, 'comment'])->name('comment');
+            // post
+            // new post: route('fresns.editor.post')
+            // edit draft: route('fresns.editor.post', ['did' => ''])
+            // edit published post: route('fresns.editor.post', ['pid' => ''])
+            Route::get('post', [EditorController::class, 'post'])->name('post');
+
+            // comment
+            // new comment: route('fresns.editor.comment', ['pid' => ''])
+            // edit draft: route('fresns.editor.comment', ['did' => ''])
+            // edit published comment: route('fresns.editor.comment', ['cid' => ''])
+            Route::get('comment', [EditorController::class, 'comment'])->name('comment');
         });
     });
