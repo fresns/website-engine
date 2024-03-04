@@ -261,17 +261,17 @@ if (! function_exists('fs_post_editor')) {
         if (empty($configs)) {
             $result = ApiHelper::make()->get('/api/fresns/v1/editor/post/configs');
 
-            $configs = data_get($result, 'data.editor');
+            $configs = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
             CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         if ($key) {
-            return data_get($configs, $key);
+            return data_get($configs['editor'], $key);
         }
 
-        return $configs;
+        return $configs['editor'];
     }
 }
 
@@ -295,17 +295,17 @@ if (! function_exists('fs_comment_editor')) {
         if (empty($configs)) {
             $result = ApiHelper::make()->get('/api/fresns/v1/editor/comment/configs');
 
-            $configs = data_get($result, 'data.editor');
+            $configs = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
             CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
         }
 
         if ($key) {
-            return data_get($configs, $key);
+            return data_get($configs['editor'], $key);
         }
 
-        return $configs;
+        return $configs['editor'];
     }
 }
 

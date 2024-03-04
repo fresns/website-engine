@@ -136,7 +136,7 @@ class ApiController extends Controller
 
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
-        return redirect()->intended($redirectURL);
+        return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
 
     // api put
@@ -155,7 +155,7 @@ class ApiController extends Controller
 
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
-        return redirect()->intended($redirectURL);
+        return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
 
     // api patch
@@ -174,7 +174,7 @@ class ApiController extends Controller
 
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
-        return redirect()->intended($redirectURL);
+        return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
 
     // api delete
@@ -193,6 +193,6 @@ class ApiController extends Controller
 
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
-        return redirect()->intended($redirectURL);
+        return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
 }
