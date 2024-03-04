@@ -42,6 +42,31 @@ class MeInterface
         return $result;
     }
 
+    public static function walletRecords(?array $query = []): array
+    {
+        if (is_remote_api()) {
+            return ApiHelper::make()->get('/api/fresns/v1/account/wallet-records', [
+                'query' => $query,
+            ]);
+        }
+
+        try {
+            $request = Request::create('/api/fresns/v1/account/wallet-records', 'GET', $query);
+
+            $apiController = new AccountController();
+            $response = $apiController->walletRecords($request);
+
+            $resultContent = $response->getContent();
+            $result = json_decode($resultContent, true);
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $result;
+    }
+
     public static function drafts(string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
@@ -67,19 +92,17 @@ class MeInterface
         return $result;
     }
 
-    public static function walletRecords(?array $query = []): array
+    public static function getDraftDetail(string $type, string $did): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/account/wallet-records', [
-                'query' => $query,
-            ]);
+            return ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/draft/{$did}");
         }
 
         try {
-            $request = Request::create('/api/fresns/v1/account/wallet-records', 'GET', $query);
+            $request = Request::create("/api/fresns/v1/editor/{$type}/draft/{$did}", 'GET');
 
-            $apiController = new AccountController();
-            $response = $apiController->walletRecords($request);
+            $apiController = new EditorController();
+            $response = $apiController->draftDetail($type, $did, $request);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
