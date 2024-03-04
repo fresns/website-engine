@@ -60,7 +60,7 @@ class ApiController extends Controller
                 'message' => 'ok',
                 'data' => $data,
             ]);
-        };
+        }
 
         $startsWith = Str::startsWith($endpointPath, [
             '/api/fresns/v1/user/',
@@ -111,7 +111,7 @@ class ApiController extends Controller
                         'filename' => $file->getClientOriginalName(),
                         'headers' => [
                             'Content-Type' => $file->getMimeType(),
-                        ]
+                        ],
                     ];
 
                     continue;

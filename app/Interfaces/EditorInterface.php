@@ -11,7 +11,6 @@ namespace Fresns\WebEngine\Interfaces;
 use App\Fresns\Api\Http\Controllers\EditorController;
 use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
-use Illuminate\Http\Request;
 
 class EditorInterface
 {
