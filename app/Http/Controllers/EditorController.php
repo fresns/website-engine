@@ -70,7 +70,8 @@ class EditorController extends Controller
         }
 
         // drafts
-        $drafts = MeInterface::drafts('post');
+        $draftsResult = MeInterface::drafts('post');
+        $drafts = $draftsResult['data']['list'];
         $skipDrafts = $request->skipDrafts;
 
         if (empty($drafts) || $skipDrafts) {
