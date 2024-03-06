@@ -12,7 +12,6 @@ use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use Fresns\WebEngine\Auth\AccountGuard;
 use Fresns\WebEngine\Auth\UserGuard;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class WebEngineServiceProvider extends ServiceProvider
@@ -39,7 +38,13 @@ class WebEngineServiceProvider extends ServiceProvider
 
         $this->registerAuthenticator();
         $this->app->register(RouteServiceProvider::class);
-        Paginator::useBootstrap();
+
+        $this->app->booted(function () {
+            $themeFskey = fs_theme('fskey');
+
+            $finder = app('view')->getFinder();
+            $finder->prependLocation(base_path("themes/{$themeFskey}"));
+        });
 
         config()->set('laravellocalization.useAcceptLanguageHeader', false);
 

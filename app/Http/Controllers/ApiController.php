@@ -10,6 +10,7 @@ namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Utilities\ConfigUtility;
 use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebEngine\Helpers\LoginHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -134,7 +135,26 @@ class ApiController extends Controller
             return Response::json($result);
         }
 
+        // failure
+        if ($result['code'] != 0) {
+            return back()->with([
+                'code' => $result['code'],
+                'failure' => $result['message'],
+            ]);
+        }
+
+        // success
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+
+        // Account Login
+        if ($endpointPath == '/api/fresns/v1/account/auth-token') {
+            LoginHelper::account($result['data']);
+        }
+
+        // User Login
+        if ($endpointPath == '/api/fresns/v1/user/auth-token') {
+            LoginHelper::user($result['data']);
+        }
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
@@ -153,6 +173,15 @@ class ApiController extends Controller
             return Response::json($result);
         }
 
+        // failure
+        if ($result['code'] != 0) {
+            return back()->with([
+                'code' => $result['code'],
+                'failure' => $result['message'],
+            ]);
+        }
+
+        // success
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
@@ -172,6 +201,15 @@ class ApiController extends Controller
             return Response::json($result);
         }
 
+        // failure
+        if ($result['code'] != 0) {
+            return back()->with([
+                'code' => $result['code'],
+                'failure' => $result['message'],
+            ]);
+        }
+
+        // success
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
@@ -191,6 +229,15 @@ class ApiController extends Controller
             return Response::json($result);
         }
 
+        // failure
+        if ($result['code'] != 0) {
+            return back()->with([
+                'code' => $result['code'],
+                'failure' => $result['message'],
+            ]);
+        }
+
+        // success
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);

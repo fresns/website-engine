@@ -11,75 +11,86 @@ namespace Fresns\WebEngine\Http\Middleware;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PrimaryHelper;
-use Browser;
 use Closure;
+use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 class WebConfiguration
 {
     public function handle(Request $request, Closure $next)
     {
-        if (! fs_status('activate')) {
-            $langTag = fs_theme('lang');
+        $cacheKey = 'fresns_web_middleware';
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
-            $deactivateDescribe = fs_status('deactivateDescribe')[$langTag] ?? fs_status('deactivateDescribe')['default'] ?? '';
+        $checkMiddleware = CacheHelper::get($cacheKey, $cacheTags);
 
-            return Response::view('error', [
-                'message' => "<p>{$deactivateDescribe}</p>",
-                'code' => 503,
-            ], 503);
-        }
+        if (empty($checkMiddleware)) {
+            if (! fs_status('activate')) {
+                $langTag = fs_theme('lang');
 
-        $themeFskey = fs_theme('fskey');
+                $deactivateDescribe = fs_status('deactivateDescribe')[$langTag] ?? fs_status('deactivateDescribe')['default'] ?? '';
 
-        if (! $themeFskey) {
-            $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
-
-            return Response::view('error', [
-                'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
-                'code' => 400,
-            ], 400);
-        }
-
-        if (is_local_api()) {
-            $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
-            $keyInfo = PrimaryHelper::fresnsModelById('key', $keyId);
-
-            if (! $keyInfo) {
                 return Response::view('error', [
-                    'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 403,
-                ], 403);
+                    'message' => "<p>{$deactivateDescribe}</p>",
+                    'code' => 503,
+                ], 503);
             }
-        }
 
-        if (is_remote_api()) {
-            $apiConfigs = ConfigHelper::fresnsConfigByItemKeys([
-                'webengine_api_host',
-                'webengine_api_app_id',
-                'webengine_api_app_key',
-            ]);
+            $themeFskey = fs_theme('fskey');
 
-            if (! $apiConfigs['webengine_api_host'] || ! $apiConfigs['webengine_api_app_id'] || ! $apiConfigs['webengine_api_app_key']) {
+            if (! $themeFskey) {
+                $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
+
                 return Response::view('error', [
-                    'message' => '<p>'.__('WebEngine::tips.errorApi').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
-                    'code' => 403,
-                ], 403);
+                    'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
+                    'code' => 400,
+                ], 400);
             }
-        }
 
-        $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("themes/{$themeFskey}"));
-        $this->loadLanguages();
-        $this->webLangTag();
+            if (is_local_api()) {
+                $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
+                $keyInfo = PrimaryHelper::fresnsModelById('key', $keyId);
+
+                if (! $keyInfo) {
+                    return Response::view('error', [
+                        'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
+                        'code' => 403,
+                    ], 403);
+                }
+            }
+
+            if (is_remote_api()) {
+                $apiConfigs = ConfigHelper::fresnsConfigByItemKeys([
+                    'webengine_api_host',
+                    'webengine_api_app_id',
+                    'webengine_api_app_key',
+                ]);
+
+                if (! $apiConfigs['webengine_api_host'] || ! $apiConfigs['webengine_api_app_id'] || ! $apiConfigs['webengine_api_app_key']) {
+                    return Response::view('error', [
+                        'message' => '<p>'.__('WebEngine::tips.errorApi').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
+                        'code' => 403,
+                    ], 403);
+                }
+            }
+
+            $ulid = Str::ulid();
+
+            CacheHelper::put($ulid, $cacheKey, $cacheTags);
+        }
 
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-        $uid = Cookie::get("{$cookiePrefix}uid");
-        if ($uid && ! ctype_digit($uid)) {
-            fs_account()->logout();
+
+        $cookieUlid = Cookie::get("{$cookiePrefix}ulid");
+        if (empty($cookieUlid)) {
+            Cookie::queue("{$cookiePrefix}ulid", Str::ulid());
         }
+
+        $this->loadLanguages();
+        $this->webLangTag();
 
         return $next($request);
     }
@@ -110,11 +121,11 @@ class WebConfiguration
 
     public function webLangTag()
     {
-        $params = explode('/', \request()->getPathInfo());
+        $params = explode('/', request()->getPathInfo());
         array_shift($params);
 
         $langTag = ConfigHelper::fresnsConfigByItemKey('default_language');
-        if (\count($params) > 0) {
+        if (count($params) > 0) {
             $locale = $params[0];
 
             if (app('laravellocalization')->checkLocaleInSupportedLocales($locale)) {
