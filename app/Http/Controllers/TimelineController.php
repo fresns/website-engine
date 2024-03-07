@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\TimelineInterface;
 use Illuminate\Http\Request;
@@ -41,15 +40,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::posts($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -64,6 +54,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.posts', compact('posts'));
     }
 
@@ -79,15 +74,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::posts($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -102,6 +88,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.user-posts', compact('posts'));
     }
 
@@ -117,15 +108,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::posts($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -140,6 +122,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.group-posts', compact('posts'));
     }
 
@@ -155,15 +142,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::posts($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -178,6 +156,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.hashtag-posts', compact('posts'));
     }
 
@@ -193,15 +176,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::posts($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -216,6 +190,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.geotag-posts', compact('posts'));
     }
 
@@ -229,15 +208,6 @@ class TimelineController extends Controller
         $query = $request->all();
 
         $result = TimelineInterface::comments($query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
 
         // ajax
         if ($request->ajax()) {
@@ -253,6 +223,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.comments', compact('comments'));
     }
 
@@ -268,15 +243,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::comments($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -291,6 +257,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.user-comments', compact('comments'));
     }
 
@@ -306,15 +277,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::comments($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -329,6 +291,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.group-comments', compact('comments'));
     }
 
@@ -344,15 +311,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::comments($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -367,6 +325,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.hashtag-comments', compact('comments'));
     }
 
@@ -382,15 +345,6 @@ class TimelineController extends Controller
 
         $result = TimelineInterface::comments($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -405,6 +359,11 @@ class TimelineController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('timelines.geotag-comments', compact('comments'));
     }
 }

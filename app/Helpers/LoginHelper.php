@@ -9,6 +9,7 @@
 namespace Fresns\WebEngine\Helpers;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\ConfigHelper;
 use Illuminate\Support\Facades\Cookie;
 
 class LoginHelper
@@ -17,7 +18,7 @@ class LoginHelper
     public static function account(array $data)
     {
         // cookie key name
-        $cookiePrefix = fs_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $cookieAid = "{$cookiePrefix}aid";
         $cookieAidToken = "{$cookiePrefix}aid_token";
@@ -61,7 +62,7 @@ class LoginHelper
                     'uidOrUsername' => $user['uid'],
                     'password' => null,
                     'deviceToken' => null,
-                ],
+                ]
             ]);
 
             if ($result['code'] != 0) {
@@ -69,18 +70,19 @@ class LoginHelper
                     'code' => $result['code'],
                     'failure' => $result['message'],
                 ]);
-            }
+            };
 
             LoginHelper::user($result['data']);
         }
 
+        return;
     }
 
     // User Login
     public static function user(array $data)
     {
         // cookie key name
-        $cookiePrefix = fs_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $cookieUid = "{$cookiePrefix}uid";
         $cookieUidToken = "{$cookiePrefix}uid_token";

@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\GeotagInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -29,15 +28,6 @@ class GeotagController extends Controller
 
         $result = GeotagInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -52,6 +42,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.index', compact('geotags'));
     }
 
@@ -66,15 +61,6 @@ class GeotagController extends Controller
 
         $result = GeotagInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -89,6 +75,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.list', compact('geotags'));
     }
 
@@ -99,15 +90,6 @@ class GeotagController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'geotags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -122,6 +104,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.likes', compact('geotags'));
     }
 
@@ -132,15 +119,6 @@ class GeotagController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'geotags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -155,6 +133,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.dislikes', compact('geotags'));
     }
 
@@ -165,15 +148,6 @@ class GeotagController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'geotags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -188,6 +162,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.following', compact('geotags'));
     }
 
@@ -198,15 +177,6 @@ class GeotagController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'geotags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $geotags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -221,6 +191,11 @@ class GeotagController extends Controller
         }
 
         // view
+        $geotags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('geotags.blocking', compact('geotags'));
     }
 
@@ -239,34 +214,7 @@ class GeotagController extends Controller
         $posts = [];
         $comments = [];
 
-        switch ($type) {
-            case 'posts':
-                $results = GeotagInterface::detail($gtid, 'posts', $query);
-
-                $posts = QueryHelper::convertApiDataToPaginate(
-                    items: $results['posts']['data']['list'],
-                    pagination: $results['posts']['data']['pagination'],
-                );
-                $pagination = $results['posts']['data']['pagination'];
-                break;
-
-            case 'comments':
-                $results = GeotagInterface::detail($gtid, 'comments', $query);
-
-                $comments = QueryHelper::convertApiDataToPaginate(
-                    items: $results['comments']['data']['list'],
-                    pagination: $results['comments']['data']['pagination'],
-                );
-                $pagination = $results['comments']['data']['pagination'];
-                break;
-        }
-
-        if ($results['geotag']['code'] != 0) {
-            throw new ErrorException($results['geotag']['message'], $results['geotag']['code']);
-        }
-
-        $items = $results['geotag']['data']['items'];
-        $geotag = $results['geotag']['data']['detail'];
+        $results = GeotagInterface::detail($gtid, $type, $query);
 
         // ajax
         if ($request->ajax()) {
@@ -287,12 +235,170 @@ class GeotagController extends Controller
             }
 
             return response()->json([
-                'pagination' => $pagination,
+                'pagination' => $results[$type]['data']['pagination'],
                 'html' => $html,
             ]);
         }
 
         // view
+        $items = $results['geotag']['data']['items'];
+        $geotag = $results['geotag']['data']['detail'];
+
+        $posts = [];
+        $comments = [];
+
+        switch ($type) {
+            case 'posts':
+                $posts = QueryHelper::convertApiDataToPaginate(
+                    items: $results['posts']['data']['list'],
+                    pagination: $results['posts']['data']['pagination'],
+                );
+                break;
+
+            case 'comments':
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $results['comments']['data']['list'],
+                    pagination: $results['comments']['data']['pagination'],
+                );
+                break;
+        }
+
         return view('geotags.detail', compact('items', 'geotag', 'type', 'posts', 'comments'));
+    }
+
+    // detail likers
+    public function detailLikers(Request $request, string $gtid)
+    {
+        $results = GeotagInterface::interaction($gtid, 'likers', $request->all());
+
+        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['geotag']['data']['items'];
+        $geotag = $results['geotag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('geotags.detail-likers', compact('items', 'geotag', 'users'));
+    }
+
+    // detail dislikers
+    public function detailDislikers(Request $request, string $gtid)
+    {
+        $results = GeotagInterface::interaction($gtid, 'dislikers', $request->all());
+
+        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['geotag']['data']['items'];
+        $geotag = $results['geotag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('geotags.detail-dislikers', compact('items', 'geotag', 'users'));
+    }
+
+    // detail followers
+    public function detailFollowers(Request $request, string $gtid)
+    {
+        $results = GeotagInterface::interaction($gtid, 'followers', $request->all());
+
+        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['geotag']['data']['items'];
+        $geotag = $results['geotag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('geotags.detail-followers', compact('items', 'geotag', 'users'));
+    }
+
+    // detail blockers
+    public function detailBlockers(Request $request, string $gtid)
+    {
+        $results = GeotagInterface::interaction($gtid, 'blockers', $request->all());
+
+        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['geotag']['data']['items'];
+        $geotag = $results['geotag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('geotags.detail-blockers', compact('items', 'geotag', 'users'));
     }
 }

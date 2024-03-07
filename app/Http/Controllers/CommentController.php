@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\CommentInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -29,15 +28,6 @@ class CommentController extends Controller
 
         $result = CommentInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -52,6 +42,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.index', compact('comments'));
     }
 
@@ -66,11 +61,6 @@ class CommentController extends Controller
 
         $result = CommentInterface::list($query);
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -85,6 +75,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.list', compact('comments'));
     }
 
@@ -95,11 +90,6 @@ class CommentController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'comments', $request->all());
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -114,6 +104,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.likes', compact('comments'));
     }
 
@@ -124,11 +119,6 @@ class CommentController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'comments', $request->all());
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -143,6 +133,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.dislikes', compact('comments'));
     }
 
@@ -153,11 +148,6 @@ class CommentController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'comments', $request->all());
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -172,6 +162,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.following', compact('comments'));
     }
 
@@ -182,11 +177,6 @@ class CommentController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'comments', $request->all());
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -201,6 +191,11 @@ class CommentController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('comments.blocking', compact('comments'));
     }
 
@@ -212,18 +207,6 @@ class CommentController extends Controller
         $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
         $results = CommentInterface::detail($cid, $query);
-
-        if ($results['comment']['code'] != 0) {
-            throw new ErrorException($results['comment']['message'], $results['comment']['code']);
-        }
-
-        $items = $results['comment']['data']['items'];
-        $comment = $results['comment']['data']['detail'];
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $results['comments']['data']['list'],
-            pagination: $results['comments']['data']['pagination'],
-        );
 
         // ajax
         if ($request->ajax()) {
@@ -239,6 +222,150 @@ class CommentController extends Controller
         }
 
         // view
+        $items = $results['comment']['data']['items'];
+        $comment = $results['comment']['data']['detail'];
+
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $results['comments']['data']['list'],
+            pagination: $results['comments']['data']['pagination'],
+        );
+
         return view('comments.detail', compact('items', 'comment', 'comments'));
+    }
+
+    // detail likers
+    public function detailLikers(Request $request, string $cid)
+    {
+        $results = CommentInterface::interaction($cid, 'likers', $request->all());
+
+        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['comment']['data']['items'];
+        $comment = $results['comment']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('comments.detail-likers', compact('items', 'comment', 'users'));
+    }
+
+    // detail dislikers
+    public function detailDislikers(Request $request, string $cid)
+    {
+        $results = CommentInterface::interaction($cid, 'dislikers', $request->all());
+
+        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['comment']['data']['items'];
+        $comment = $results['comment']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('comments.detail-dislikers', compact('items', 'comment', 'users'));
+    }
+
+    // detail followers
+    public function detailFollowers(Request $request, string $cid)
+    {
+        $results = CommentInterface::interaction($cid, 'followers', $request->all());
+
+        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['comment']['data']['items'];
+        $comment = $results['comment']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('comments.detail-followers', compact('items', 'comment', 'users'));
+    }
+
+    // detail blockers
+    public function detailBlockers(Request $request, string $cid)
+    {
+        $results = CommentInterface::interaction($cid, 'blockers', $request->all());
+
+        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['comment']['data']['items'];
+        $comment = $results['comment']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('comments.detail-blockers', compact('items', 'comment', 'users'));
     }
 }

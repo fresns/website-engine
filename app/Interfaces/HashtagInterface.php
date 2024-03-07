@@ -137,4 +137,41 @@ class HashtagInterface
 
         return $results;
     }
+
+    public static function interaction(string $htid, string $type, ?array $query = []): array
+    {
+        if (is_remote_api()) {
+            $client = ApiHelper::make();
+
+            $results = $client->unwrapRequests([
+                'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
+                'users' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/interaction/{$type}", [
+                    'query' => $query,
+                ]),
+            ]);
+
+            return $results;
+        }
+
+        try {
+            $apiController = new HashtagController();
+
+            $detailRequest = Request::create("/api/fresns/v1/hashtag/{$htid}/detail", 'GET', []);
+            $detailResponse = $apiController->detail($htid, $detailRequest);
+
+            $usersRequest = Request::create("/api/fresns/v1/hashtag/{$htid}/interaction/{$type}", 'GET', $query);
+            $usersResponse = $apiController->interaction($htid, $type, $usersRequest);
+
+            $results = [
+                'hashtag' => json_decode($detailResponse->getContent(), true),
+                'users' => json_decode($usersResponse->getContent(), true),
+            ];
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $results;
+    }
 }

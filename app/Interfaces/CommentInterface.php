@@ -131,4 +131,41 @@ class CommentInterface
 
         return $results;
     }
+
+    public static function interaction(string $cid, string $type, ?array $query = []): array
+    {
+        if (is_remote_api()) {
+            $client = ApiHelper::make();
+
+            $results = $client->unwrapRequests([
+                'comment' => $client->getAsync("/api/fresns/v1/comment/{$cid}/detail"),
+                'users' => $client->getAsync("/api/fresns/v1/comment/{$cid}/interaction/{$type}", [
+                    'query' => $query,
+                ]),
+            ]);
+
+            return $results;
+        }
+
+        try {
+            $apiController = new CommentController();
+
+            $detailRequest = Request::create("/api/fresns/v1/comment/{$cid}/detail", 'GET', []);
+            $detailResponse = $apiController->detail($cid, $detailRequest);
+
+            $usersRequest = Request::create("/api/fresns/v1/comment/{$cid}/interaction/{$type}", 'GET', $query);
+            $usersResponse = $apiController->interaction($cid, $type, $usersRequest);
+
+            $results = [
+                'comment' => json_decode($detailResponse->getContent(), true),
+                'users' => json_decode($usersResponse->getContent(), true),
+            ];
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $results;
+    }
 }

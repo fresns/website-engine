@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\ApiHelper;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\MeInterface;
@@ -26,10 +25,6 @@ class MeController extends Controller
     public function userExtcredits(Request $request)
     {
         $result = MeInterface::extcreditsRecords($request->all());
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $logs = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -58,10 +53,6 @@ class MeController extends Controller
 
         $result = MeInterface::drafts($type, $query);
 
-        if ($result['code'] != 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
         $drafts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
@@ -80,10 +71,6 @@ class MeController extends Controller
     public function wallet(Request $request)
     {
         $result = MeInterface::walletRecords($request->all());
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $logs = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],

@@ -22,6 +22,8 @@ class WebConfiguration
 {
     public function handle(Request $request, Closure $next)
     {
+        $themeFskey = fs_theme('fskey');
+
         $cacheKey = 'fresns_web_middleware';
         $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
 
@@ -38,8 +40,6 @@ class WebConfiguration
                     'code' => 503,
                 ], 503);
             }
-
-            $themeFskey = fs_theme('fskey');
 
             if (! $themeFskey) {
                 $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
@@ -89,6 +89,8 @@ class WebConfiguration
             Cookie::queue("{$cookiePrefix}ulid", Str::ulid());
         }
 
+        $finder = app('view')->getFinder();
+        $finder->prependLocation(base_path("themes/{$themeFskey}"));
         $this->loadLanguages();
         $this->webLangTag();
 

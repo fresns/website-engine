@@ -142,4 +142,41 @@ class PostInterface
 
         return $results;
     }
+
+    public static function interaction(string $pid, string $type, ?array $query = []): array
+    {
+        if (is_remote_api()) {
+            $client = ApiHelper::make();
+
+            $results = $client->unwrapRequests([
+                'post' => $client->getAsync("/api/fresns/v1/post/{$pid}/detail"),
+                'users' => $client->getAsync("/api/fresns/v1/post/{$pid}/interaction/{$type}", [
+                    'query' => $query,
+                ]),
+            ]);
+
+            return $results;
+        }
+
+        try {
+            $apiController = new PostController();
+
+            $detailRequest = Request::create("/api/fresns/v1/post/{$pid}/detail", 'GET', []);
+            $detailResponse = $apiController->detail($pid, $detailRequest);
+
+            $usersRequest = Request::create("/api/fresns/v1/post/{$pid}/interaction/{$type}", 'GET', $query);
+            $usersResponse = $apiController->interaction($pid, $type, $usersRequest);
+
+            $results = [
+                'post' => json_decode($detailResponse->getContent(), true),
+                'users' => json_decode($usersResponse->getContent(), true),
+            ];
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $results;
+    }
 }

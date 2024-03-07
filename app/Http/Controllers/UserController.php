@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\UserInterface;
 use Illuminate\Http\Request;
@@ -28,15 +27,6 @@ class UserController extends Controller
 
         $result = UserInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -51,6 +41,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.index', compact('users'));
     }
 
@@ -65,15 +60,6 @@ class UserController extends Controller
 
         $result = UserInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -88,6 +74,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.list', compact('users'));
     }
 
@@ -98,15 +89,6 @@ class UserController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'users', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -121,6 +103,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.likes', compact('users'));
     }
 
@@ -131,15 +118,6 @@ class UserController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'users', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -154,6 +132,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.dislikes', compact('users'));
     }
 
@@ -164,15 +147,6 @@ class UserController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'users', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -187,6 +161,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.following', compact('users'));
     }
 
@@ -197,11 +176,6 @@ class UserController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'users', $request->all());
 
-        $users = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -216,6 +190,11 @@ class UserController extends Controller
         }
 
         // view
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('users.blocking', compact('users'));
     }
 }

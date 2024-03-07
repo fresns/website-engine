@@ -129,10 +129,10 @@ class AccountGuard implements Guard
         $aid = Cookie::get("{$cookiePrefix}aid");
         $token = Cookie::get("{$cookiePrefix}aid_token");
 
-        $langTag = fs_theme('lang');
-
         if ($aid && $token) {
             try {
+                $langTag = fs_theme('lang');
+
                 $cacheKey = "fresns_web_account_{$aid}_{$langTag}";
                 $cacheTag = 'fresnsWeb';
 

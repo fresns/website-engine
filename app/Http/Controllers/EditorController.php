@@ -29,10 +29,6 @@ class EditorController extends Controller
         if ($did) {
             $result = MeInterface::getDraftDetail('post', $did);
 
-            if ($result['code'] != 0) {
-                throw new ErrorException($result['message'], $result['code']);
-            }
-
             // post_editor_service
             if (fs_config('post_editor_service')) {
                 $pluginUrl = DataHelper::getEditorUrl(fs_config('post_editor_service'), 'post', $did, $pid);
@@ -49,10 +45,6 @@ class EditorController extends Controller
         // edit published post
         if ($pid) {
             $postResponse = ApiHelper::make()->post("/api/fresns/v1/editor/post/edit/{$pid}");
-
-            if (data_get($postResponse, 'code') !== 0) {
-                throw new ErrorException($postResponse['message'], $postResponse['code']);
-            }
 
             $did = $postResponse['data']['detail']['did'];
 
@@ -83,10 +75,6 @@ class EditorController extends Controller
                     'gtid' => $request->gtid,
                 ],
             ]);
-
-            if (data_get($response, 'code') !== 0) {
-                throw new ErrorException($response['message'], $response['code']);
-            }
 
             $did = $response['data']['detail']['did'];
 
@@ -138,10 +126,6 @@ class EditorController extends Controller
         if ($did) {
             $result = MeInterface::getDraftDetail('comment', $did);
 
-            if ($result['code'] != 0) {
-                throw new ErrorException($result['message'], $result['code']);
-            }
-
             // comment_editor_service
             if (fs_config('comment_editor_service')) {
                 $pluginUrl = DataHelper::getEditorUrl(fs_config('comment_editor_service'), 'comment', $did, $pid);
@@ -158,10 +142,6 @@ class EditorController extends Controller
         // edit published comment
         if ($cid) {
             $commentResponse = ApiHelper::make()->post("/api/fresns/v1/editor/comment/edit/{$cid}");
-
-            if (data_get($commentResponse, 'code') !== 0) {
-                throw new ErrorException($commentResponse['message'], $commentResponse['code']);
-            }
 
             $did = $commentResponse['data']['detail']['did'];
 
@@ -192,10 +172,6 @@ class EditorController extends Controller
                 'gtid' => $request->gtid,
             ],
         ]);
-
-        if (data_get($response, 'code') !== 0) {
-            throw new ErrorException($response['message'], $response['code']);
-        }
 
         $did = $response['data']['detail']['did'];
 
@@ -244,10 +220,6 @@ class EditorController extends Controller
 
         // draft
         $result = MeInterface::getDraftDetail($type, $did);
-
-        if ($result['code'] != 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $draft = $result['data'];
 

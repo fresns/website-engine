@@ -74,7 +74,7 @@ class UserInterface
         return $result;
     }
 
-    public static function detail(string $uidOrUsername, string $type, string $listType, ?array $query = []): array
+    public static function detail(int|string $uidOrUsername, string $type, string $listType, ?array $query = []): array
     {
         if (is_remote_api()) {
             $client = ApiHelper::make();

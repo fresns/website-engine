@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\SearchInterface;
 use Illuminate\Http\Request;
@@ -70,10 +69,6 @@ class SearchController extends Controller
 
         $result = SearchInterface::search('users', $query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
         $users = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
@@ -88,10 +83,6 @@ class SearchController extends Controller
         $query = $request->all();
 
         $result = SearchInterface::search('groups', $query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $groups = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -108,10 +99,6 @@ class SearchController extends Controller
 
         $result = SearchInterface::search('hashtags', $query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
         $hashtags = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
@@ -126,10 +113,6 @@ class SearchController extends Controller
         $query = $request->all();
 
         $result = SearchInterface::search('geotags', $query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $geotags = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
@@ -146,10 +129,6 @@ class SearchController extends Controller
 
         $result = SearchInterface::search('posts', $query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
         $posts = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
@@ -164,10 +143,6 @@ class SearchController extends Controller
         $query = $request->all();
 
         $result = SearchInterface::search('comments', $query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
 
         $comments = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],

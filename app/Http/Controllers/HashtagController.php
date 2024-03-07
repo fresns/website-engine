@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\HashtagInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -29,15 +28,6 @@ class HashtagController extends Controller
 
         $result = HashtagInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -52,6 +42,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.index', compact('hashtags'));
     }
 
@@ -66,15 +61,6 @@ class HashtagController extends Controller
 
         $result = HashtagInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -89,6 +75,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.list', compact('hashtags'));
     }
 
@@ -99,15 +90,6 @@ class HashtagController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'hashtags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -122,6 +104,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.likes', compact('hashtags'));
     }
 
@@ -132,15 +119,6 @@ class HashtagController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'hashtags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -155,6 +133,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.dislikes', compact('hashtags'));
     }
 
@@ -165,15 +148,6 @@ class HashtagController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'hashtags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -188,6 +162,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.following', compact('hashtags'));
     }
 
@@ -198,15 +177,6 @@ class HashtagController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'hashtags', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $hashtags = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -221,6 +191,11 @@ class HashtagController extends Controller
         }
 
         // view
+        $hashtags = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('hashtags.blocking', compact('hashtags'));
     }
 
@@ -236,37 +211,7 @@ class HashtagController extends Controller
             default => 'posts',
         };
 
-        $posts = [];
-        $comments = [];
-
-        switch ($type) {
-            case 'posts':
-                $results = HashtagInterface::detail($htid, 'posts', $query);
-
-                $posts = QueryHelper::convertApiDataToPaginate(
-                    items: $results['posts']['data']['list'],
-                    pagination: $results['posts']['data']['pagination'],
-                );
-                $pagination = $results['posts']['data']['pagination'];
-                break;
-
-            case 'comments':
-                $results = HashtagInterface::detail($htid, 'comments', $query);
-
-                $comments = QueryHelper::convertApiDataToPaginate(
-                    items: $results['comments']['data']['list'],
-                    pagination: $results['comments']['data']['pagination'],
-                );
-                $pagination = $results['comments']['data']['pagination'];
-                break;
-        }
-
-        if ($results['hashtag']['code'] != 0) {
-            throw new ErrorException($results['hashtag']['message'], $results['hashtag']['code']);
-        }
-
-        $items = $results['hashtag']['data']['items'];
-        $hashtag = $results['hashtag']['data']['detail'];
+        $results = HashtagInterface::detail($htid, $type, $query);
 
         // ajax
         if ($request->ajax()) {
@@ -287,12 +232,170 @@ class HashtagController extends Controller
             }
 
             return response()->json([
-                'pagination' => $pagination,
+                'pagination' => $results[$type]['data']['pagination'],
                 'html' => $html,
             ]);
         }
 
         // view
+        $items = $results['hashtag']['data']['items'];
+        $hashtag = $results['hashtag']['data']['detail'];
+
+        $posts = [];
+        $comments = [];
+
+        switch ($type) {
+            case 'posts':
+                $posts = QueryHelper::convertApiDataToPaginate(
+                    items: $results['posts']['data']['list'],
+                    pagination: $results['posts']['data']['pagination'],
+                );
+                break;
+
+            case 'comments':
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $results['comments']['data']['list'],
+                    pagination: $results['comments']['data']['pagination'],
+                );
+                break;
+        }
+
         return view('hashtags.detail', compact('items', 'hashtag', 'type', 'posts', 'comments'));
+    }
+
+    // detail likers
+    public function detailLikers(Request $request, string $htid)
+    {
+        $results = HashtagInterface::interaction($htid, 'likers', $request->all());
+
+        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['hashtag']['data']['items'];
+        $hashtag = $results['hashtag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('hashtags.detail-likers', compact('items', 'hashtag', 'users'));
+    }
+
+    // detail dislikers
+    public function detailDislikers(Request $request, string $htid)
+    {
+        $results = HashtagInterface::interaction($htid, 'dislikers', $request->all());
+
+        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['hashtag']['data']['items'];
+        $hashtag = $results['hashtag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('hashtags.detail-dislikers', compact('items', 'hashtag', 'users'));
+    }
+
+    // detail followers
+    public function detailFollowers(Request $request, string $htid)
+    {
+        $results = HashtagInterface::interaction($htid, 'followers', $request->all());
+
+        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['hashtag']['data']['items'];
+        $hashtag = $results['hashtag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('hashtags.detail-followers', compact('items', 'hashtag', 'users'));
+    }
+
+    // detail blockers
+    public function detailBlockers(Request $request, string $htid)
+    {
+        $results = HashtagInterface::interaction($htid, 'blockers', $request->all());
+
+        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['hashtag']['data']['items'];
+        $hashtag = $results['hashtag']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('hashtags.detail-blockers', compact('items', 'hashtag', 'users'));
     }
 }

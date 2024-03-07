@@ -129,4 +129,41 @@ class GroupInterface
 
         return $results;
     }
+
+    public static function interaction(string $gid, string $type, ?array $query = []): array
+    {
+        if (is_remote_api()) {
+            $client = ApiHelper::make();
+
+            $results = $client->unwrapRequests([
+                'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
+                'users' => $client->getAsync("/api/fresns/v1/group/{$gid}/interaction/{$type}", [
+                    'query' => $query,
+                ]),
+            ]);
+
+            return $results;
+        }
+
+        try {
+            $apiController = new GroupController();
+
+            $detailRequest = Request::create("/api/fresns/v1/group/{$gid}/detail", 'GET', []);
+            $detailResponse = $apiController->detail($gid, $detailRequest);
+
+            $usersRequest = Request::create("/api/fresns/v1/group/{$gid}/interaction/{$type}", 'GET', $query);
+            $usersResponse = $apiController->interaction($gid, $type, $usersRequest);
+
+            $results = [
+                'group' => json_decode($detailResponse->getContent(), true),
+                'users' => json_decode($usersResponse->getContent(), true),
+            ];
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $results;
+    }
 }

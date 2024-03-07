@@ -137,4 +137,41 @@ class GeotagInterface
 
         return $results;
     }
+
+    public static function interaction(string $gtid, string $type, ?array $query = []): array
+    {
+        if (is_remote_api()) {
+            $client = ApiHelper::make();
+
+            $results = $client->unwrapRequests([
+                'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
+                'users' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/interaction/{$type}", [
+                    'query' => $query,
+                ]),
+            ]);
+
+            return $results;
+        }
+
+        try {
+            $apiController = new GeotagController();
+
+            $detailRequest = Request::create("/api/fresns/v1/geotag/{$gtid}/detail", 'GET', []);
+            $detailResponse = $apiController->detail($gtid, $detailRequest);
+
+            $usersRequest = Request::create("/api/fresns/v1/geotag/{$gtid}/interaction/{$type}", 'GET', $query);
+            $usersResponse = $apiController->interaction($gtid, $type, $usersRequest);
+
+            $results = [
+                'geotag' => json_decode($detailResponse->getContent(), true),
+                'users' => json_decode($usersResponse->getContent(), true),
+            ];
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $results;
+    }
 }

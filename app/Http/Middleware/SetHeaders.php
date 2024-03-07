@@ -37,7 +37,7 @@ class SetHeaders
         }
 
         // cookie key name
-        $cookiePrefix = fs_config('website_cookie_prefix', 'fresns_');
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
         $cookieAid = "{$cookiePrefix}aid";
         $cookieAidToken = "{$cookiePrefix}aid_token";

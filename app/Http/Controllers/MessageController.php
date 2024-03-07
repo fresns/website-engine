@@ -9,7 +9,6 @@
 namespace Fresns\WebEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
@@ -21,21 +20,6 @@ class MessageController extends Controller
     public function index(Request $request)
     {
         $results = MessageInterface::list();
-
-        if (data_get($results, 'conversations.code') !== 0) {
-            throw new ErrorException($results['conversations']['message'], $results['conversations']['code']);
-        }
-
-        if (data_get($results, 'pinConversations.code') !== 0) {
-            throw new ErrorException($results['pinConversations']['message'], $results['pinConversations']['code']);
-        }
-
-        $conversations = QueryHelper::convertApiDataToPaginate(
-            items: $results['conversations']['data']['list'],
-            pagination: $results['conversations']['data']['pagination'],
-        );
-
-        $pinConversations = $results['pinConversations']['data']['list'];
 
         // ajax
         if ($request->ajax()) {
@@ -51,6 +35,13 @@ class MessageController extends Controller
         }
 
         // view
+        $conversations = QueryHelper::convertApiDataToPaginate(
+            items: $results['conversations']['data']['list'],
+            pagination: $results['conversations']['data']['pagination'],
+        );
+
+        $pinConversations = $results['pinConversations']['data']['list'];
+
         return view('messages.index', compact('conversations', 'pinConversations'));
     }
 
@@ -62,24 +53,9 @@ class MessageController extends Controller
 
         $results = MessageInterface::conversation($uidOrUsername, $query);
 
-        if (data_get($results, 'conversation.code') !== 0) {
-            throw new ErrorException($results['conversation']['message'], $results['conversation']['code']);
-        }
-
-        if (data_get($results, 'messages.code') !== 0) {
-            throw new ErrorException($results['messages']['message'], $results['messages']['code']);
-        }
-
         $uid = fs_user('detail.uid');
 
         CacheHelper::forgetFresnsMultilingual("fresns_web_user_panel_{$uid}", 'fresnsWeb');
-
-        $conversation = $results['conversation']['data'];
-
-        $messages = QueryHelper::convertApiDataToPaginate(
-            items: $results['messages']['data']['list'],
-            pagination: $results['messages']['data']['pagination'],
-        );
 
         // ajax
         if ($request->ajax()) {
@@ -95,6 +71,13 @@ class MessageController extends Controller
         }
 
         // view
+        $conversation = $results['conversation']['data'];
+
+        $messages = QueryHelper::convertApiDataToPaginate(
+            items: $results['messages']['data']['list'],
+            pagination: $results['messages']['data']['pagination'],
+        );
+
         return view('messages.conversation', compact('conversation', 'messages'));
     }
 
@@ -105,15 +88,6 @@ class MessageController extends Controller
         $query['types'] = $types;
 
         $result = MessageInterface::notifications($query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $notifications = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
 
         // ajax
         if ($request->ajax()) {
@@ -129,6 +103,11 @@ class MessageController extends Controller
         }
 
         // view
+        $notifications = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('messages.notifications', compact('notifications', 'types'));
     }
 }

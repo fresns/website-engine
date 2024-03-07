@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\PostInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -29,15 +28,6 @@ class PostController extends Controller
 
         $result = PostInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -52,6 +42,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.index', compact('posts'));
     }
 
@@ -66,15 +61,6 @@ class PostController extends Controller
 
         $result = PostInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -89,6 +75,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.list', compact('posts'));
     }
 
@@ -99,11 +90,6 @@ class PostController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'posts', $request->all());
 
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -118,6 +104,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.likes', compact('posts'));
     }
 
@@ -128,11 +119,6 @@ class PostController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'posts', $request->all());
 
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -147,6 +133,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.dislikes', compact('posts'));
     }
 
@@ -157,11 +148,6 @@ class PostController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'posts', $request->all());
 
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -176,6 +162,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.following', compact('posts'));
     }
 
@@ -186,11 +177,6 @@ class PostController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'posts', $request->all());
 
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -205,6 +191,11 @@ class PostController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('posts.blocking', compact('posts'));
     }
 
@@ -216,20 +207,6 @@ class PostController extends Controller
         $query['orderDirection'] = $query['orderDirection'] ?? 'asc';
 
         $results = PostInterface::detail($pid, $query);
-
-        if ($results['post']['code'] != 0) {
-            throw new ErrorException($results['post']['message'], $results['post']['code']);
-        }
-
-        $items = $results['post']['data']['items'];
-        $post = $results['post']['data']['detail'];
-
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $results['comments']['data']['list'],
-            pagination: $results['comments']['data']['pagination'],
-        );
-
-        $stickies = data_get($results, 'stickies.data.list', []) ?? [];
 
         // ajax
         if ($request->ajax()) {
@@ -245,6 +222,152 @@ class PostController extends Controller
         }
 
         // view
+        $items = $results['post']['data']['items'];
+        $post = $results['post']['data']['detail'];
+
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $results['comments']['data']['list'],
+            pagination: $results['comments']['data']['pagination'],
+        );
+
+        $stickies = data_get($results, 'stickies.data.list', []) ?? [];
+
         return view('posts.detail', compact('items', 'post', 'comments', 'stickies'));
+    }
+
+    // detail likers
+    public function detailLikers(Request $request, string $pid)
+    {
+        $results = PostInterface::interaction($pid, 'likers', $request->all());
+
+        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['post']['data']['items'];
+        $post = $results['post']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('posts.detail-likers', compact('items', 'post', 'users'));
+    }
+
+    // detail dislikers
+    public function detailDislikers(Request $request, string $pid)
+    {
+        $results = PostInterface::interaction($pid, 'dislikers', $request->all());
+
+        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['post']['data']['items'];
+        $post = $results['post']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('posts.detail-dislikers', compact('items', 'post', 'users'));
+    }
+
+    // detail followers
+    public function detailFollowers(Request $request, string $pid)
+    {
+        $results = PostInterface::interaction($pid, 'followers', $request->all());
+
+        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['post']['data']['items'];
+        $post = $results['post']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('posts.detail-followers', compact('items', 'post', 'users'));
+    }
+
+    // detail blockers
+    public function detailBlockers(Request $request, string $pid)
+    {
+        $results = PostInterface::interaction($pid, 'blockers', $request->all());
+
+        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['post']['data']['items'];
+        $post = $results['post']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('posts.detail-blockers', compact('items', 'post', 'users'));
     }
 }

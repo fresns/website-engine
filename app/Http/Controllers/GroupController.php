@@ -8,7 +8,6 @@
 
 namespace Fresns\WebEngine\Http\Controllers;
 
-use Fresns\WebEngine\Exceptions\ErrorException;
 use Fresns\WebEngine\Helpers\QueryHelper;
 use Fresns\WebEngine\Interfaces\GroupInterface;
 use Fresns\WebEngine\Interfaces\UserInterface;
@@ -33,10 +32,6 @@ class GroupController extends Controller
         if ($indexType == 'tree') {
             $result = GroupInterface::tree();
 
-            if (data_get($result, 'code') !== 0) {
-                throw new ErrorException($result['message'], $result['code']);
-            }
-
             $groupTree = $result['data'];
 
             // view
@@ -46,15 +41,6 @@ class GroupController extends Controller
         $query = QueryHelper::convertOptionToRequestParam(QueryHelper::TYPE_GROUP, $request->all());
 
         $result = GroupInterface::list($query);
-
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
 
         // ajax
         if ($request->ajax()) {
@@ -70,6 +56,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.index', compact('groupTree', 'groups'));
     }
 
@@ -84,15 +75,6 @@ class GroupController extends Controller
 
         $result = GroupInterface::list($query);
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -107,6 +89,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.list', compact('groups'));
     }
 
@@ -117,15 +104,6 @@ class GroupController extends Controller
 
         $result = UserInterface::markList($uid, 'like', 'groups', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -140,6 +118,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.likes', compact('groups'));
     }
 
@@ -150,15 +133,6 @@ class GroupController extends Controller
 
         $result = UserInterface::markList($uid, 'dislike', 'groups', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -173,6 +147,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.dislikes', compact('groups'));
     }
 
@@ -183,15 +162,6 @@ class GroupController extends Controller
 
         $result = UserInterface::markList($uid, 'follow', 'groups', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -206,6 +176,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.following', compact('groups'));
     }
 
@@ -216,15 +191,6 @@ class GroupController extends Controller
 
         $result = UserInterface::markList($uid, 'block', 'groups', $request->all());
 
-        if (data_get($result, 'code') !== 0) {
-            throw new ErrorException($result['message'], $result['code']);
-        }
-
-        $groups = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -239,6 +205,11 @@ class GroupController extends Controller
         }
 
         // view
+        $groups = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('groups.blocking', compact('groups'));
     }
 
@@ -254,37 +225,7 @@ class GroupController extends Controller
             default => 'posts',
         };
 
-        $posts = [];
-        $comments = [];
-
-        switch ($type) {
-            case 'posts':
-                $results = GroupInterface::detail($gid, 'posts', $query);
-
-                $posts = QueryHelper::convertApiDataToPaginate(
-                    items: $results['posts']['data']['list'],
-                    pagination: $results['posts']['data']['pagination'],
-                );
-                $pagination = $results['posts']['data']['pagination'];
-                break;
-
-            case 'comments':
-                $results = GroupInterface::detail($gid, 'comments', $query);
-
-                $comments = QueryHelper::convertApiDataToPaginate(
-                    items: $results['comments']['data']['list'],
-                    pagination: $results['comments']['data']['pagination'],
-                );
-                $pagination = $results['comments']['data']['pagination'];
-                break;
-        }
-
-        if ($results['group']['code'] != 0) {
-            throw new ErrorException($results['group']['message'], $results['group']['code']);
-        }
-
-        $items = $results['group']['data']['items'];
-        $group = $results['group']['data']['detail'];
+        $results = GroupInterface::detail($gid, $type, $query);
 
         // ajax
         if ($request->ajax()) {
@@ -305,12 +246,170 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'pagination' => $pagination,
+                'pagination' => $results[$type]['data']['pagination'],
                 'html' => $html,
             ]);
         }
 
         // view
+        $items = $results['group']['data']['items'];
+        $group = $results['group']['data']['detail'];
+
+        $posts = [];
+        $comments = [];
+
+        switch ($type) {
+            case 'posts':
+                $posts = QueryHelper::convertApiDataToPaginate(
+                    items: $results['posts']['data']['list'],
+                    pagination: $results['posts']['data']['pagination'],
+                );
+                break;
+
+            case 'comments':
+                $comments = QueryHelper::convertApiDataToPaginate(
+                    items: $results['comments']['data']['list'],
+                    pagination: $results['comments']['data']['pagination'],
+                );
+                break;
+        }
+
         return view('groups.detail', compact('items', 'group', 'type', 'posts', 'comments'));
+    }
+
+    // detail likers
+    public function detailLikers(Request $request, string $gid)
+    {
+        $results = GroupInterface::interaction($gid, 'likers', $request->all());
+
+        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['group']['data']['items'];
+        $group = $results['group']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('groups.detail-likers', compact('items', 'group', 'users'));
+    }
+
+    // detail dislikers
+    public function detailDislikers(Request $request, string $gid)
+    {
+        $results = GroupInterface::interaction($gid, 'dislikers', $request->all());
+
+        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['group']['data']['items'];
+        $group = $results['group']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('groups.detail-dislikers', compact('items', 'group', 'users'));
+    }
+
+    // detail followers
+    public function detailFollowers(Request $request, string $gid)
+    {
+        $results = GroupInterface::interaction($gid, 'followers', $request->all());
+
+        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['group']['data']['items'];
+        $group = $results['group']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('groups.detail-followers', compact('items', 'group', 'users'));
+    }
+
+    // detail blockers
+    public function detailBlockers(Request $request, string $gid)
+    {
+        $results = GroupInterface::interaction($gid, 'blockers', $request->all());
+
+        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+            return Response::view('404', [], 404);
+        }
+
+        // ajax
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($results['users']['data']['list'] as $user) {
+                $html .= View::make('components.user.list', compact('user'))->render();
+            }
+
+            return response()->json([
+                'pagination' => $results['users']['data']['pagination'],
+                'html' => $html,
+            ]);
+        }
+
+        // view
+        $items = $results['group']['data']['items'];
+        $group = $results['group']['data']['detail'];
+
+        $users = QueryHelper::convertApiDataToPaginate(
+            items: $results['users']['data']['list'],
+            pagination: $results['users']['data']['pagination'],
+        );
+
+        return view('groups.detail-blockers', compact('items', 'group', 'users'));
     }
 }

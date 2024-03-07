@@ -127,10 +127,11 @@ class UserGuard implements Guard
 
         $uid = Cookie::get("{$cookiePrefix}uid");
         $token = Cookie::get("{$cookiePrefix}uid_token");
-        $langTag = fs_theme('lang');
 
         if ($uid && $token) {
             try {
+                $langTag = fs_theme('lang');
+
                 $cacheKey = "fresns_web_user_{$uid}_{$langTag}";
                 $cacheTag = 'fresnsWeb';
 

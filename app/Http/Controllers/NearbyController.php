@@ -60,11 +60,6 @@ class NearbyController extends Controller
             $result = PostInterface::nearby($query);
         }
 
-        $posts = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -79,6 +74,11 @@ class NearbyController extends Controller
         }
 
         // view
+        $posts = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('nearby.posts', compact('posts'));
     }
 
@@ -112,11 +112,6 @@ class NearbyController extends Controller
             $result = CommentInterface::nearby($query);
         }
 
-        $comments = QueryHelper::convertApiDataToPaginate(
-            items: $result['data']['list'],
-            pagination: $result['data']['pagination'],
-        );
-
         // ajax
         if ($request->ajax()) {
             $html = '';
@@ -131,6 +126,11 @@ class NearbyController extends Controller
         }
 
         // view
+        $comments = QueryHelper::convertApiDataToPaginate(
+            items: $result['data']['list'],
+            pagination: $result['data']['pagination'],
+        );
+
         return view('nearby.comments', compact('comments'));
     }
 }
