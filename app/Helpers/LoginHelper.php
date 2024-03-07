@@ -70,12 +70,11 @@ class LoginHelper
                     'code' => $result['code'],
                     'failure' => $result['message'],
                 ]);
-            };
+            }
 
             LoginHelper::user($result['data']);
         }
 
-        return;
     }
 
     // User Login
