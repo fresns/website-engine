@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Middleware;
+namespace Fresns\WebsiteEngine\Http\Middleware;
 
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
@@ -26,12 +26,12 @@ class SetHeaders
             return $next($request);
         }
 
-        $keyId = ConfigHelper::fresnsConfigByItemKey('webengine_key_id');
+        $keyId = ConfigHelper::fresnsConfigByItemKey('website_engine_key_id');
         $keyInfo = PrimaryHelper::fresnsModelById('key', $keyId);
 
         if (empty($keyInfo)) {
             return Response::view('error', [
-                'message' => '<p>'.__('WebEngine::tips.errorKey').'</p><p>'.__('WebEngine::tips.settingTip').'</p>',
+                'message' => '<p>'.__('WebsiteEngine::tips.errorKey').'</p><p>'.__('WebsiteEngine::tips.settingTip').'</p>',
                 'code' => 403,
             ], 403);
         }

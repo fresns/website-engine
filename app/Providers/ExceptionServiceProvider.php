@@ -6,10 +6,10 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Providers;
+namespace Fresns\WebsiteEngine\Providers;
 
 use Browser;
-use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
@@ -78,10 +78,10 @@ class ExceptionServiceProvider extends ServiceProvider
             // 404 page
             if ($e instanceof NotFoundHttpException) {
                 if (! fs_theme('fskey')) {
-                    $errorMessage = Browser::isMobile() ? '<p>'.__('WebEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebEngine::tips.errorDesktopFskey').'</p>';
+                    $errorMessage = Browser::isMobile() ? '<p>'.__('WebsiteEngine::tips.errorMobileFskey').'</p>' : '<p>'.__('WebsiteEngine::tips.errorDesktopFskey').'</p>';
 
                     return Response::view('error', [
-                        'message' => $errorMessage.'<p>'.__('WebEngine::tips.settingTip').'</p>',
+                        'message' => $errorMessage.'<p>'.__('WebsiteEngine::tips.settingTip').'</p>',
                         'code' => 400,
                     ], 400);
                 }

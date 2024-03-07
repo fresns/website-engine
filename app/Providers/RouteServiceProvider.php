@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Providers;
+namespace Fresns\WebsiteEngine\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;

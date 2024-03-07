@@ -1,5 +1,5 @@
 {
-    "name": "fresns/web-engine",
+    "name": "fresns/website-engine",
     "type": "library",
     "description": "Fresns officially developed website engine, integrated to run in the main application.",
     "keywords": ["fresns"],
@@ -23,7 +23,7 @@
     "require-dev": {},
     "autoload": {
         "psr-4": {
-            "Fresns\\WebEngine\\": "app"
+            "Fresns\\WebsiteEngine\\": "app"
         },
         "files": [
             "app/Http/Function.php"
@@ -32,8 +32,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Fresns\\WebEngine\\Providers\\WebEngineServiceProvider",
-                "Fresns\\WebEngine\\Providers\\ExceptionServiceProvider"
+                "Fresns\\WebsiteEngine\\Providers\\WebsiteEngineServiceProvider",
+                "Fresns\\WebsiteEngine\\Providers\\ExceptionServiceProvider"
             ]
         },
         "hooks": {

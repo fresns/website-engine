@@ -6,15 +6,15 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Controllers;
+namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
 use App\Models\File;
 use App\Utilities\ConfigUtility;
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
-use Fresns\WebEngine\Interfaces\MeInterface;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
 
 class EditorController extends Controller

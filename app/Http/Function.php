@@ -11,9 +11,9 @@ use App\Helpers\ConfigHelper;
 use App\Helpers\PluginHelper;
 use App\Models\File;
 use App\Utilities\ArrUtility;
-use Fresns\WebEngine\Auth\UserGuard;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Auth\UserGuard;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -23,7 +23,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 if (! function_exists('is_local_api')) {
     function is_local_api(): bool
     {
-        $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('website_engine_api_type');
 
         return $engineApiType == 'local';
     }
@@ -33,7 +33,7 @@ if (! function_exists('is_local_api')) {
 if (! function_exists('is_remote_api')) {
     function is_remote_api(): bool
     {
-        $engineApiType = ConfigHelper::fresnsConfigByItemKey('webengine_api_type');
+        $engineApiType = ConfigHelper::fresnsConfigByItemKey('website_engine_api_type');
 
         return $engineApiType == 'remote';
     }
@@ -52,7 +52,7 @@ if (! function_exists('fs_status')) {
             $isLocal = is_local_api();
 
             $localApiHost = config('app.url');
-            $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('webengine_api_host');
+            $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('website_engine_api_host');
 
             $apiHost = $isLocal ? $localApiHost : $remoteApiHost;
 
@@ -136,7 +136,7 @@ if (! function_exists('fs_theme')) {
 
         $themeFskey = null;
         if ($converted != 'lang') {
-            $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('webengine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('webengine_view_desktop');
+            $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('website_engine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('website_engine_view_desktop');
         }
 
         $info = match ($converted) {

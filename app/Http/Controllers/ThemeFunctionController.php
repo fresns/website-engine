@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Controllers;
+namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;

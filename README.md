@@ -20,7 +20,7 @@ Fresns is a free and open source social network service software, a general-purp
 Fresns website route engine extension package.
 
 ```bash
-composer require fresns/web-engine
+composer require fresns/website-engine
 ```
 
 Reference: [https://github.com/fresns/client-website-themes](https://github.com/fresns/client-website-themes)

@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Client;
+namespace Fresns\WebsiteEngine\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Promise;

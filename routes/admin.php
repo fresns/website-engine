@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-use Fresns\WebEngine\Http\Controllers\ThemeFunctionController;
+use Fresns\WebsiteEngine\Http\Controllers\ThemeFunctionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['panel', 'panelAuth'])->group(function () {

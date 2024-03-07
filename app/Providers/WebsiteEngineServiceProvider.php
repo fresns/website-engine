@@ -6,15 +6,15 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Providers;
+namespace Fresns\WebsiteEngine\Providers;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
-use Fresns\WebEngine\Auth\AccountGuard;
-use Fresns\WebEngine\Auth\UserGuard;
+use Fresns\WebsiteEngine\Auth\AccountGuard;
+use Fresns\WebsiteEngine\Auth\UserGuard;
 use Illuminate\Support\ServiceProvider;
 
-class WebEngineServiceProvider extends ServiceProvider
+class WebsiteEngineServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.
@@ -31,8 +31,8 @@ class WebEngineServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // web engine client
-        $webEngineStatus = ConfigHelper::fresnsConfigByItemKey('webengine_status') ?? false;
-        if (! $webEngineStatus) {
+        $websiteEngineStatus = ConfigHelper::fresnsConfigByItemKey('website_engine_status') ?? false;
+        if (! $websiteEngineStatus) {
             return;
         }
 
@@ -115,6 +115,6 @@ class WebEngineServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'WebEngine');
+        $this->loadTranslationsFrom(dirname(__DIR__, 2).'/resources/lang', 'WebsiteEngine');
     }
 }

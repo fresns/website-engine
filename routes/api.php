@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-use Fresns\WebEngine\Http\Controllers\ApiController;
+use Fresns\WebsiteEngine\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('theme')->middleware(['web'])->group(function () {

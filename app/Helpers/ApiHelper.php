@@ -6,15 +6,15 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Helpers;
+namespace Fresns\WebsiteEngine\Helpers;
 
 use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\SignHelper;
 use App\Models\SessionKey;
-use Fresns\WebEngine\Client\Clientable;
-use Fresns\WebEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Client\Clientable;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cookie;
@@ -65,7 +65,7 @@ class ApiHelper
     public function getBaseUri(): ?string
     {
         $localApiHost = config('app.url');
-        $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('webengine_api_host');
+        $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('website_engine_api_host');
 
         $apiHost = is_local_api() ? $localApiHost : $remoteApiHost;
 
@@ -149,15 +149,15 @@ class ApiHelper
 
         if (empty($keyConfig)) {
             $apiConfigs = ConfigHelper::fresnsConfigByItemKeys([
-                'webengine_key_id',
-                'webengine_api_type',
-                'webengine_api_app_id',
-                'webengine_api_app_key',
+                'website_engine_key_id',
+                'website_engine_api_type',
+                'website_engine_api_app_id',
+                'website_engine_api_app_key',
             ]);
 
-            $keyInfo = SessionKey::find($apiConfigs['webengine_key_id']);
+            $keyInfo = SessionKey::find($apiConfigs['website_engine_key_id']);
 
-            $keyConfig = match ($apiConfigs['webengine_api_type']) {
+            $keyConfig = match ($apiConfigs['website_engine_api_type']) {
                 'local' => [
                     'platformId' => $keyInfo?->platform_id,
                     'appId' => $keyInfo?->app_id,
@@ -165,8 +165,8 @@ class ApiHelper
                 ],
                 'remote' => [
                     'platformId' => SessionKey::PLATFORM_WEB_RESPONSIVE,
-                    'appId' => $apiConfigs['webengine_api_app_id'],
-                    'appKey' => $apiConfigs['webengine_api_app_key'],
+                    'appId' => $apiConfigs['website_engine_api_app_id'],
+                    'appKey' => $apiConfigs['website_engine_api_app_key'],
                 ],
                 default => [
                     'platformId' => SessionKey::PLATFORM_WEB_RESPONSIVE,

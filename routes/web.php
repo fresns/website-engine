@@ -7,25 +7,25 @@
  */
 
 use App\Helpers\ConfigHelper;
-use Fresns\WebEngine\Http\Controllers\CommentController;
-use Fresns\WebEngine\Http\Controllers\EditorController;
-use Fresns\WebEngine\Http\Controllers\GeotagController;
-use Fresns\WebEngine\Http\Controllers\GroupController;
-use Fresns\WebEngine\Http\Controllers\HashtagController;
-use Fresns\WebEngine\Http\Controllers\MeController;
-use Fresns\WebEngine\Http\Controllers\MessageController;
-use Fresns\WebEngine\Http\Controllers\NearbyController;
-use Fresns\WebEngine\Http\Controllers\PortalController;
-use Fresns\WebEngine\Http\Controllers\PostController;
-use Fresns\WebEngine\Http\Controllers\ProfileController;
-use Fresns\WebEngine\Http\Controllers\SearchController;
-use Fresns\WebEngine\Http\Controllers\TimelineController;
-use Fresns\WebEngine\Http\Controllers\UserController;
-use Fresns\WebEngine\Http\Middleware\AccountAuthorize;
-use Fresns\WebEngine\Http\Middleware\CheckSiteModel;
-use Fresns\WebEngine\Http\Middleware\SetHeaders;
-use Fresns\WebEngine\Http\Middleware\UserAuthorize;
-use Fresns\WebEngine\Http\Middleware\WebConfiguration;
+use Fresns\WebsiteEngine\Http\Controllers\CommentController;
+use Fresns\WebsiteEngine\Http\Controllers\EditorController;
+use Fresns\WebsiteEngine\Http\Controllers\GeotagController;
+use Fresns\WebsiteEngine\Http\Controllers\GroupController;
+use Fresns\WebsiteEngine\Http\Controllers\HashtagController;
+use Fresns\WebsiteEngine\Http\Controllers\MeController;
+use Fresns\WebsiteEngine\Http\Controllers\MessageController;
+use Fresns\WebsiteEngine\Http\Controllers\NearbyController;
+use Fresns\WebsiteEngine\Http\Controllers\PortalController;
+use Fresns\WebsiteEngine\Http\Controllers\PostController;
+use Fresns\WebsiteEngine\Http\Controllers\ProfileController;
+use Fresns\WebsiteEngine\Http\Controllers\SearchController;
+use Fresns\WebsiteEngine\Http\Controllers\TimelineController;
+use Fresns\WebsiteEngine\Http\Controllers\UserController;
+use Fresns\WebsiteEngine\Http\Middleware\AccountAuthorize;
+use Fresns\WebsiteEngine\Http\Middleware\CheckSiteModel;
+use Fresns\WebsiteEngine\Http\Middleware\SetHeaders;
+use Fresns\WebsiteEngine\Http\Middleware\UserAuthorize;
+use Fresns\WebsiteEngine\Http\Middleware\WebConfiguration;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -61,7 +61,7 @@ Route::prefix(LaravelLocalization::setLocale())
 
         // homepage
         try {
-            $defaultHomepage = [sprintf('Fresns\WebEngine\Http\Controllers\%sController', Str::ucfirst($configs['default_homepage'])), 'index'];
+            $defaultHomepage = [sprintf('Fresns\WebsiteEngine\Http\Controllers\%sController', Str::ucfirst($configs['default_homepage'])), 'index'];
             Route::get('/', $defaultHomepage)->name('home')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
         } catch (\Throwable $e) {
         }

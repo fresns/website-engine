@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Helpers;
+namespace Fresns\WebsiteEngine\Helpers;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
@@ -70,11 +70,12 @@ class LoginHelper
                     'code' => $result['code'],
                     'failure' => $result['message'],
                 ]);
-            }
+            };
 
             LoginHelper::user($result['data']);
         }
 
+        return;
     }
 
     // User Login

@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Interfaces;
+namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\GroupController;
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Illuminate\Http\Request;
 
 class GroupInterface

@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Auth;
+namespace Fresns\WebsiteEngine\Auth;
 
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Models\File;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;

@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Helpers;
+namespace Fresns\WebsiteEngine\Helpers;
 
 use App\Helpers\ConfigHelper;
 use Illuminate\Pagination\LengthAwarePaginator;

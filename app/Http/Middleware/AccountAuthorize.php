@@ -6,7 +6,7 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Middleware;
+namespace Fresns\WebsiteEngine\Http\Middleware;
 
 use App\Helpers\ConfigHelper;
 use App\Utilities\ConfigUtility;

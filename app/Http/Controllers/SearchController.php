@@ -6,10 +6,10 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Controllers;
+namespace Fresns\WebsiteEngine\Http\Controllers;
 
-use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\SearchInterface;
+use Fresns\WebsiteEngine\Helpers\QueryHelper;
+use Fresns\WebsiteEngine\Interfaces\SearchInterface;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller

@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Controllers;
+namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Utilities\ConfigUtility;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\LoginHelper;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\LoginHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

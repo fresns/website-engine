@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Interfaces;
+namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\CommentController;
 use App\Fresns\Api\Http\Controllers\PostController;
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\Request;
 
 class TimelineInterface

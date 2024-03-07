@@ -6,13 +6,13 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Interfaces;
+namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\AccountController;
 use App\Fresns\Api\Http\Controllers\EditorController;
 use App\Fresns\Api\Http\Controllers\UserController;
-use Fresns\WebEngine\Exceptions\ErrorException;
-use Fresns\WebEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Illuminate\Http\Request;
 
 class MeInterface

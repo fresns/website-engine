@@ -6,11 +6,11 @@
  * Released under the Apache-2.0 License.
  */
 
-namespace Fresns\WebEngine\Http\Controllers;
+namespace Fresns\WebsiteEngine\Http\Controllers;
 
-use Fresns\WebEngine\Helpers\ApiHelper;
-use Fresns\WebEngine\Helpers\QueryHelper;
-use Fresns\WebEngine\Interfaces\MeInterface;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\QueryHelper;
+use Fresns\WebsiteEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
 
 class MeController extends Controller
