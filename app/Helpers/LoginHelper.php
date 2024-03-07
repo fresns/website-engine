@@ -62,7 +62,7 @@ class LoginHelper
                     'uidOrUsername' => $user['uid'],
                     'password' => null,
                     'deviceToken' => null,
-                ]
+                ],
             ]);
 
             if ($result['code'] != 0) {
@@ -70,12 +70,11 @@ class LoginHelper
                     'code' => $result['code'],
                     'failure' => $result['message'],
                 ]);
-            };
+            }
 
             LoginHelper::user($result['data']);
         }
 
-        return;
     }
 
     // User Login
