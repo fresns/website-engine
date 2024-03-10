@@ -10,7 +10,7 @@ namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Utilities\ConfigUtility;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
-use Fresns\WebsiteEngine\Helpers\LoginHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -130,6 +130,14 @@ class ApiController extends Controller
             ]);
         }
 
+        // Account and User Login
+        if ($result['code'] == 0 && in_array($endpointPath, [
+            '/api/fresns/v1/account/auth-token',
+            '/api/fresns/v1/user/auth-token',
+        ])) {
+            DataHelper::accountAndUserCookie($result['data']['authToken']);
+        }
+
         // ajax
         if ($request->ajax()) {
             return Response::json($result);
@@ -145,16 +153,6 @@ class ApiController extends Controller
 
         // success
         $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
-
-        // Account Login
-        if ($endpointPath == '/api/fresns/v1/account/auth-token') {
-            LoginHelper::account($result['data']);
-        }
-
-        // User Login
-        if ($endpointPath == '/api/fresns/v1/user/auth-token') {
-            LoginHelper::user($result['data']);
-        }
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }

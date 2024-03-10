@@ -18,6 +18,55 @@ use Illuminate\Support\Str;
 
 class DataHelper
 {
+    // account and user login
+    public static function accountAndUserCookie(array $authToken): void
+    {
+        // cookie key name
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
+
+        $cookieAid = "{$cookiePrefix}aid";
+        $cookieAidToken = "{$cookiePrefix}aid_token";
+        $cookieUid = "{$cookiePrefix}uid";
+        $cookieUidToken = "{$cookiePrefix}uid_token";
+
+        $aid = $authToken['aid'];
+        $aidToken = $authToken['aidToken'];
+        $uid = $authToken['uid'];
+        $uidToken = $authToken['uidToken'];
+        $expiredHours = $authToken['expiredHours'] ?? 8760;
+
+        $userTokenMinutes = $expiredHours * 60;
+
+        Cookie::queue($cookieAid, $aid, $userTokenMinutes);
+        Cookie::queue($cookieAidToken, $aidToken, $userTokenMinutes);
+        Cookie::queue($cookieUid, $uid, $userTokenMinutes);
+        Cookie::queue($cookieUidToken, $uidToken, $userTokenMinutes);
+
+        DataHelper::cacheForgetAccountAndUser();
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$aid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$uid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_overview_{$uid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_channels_{$uid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_post_editor_configs_{$uid}", ['fresnsWeb', 'fresnsWebConfigs']);
+        CacheHelper::forgetFresnsMultilingual("fresns_web_comment_editor_configs_{$uid}", ['fresnsWeb', 'fresnsWebConfigs']);
+
+        $channelArr = [
+            'user',
+            'group',
+            'hashtag',
+            'geotag',
+            'post',
+            'comment',
+        ];
+
+        foreach ($channelArr as $channel) {
+            // fresns_web_content_{$channel}_{$type}_by_{$uid}_{$langTag}
+            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_home_by_{$uid}", 'fresnsWeb');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_list_by_{$uid}", 'fresnsWeb');
+        }
+    }
+
     // get api data
     public static function getApiDataTemplate(?string $type = 'list'): array
     {

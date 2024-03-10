@@ -186,15 +186,6 @@ class ApiHelper
         $cookieUid = "{$cookiePrefix}uid";
         $cookieUidToken = "{$cookiePrefix}uid_token";
 
-        $ulid = Cookie::get("{$cookiePrefix}ulid");
-        $cacheAidAndToken = [];
-        if ($ulid) {
-            $cacheAidAndToken = CacheHelper::get("fresns_web_{$ulid}", [
-                'fresnsWeb',
-                'fresnsWebAccountTokens',
-            ]);
-        }
-
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
 
@@ -205,11 +196,11 @@ class ApiHelper
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
             'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
-            'X-Fresns-Client-Timezone' => $_COOKIE['fresns_timezone'] ?? null,
+            'X-Fresns-Client-Timezone' => Cookie::get('fresns_timezone'),
             'X-Fresns-Client-Lang-Tag' => fs_theme('lang'),
             'X-Fresns-Client-Content-Format' => null,
-            'X-Fresns-Aid' => Cookie::get($cookieAid) ?? $cacheAidAndToken['aid'] ?? null,
-            'X-Fresns-Aid-Token' => Cookie::get($cookieAidToken) ?? $cacheAidAndToken['aidToken'] ?? null,
+            'X-Fresns-Aid' => Cookie::get($cookieAid),
+            'X-Fresns-Aid-Token' => Cookie::get($cookieAidToken),
             'X-Fresns-Uid' => Cookie::get($cookieUid),
             'X-Fresns-Uid-Token' => Cookie::get($cookieUidToken),
             'X-Fresns-Signature' => null,
