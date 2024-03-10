@@ -282,7 +282,7 @@ class GroupController extends Controller
     {
         $results = GroupInterface::interaction($gid, 'likers', $request->all());
 
-        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['group']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -316,7 +316,7 @@ class GroupController extends Controller
     {
         $results = GroupInterface::interaction($gid, 'dislikers', $request->all());
 
-        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['group']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -350,7 +350,7 @@ class GroupController extends Controller
     {
         $results = GroupInterface::interaction($gid, 'followers', $request->all());
 
-        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['group']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -384,7 +384,7 @@ class GroupController extends Controller
     {
         $results = GroupInterface::interaction($gid, 'blockers', $request->all());
 
-        if (! $results['group']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['group']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 

@@ -240,7 +240,7 @@ class PostController extends Controller
     {
         $results = PostInterface::interaction($pid, 'likers', $request->all());
 
-        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['post']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -274,7 +274,7 @@ class PostController extends Controller
     {
         $results = PostInterface::interaction($pid, 'dislikers', $request->all());
 
-        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['post']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -308,7 +308,7 @@ class PostController extends Controller
     {
         $results = PostInterface::interaction($pid, 'followers', $request->all());
 
-        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['post']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -342,7 +342,7 @@ class PostController extends Controller
     {
         $results = PostInterface::interaction($pid, 'blockers', $request->all());
 
-        if (! $results['post']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['post']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 

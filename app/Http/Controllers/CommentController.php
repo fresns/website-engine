@@ -238,7 +238,7 @@ class CommentController extends Controller
     {
         $results = CommentInterface::interaction($cid, 'likers', $request->all());
 
-        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['comment']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -272,7 +272,7 @@ class CommentController extends Controller
     {
         $results = CommentInterface::interaction($cid, 'dislikers', $request->all());
 
-        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['comment']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -306,7 +306,7 @@ class CommentController extends Controller
     {
         $results = CommentInterface::interaction($cid, 'followers', $request->all());
 
-        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['comment']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -340,7 +340,7 @@ class CommentController extends Controller
     {
         $results = CommentInterface::interaction($cid, 'blockers', $request->all());
 
-        if (! $results['comment']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['comment']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 

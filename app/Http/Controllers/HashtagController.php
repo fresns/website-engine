@@ -268,7 +268,7 @@ class HashtagController extends Controller
     {
         $results = HashtagInterface::interaction($htid, 'likers', $request->all());
 
-        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['hashtag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -302,7 +302,7 @@ class HashtagController extends Controller
     {
         $results = HashtagInterface::interaction($htid, 'dislikers', $request->all());
 
-        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['hashtag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -336,7 +336,7 @@ class HashtagController extends Controller
     {
         $results = HashtagInterface::interaction($htid, 'followers', $request->all());
 
-        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['hashtag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -370,7 +370,7 @@ class HashtagController extends Controller
     {
         $results = HashtagInterface::interaction($htid, 'blockers', $request->all());
 
-        if (! $results['hashtag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['hashtag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 

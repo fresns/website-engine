@@ -97,10 +97,10 @@ Route::prefix(LaravelLocalization::setLocale())
         });
         Route::name('group.')->prefix($configs['website_group_detail_path'].'/{gid}')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
             Route::get('/', [GroupController::class, 'detail'])->name('detail');
-            Route::get('likers', [GroupController::class, 'detailLikers'])->name('likers');
-            Route::get('dislikers', [GroupController::class, 'detailDislikers'])->name('dislikers');
-            Route::get('followers', [GroupController::class, 'detailFollowers'])->name('followers');
-            Route::get('blockers', [GroupController::class, 'detailBlockers'])->name('blockers');
+            Route::get('likers', [GroupController::class, 'detailLikers'])->name('detail.likers');
+            Route::get('dislikers', [GroupController::class, 'detailDislikers'])->name('detail.dislikers');
+            Route::get('followers', [GroupController::class, 'detailFollowers'])->name('detail.followers');
+            Route::get('blockers', [GroupController::class, 'detailBlockers'])->name('detail.blockers');
         });
 
         // hashtags
@@ -114,10 +114,10 @@ Route::prefix(LaravelLocalization::setLocale())
         });
         Route::name('hashtag.')->prefix($configs['website_hashtag_detail_path'].'/{htid}')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
             Route::get('/', [HashtagController::class, 'detail'])->name('detail');
-            Route::get('likers', [HashtagController::class, 'detailLikers'])->name('likers');
-            Route::get('dislikers', [HashtagController::class, 'detailDislikers'])->name('dislikers');
-            Route::get('followers', [HashtagController::class, 'detailFollowers'])->name('followers');
-            Route::get('blockers', [HashtagController::class, 'detailBlockers'])->name('blockers');
+            Route::get('likers', [HashtagController::class, 'detailLikers'])->name('detail.likers');
+            Route::get('dislikers', [HashtagController::class, 'detailDislikers'])->name('detail.dislikers');
+            Route::get('followers', [HashtagController::class, 'detailFollowers'])->name('detail.followers');
+            Route::get('blockers', [HashtagController::class, 'detailBlockers'])->name('detail.blockers');
         });
 
         // geotags
@@ -131,10 +131,10 @@ Route::prefix(LaravelLocalization::setLocale())
         });
         Route::name('geotag.')->prefix($configs['website_geotag_detail_path'].'/{gtid}')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
             Route::get('/', [GeotagController::class, 'detail'])->name('detail');
-            Route::get('likers', [GeotagController::class, 'detailLikers'])->name('likers');
-            Route::get('dislikers', [GeotagController::class, 'detailDislikers'])->name('dislikers');
-            Route::get('followers', [GeotagController::class, 'detailFollowers'])->name('followers');
-            Route::get('blockers', [GeotagController::class, 'detailBlockers'])->name('blockers');
+            Route::get('likers', [GeotagController::class, 'detailLikers'])->name('detail.likers');
+            Route::get('dislikers', [GeotagController::class, 'detailDislikers'])->name('detail.dislikers');
+            Route::get('followers', [GeotagController::class, 'detailFollowers'])->name('detail.followers');
+            Route::get('blockers', [GeotagController::class, 'detailBlockers'])->name('detail.blockers');
         });
 
         // posts
@@ -148,10 +148,10 @@ Route::prefix(LaravelLocalization::setLocale())
         });
         Route::name('post.')->prefix($configs['website_post_detail_path'].'/{pid}')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
             Route::get('/', [PostController::class, 'detail'])->name('detail');
-            Route::get('likers', [PostController::class, 'detailLikers'])->name('likers');
-            Route::get('dislikers', [PostController::class, 'detailDislikers'])->name('dislikers');
-            Route::get('followers', [PostController::class, 'detailFollowers'])->name('followers');
-            Route::get('blockers', [PostController::class, 'detailBlockers'])->name('blockers');
+            Route::get('likers', [PostController::class, 'detailLikers'])->name('detail.likers');
+            Route::get('dislikers', [PostController::class, 'detailDislikers'])->name('detail.dislikers');
+            Route::get('followers', [PostController::class, 'detailFollowers'])->name('detail.followers');
+            Route::get('blockers', [PostController::class, 'detailBlockers'])->name('detail.blockers');
         });
 
         // comments
@@ -165,10 +165,10 @@ Route::prefix(LaravelLocalization::setLocale())
         });
         Route::name('comment.')->prefix($configs['website_comment_detail_path'].'/{cid}')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
             Route::get('/', [CommentController::class, 'detail'])->name('detail');
-            Route::get('likers', [CommentController::class, 'detailLikers'])->name('likers');
-            Route::get('dislikers', [CommentController::class, 'detailDislikers'])->name('dislikers');
-            Route::get('followers', [CommentController::class, 'detailFollowers'])->name('followers');
-            Route::get('blockers', [CommentController::class, 'detailBlockers'])->name('blockers');
+            Route::get('likers', [CommentController::class, 'detailLikers'])->name('detail.likers');
+            Route::get('dislikers', [CommentController::class, 'detailDislikers'])->name('detail.dislikers');
+            Route::get('followers', [CommentController::class, 'detailFollowers'])->name('detail.followers');
+            Route::get('blockers', [CommentController::class, 'detailBlockers'])->name('detail.blockers');
         });
 
         // timeline

@@ -271,7 +271,7 @@ class GeotagController extends Controller
     {
         $results = GeotagInterface::interaction($gtid, 'likers', $request->all());
 
-        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['geotag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -305,7 +305,7 @@ class GeotagController extends Controller
     {
         $results = GeotagInterface::interaction($gtid, 'dislikers', $request->all());
 
-        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['geotag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -339,7 +339,7 @@ class GeotagController extends Controller
     {
         $results = GeotagInterface::interaction($gtid, 'followers', $request->all());
 
-        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['geotag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
@@ -373,7 +373,7 @@ class GeotagController extends Controller
     {
         $results = GeotagInterface::interaction($gtid, 'blockers', $request->all());
 
-        if (! $results['geotag']['detail']['interaction']['likePublicRecord']) {
+        if (! $results['geotag']['data']['detail']['interaction']['likePublicRecord']) {
             return Response::view('404', [], 404);
         }
 
