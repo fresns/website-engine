@@ -30,7 +30,7 @@ class WebsiteEngineServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // web engine client
+        // website engine status
         $websiteEngineStatus = ConfigHelper::fresnsConfigByItemKey('website_engine_status') ?? false;
         if (! $websiteEngineStatus) {
             return;

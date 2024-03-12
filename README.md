@@ -2,7 +2,7 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/Platform-Web-blue" alt="Platform">
-<img src="https://img.shields.io/badge/PHP-%5E8.1-blueviolet" alt="PHP">
+<img src="https://img.shields.io/badge/PHP-%5E8.2-blueviolet" alt="PHP">
 <img src="https://img.shields.io/badge/Fresns-3.x-orange" alt="Fresns">
 <img src="https://img.shields.io/badge/License-Apache--2.0-green" alt="License">
 </p>
