@@ -8,6 +8,7 @@
 
 namespace Fresns\WebsiteEngine\Providers;
 
+use Fresns\WebsiteEngine\Http\Middleware\EncryptCookies;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ class RouteServiceProvider extends ServiceProvider
 
     public function map()
     {
+        Route::middlewareGroup('cookie', [EncryptCookies::class]);
+
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         $this->mapAdminRoutes();
