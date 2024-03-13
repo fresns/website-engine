@@ -24,10 +24,10 @@ class DataHelper
         // cookie key name
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
-        $cookieAid = "{$cookiePrefix}aid";
-        $cookieAidToken = "{$cookiePrefix}aid_token";
-        $cookieUid = "{$cookiePrefix}uid";
-        $cookieUidToken = "{$cookiePrefix}uid_token";
+        $cookieNameAid = "{$cookiePrefix}aid";
+        $cookieNameAidToken = "{$cookiePrefix}aid_token";
+        $cookieNameUid = "{$cookiePrefix}uid";
+        $cookieNameUidToken = "{$cookiePrefix}uid_token";
 
         $aid = $authToken['aid'];
         $aidToken = $authToken['aidToken'];
@@ -37,10 +37,10 @@ class DataHelper
 
         $userTokenMinutes = $expiredHours * 60;
 
-        Cookie::queue($cookieAid, $aid, $userTokenMinutes);
-        Cookie::queue($cookieAidToken, $aidToken, $userTokenMinutes);
-        Cookie::queue($cookieUid, $uid, $userTokenMinutes);
-        Cookie::queue($cookieUidToken, $uidToken, $userTokenMinutes);
+        Cookie::queue($cookieNameAid, $aid, $userTokenMinutes);
+        Cookie::queue($cookieNameAidToken, $aidToken, $userTokenMinutes);
+        Cookie::queue($cookieNameUid, $uid, $userTokenMinutes);
+        Cookie::queue($cookieNameUidToken, $uidToken, $userTokenMinutes);
 
         DataHelper::cacheForgetAccountAndUser();
 

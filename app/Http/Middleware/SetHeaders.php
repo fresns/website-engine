@@ -38,10 +38,10 @@ class SetHeaders
         // cookie key name
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
-        $cookieAid = "{$cookiePrefix}aid";
-        $cookieAidToken = "{$cookiePrefix}aid_token";
-        $cookieUid = "{$cookiePrefix}uid";
-        $cookieUidToken = "{$cookiePrefix}uid_token";
+        $cookieNameAid = "{$cookiePrefix}aid";
+        $cookieNameAidToken = "{$cookiePrefix}aid_token";
+        $cookieNameUid = "{$cookiePrefix}uid";
+        $cookieNameUidToken = "{$cookiePrefix}uid_token";
 
         $now = now('UTC');
         $nowTimestamp = strtotime($now);
@@ -54,10 +54,10 @@ class SetHeaders
             'X-Fresns-Client-Timezone' => Cookie::get('fresns_timezone'),
             'X-Fresns-Client-Lang-Tag' => fs_theme('lang'),
             'X-Fresns-Client-Content-Format' => null,
-            'X-Fresns-Aid' => Cookie::get($cookieAid),
-            'X-Fresns-Aid-Token' => Cookie::get($cookieAidToken),
-            'X-Fresns-Uid' => Cookie::get($cookieUid),
-            'X-Fresns-Uid-Token' => Cookie::get($cookieUidToken),
+            'X-Fresns-Aid' => Cookie::get($cookieNameAid),
+            'X-Fresns-Aid-Token' => Cookie::get($cookieNameAidToken),
+            'X-Fresns-Uid' => Cookie::get($cookieNameUid),
+            'X-Fresns-Uid-Token' => Cookie::get($cookieNameUidToken),
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => $nowTimestamp,
         ];
