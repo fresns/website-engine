@@ -23,4 +23,7 @@ Fresns website route engine extension package.
 composer require fresns/website-engine
 ```
 
-Reference: [https://github.com/fresns/client-website-themes](https://github.com/fresns/client-website-themes)
+## Reference
+
+- [https://docs.fresns.com/clients/theme/](https://docs.fresns.com/clients/theme/)
+- [https://github.com/fresns/client-website-themes](https://github.com/fresns/client-website-themes)
