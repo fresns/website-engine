@@ -82,13 +82,6 @@ class WebConfiguration
             CacheHelper::put($ulid, $cacheKey, $cacheTags);
         }
 
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $cookieUlid = Cookie::get("{$cookiePrefix}ulid");
-        if (empty($cookieUlid)) {
-            Cookie::queue("{$cookiePrefix}ulid", Str::ulid());
-        }
-
         $finder = app('view')->getFinder();
         $finder->prependLocation(base_path("themes/{$themeFskey}"));
         $this->loadLanguages();
