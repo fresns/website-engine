@@ -44,8 +44,7 @@ class ThemeFunctionController extends Controller
 
     public function index(string $fskey)
     {
-        $view = $fskey.'.functions';
-        if (! view()->exists($view)) {
+        if (! view()->exists('functions')) {
             abort(404, __('FsLang::tips.theme_functions_file_error'));
         }
 
@@ -116,7 +115,7 @@ class ThemeFunctionController extends Controller
         $title = $themeConfig['name'] ?? '';
         $versionMd5 = AppHelper::VERSION_MD5_16BIT;
 
-        return view($view, compact('params', 'fileUrls', 'lang', 'apps', 'languageStatus', 'languageMenus', 'defaultLanguage', 'title', 'versionMd5'));
+        return view('functions', compact('params', 'fileUrls', 'lang', 'apps', 'languageStatus', 'languageMenus', 'defaultLanguage', 'title', 'versionMd5'));
     }
 
     public function functions(Request $request, string $fskey)

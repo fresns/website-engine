@@ -16,6 +16,7 @@ use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class WebConfiguration
@@ -82,36 +83,11 @@ class WebConfiguration
             CacheHelper::put($ulid, $cacheKey, $cacheTags);
         }
 
-        $finder = app('view')->getFinder();
-        $finder->prependLocation(base_path("themes/{$themeFskey}"));
-        $this->loadLanguages();
+        View::addLocation(base_path("themes/{$themeFskey}"));
+
         $this->webLangTag();
 
         return $next($request);
-    }
-
-    public function loadLanguages()
-    {
-        $cacheKey = 'fresns_web_languages';
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        $supportedLocales = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($supportedLocales)) {
-            $menus = fs_config('language_menus') ?? [];
-
-            $supportedLocales = [];
-            foreach ($menus as $menu) {
-                if (! $menu['isEnabled']) {
-                    continue;
-                }
-                $supportedLocales[$menu['langTag']] = ['name' => $menu['langName']];
-            }
-
-            CacheHelper::put($supportedLocales, $cacheKey, $cacheTags);
-        }
-
-        app()->get('laravellocalization')->setSupportedLocales($supportedLocales);
     }
 
     public function webLangTag()

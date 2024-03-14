@@ -17,15 +17,6 @@ use Illuminate\Support\ServiceProvider;
 class WebsiteEngineServiceProvider extends ServiceProvider
 {
     /**
-     * Register the service provider.
-     */
-    public function register(): void
-    {
-        $this->registerViews();
-        $this->registerTranslations();
-    }
-
-    /**
      * Boot the application events.
      */
     public function boot(): void
@@ -89,6 +80,15 @@ class WebsiteEngineServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register the service provider.
+     */
+    public function register(): void
+    {
+        $this->registerViews();
+        $this->registerTranslations();
+    }
+
+    /**
      * Register Authenticator.
      */
     protected function registerAuthenticator(): void
@@ -107,7 +107,7 @@ class WebsiteEngineServiceProvider extends ServiceProvider
      */
     protected function registerViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__, 2).'/resources/views', 'FsTheme');
+        $this->loadViewsFrom(dirname(__DIR__, 2).'/resources/views', 'ThemeFunctions');
     }
 
     /**

@@ -130,7 +130,7 @@ if (! function_exists('fs_helpers')) {
 
 // fs_theme
 if (! function_exists('fs_theme')) {
-    function fs_theme(string $type): ?string
+    function fs_theme(string $type, ?string $fileInfo = null): ?string
     {
         $converted = Str::lower($type);
 
@@ -139,11 +139,13 @@ if (! function_exists('fs_theme')) {
             $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('website_engine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('website_engine_view_desktop');
         }
 
+        $version = PluginHelper::fresnsPluginVersionByFskey($themeFskey);
+
         $info = match ($converted) {
             'fskey' => $themeFskey,
-            'version' => PluginHelper::fresnsPluginVersionByFskey($themeFskey),
+            'version' => $version,
+            'assets' => $fileInfo ? "/assets/{$themeFskey}/{$fileInfo}?v={$version}" : "/assets/{$themeFskey}/",
             'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
-            'assets' => "/assets/{$themeFskey}/",
             default => null,
         };
 

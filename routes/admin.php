@@ -7,10 +7,11 @@
  */
 
 use Fresns\WebsiteEngine\Http\Controllers\ThemeFunctionController;
+use Fresns\WebsiteEngine\Http\Middleware\AdminConfiguration;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['panel', 'panelAuth'])->group(function () {
-    Route::name('theme-admin.')->prefix('fresns-theme')->group(function () {
+    Route::name('theme-admin.')->prefix('fresns-theme')->middleware(AdminConfiguration::class)->group(function () {
         Route::get('{fskey}/functions', [ThemeFunctionController::class, 'index'])->name('index');
     });
 
