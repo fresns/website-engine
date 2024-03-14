@@ -186,9 +186,6 @@ class ApiHelper
         $cookieNameUid = "{$cookiePrefix}uid";
         $cookieNameUidToken = "{$cookiePrefix}uid_token";
 
-        $now = now('UTC');
-        $nowTimestamp = strtotime($now);
-
         // headers
         $headers = [
             'Accept' => 'application/json',
@@ -204,7 +201,7 @@ class ApiHelper
             'X-Fresns-Uid' => Cookie::get($cookieNameUid),
             'X-Fresns-Uid-Token' => Cookie::get($cookieNameUidToken),
             'X-Fresns-Signature' => null,
-            'X-Fresns-Signature-Timestamp' => $nowTimestamp,
+            'X-Fresns-Signature-Timestamp' => time(),
         ];
         $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyConfig['appKey']);
 

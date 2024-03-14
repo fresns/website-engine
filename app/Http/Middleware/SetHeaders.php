@@ -43,9 +43,6 @@ class SetHeaders
         $cookieNameUid = "{$cookiePrefix}uid";
         $cookieNameUidToken = "{$cookiePrefix}uid_token";
 
-        $now = now('UTC');
-        $nowTimestamp = strtotime($now);
-
         $headers = [
             'X-Fresns-App-Id' => $keyInfo->app_id,
             'X-Fresns-Client-Platform-Id' => $keyInfo->platform_id,
@@ -59,7 +56,7 @@ class SetHeaders
             'X-Fresns-Uid' => Cookie::get($cookieNameUid),
             'X-Fresns-Uid-Token' => Cookie::get($cookieNameUidToken),
             'X-Fresns-Signature' => null,
-            'X-Fresns-Signature-Timestamp' => $nowTimestamp,
+            'X-Fresns-Signature-Timestamp' => time(),
         ];
         $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyInfo->app_key);
 
