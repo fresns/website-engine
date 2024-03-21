@@ -134,21 +134,42 @@ class ThemeFunctionController extends Controller
 
             $itemValue = $request->$itemKey;
 
-            if ($itemType == 'plugins') {
+            if ($itemType == 'plugins' && ($itemValue['code'] ?? [])) {
                 // $itemValue = [
                 //     [
-                //         'order' => '',
                 //         'code' => '',
+                //         'name' => '',
                 //         'fskey' => '',
+                //         'order' => '',
                 //     ]
                 // ];
 
-                usort($itemValue, function ($a, $b) {
+                $plugins = [];
+                foreach ($itemValue['code'] as $key => $code) {
+                    try {
+                        $nameString = $itemValue['name'][$key];
+
+                        $nameArr = json_decode($nameString, true);
+                    } catch (\Exception $e) {
+                        $nameArr = [];
+                    }
+
+                    $plugins[$code] = [
+                        'code' => $code,
+                        'name' => $nameArr,
+                        'fskey' => $itemValue['fskey'][$key] ?? '',
+                        'order' => $itemValue['order'][$key] ?? 9,
+                    ];
+                }
+
+                usort($plugins, function ($a, $b) {
                     $orderA = $a['order'] === '' ? 9 : (int) $a['order'];
                     $orderB = $b['order'] === '' ? 9 : (int) $b['order'];
 
                     return $orderA <=> $orderB;
                 });
+
+                $itemValue = $plugins;
             }
 
             if ($itemType == 'file' && $request->hasFile($itemKey)) {
