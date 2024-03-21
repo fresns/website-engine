@@ -182,7 +182,7 @@ class ThemeFunctionController extends Controller
 
                 if ($fresnsResp->isErrorResponse()) {
                     if (request()->ajax()) {
-                        return $fresnsResp->errorResponse();
+                        return $fresnsResp->getErrorResponse();
                     }
 
                     return back()->with('failure', $fresnsResp->getMessage());
