@@ -24,7 +24,7 @@ class ProfileController extends Controller
         }
 
         $query = $request->all();
-        $query['uidOrUsername'] = $uidOrUsername;
+        $query['users'] = $uidOrUsername;
 
         $results = UserInterface::detail($uidOrUsername, 'posts', 'posts', $query);
 
@@ -62,7 +62,7 @@ class ProfileController extends Controller
         }
 
         $query = $request->all();
-        $query['uidOrUsername'] = $uidOrUsername;
+        $query['users'] = $uidOrUsername;
 
         $results = UserInterface::detail($uidOrUsername, 'comments', 'comments', $query);
 

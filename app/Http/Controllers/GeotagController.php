@@ -203,7 +203,7 @@ class GeotagController extends Controller
     public function detail(Request $request, string $gtid, ?string $type = null)
     {
         $query = $request->all();
-        $query['gtid'] = $gtid;
+        $query['geotags'] = $gtid;
 
         $type = match ($type) {
             'posts' => 'posts',

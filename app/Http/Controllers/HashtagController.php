@@ -203,7 +203,7 @@ class HashtagController extends Controller
     public function detail(Request $request, string $htid, ?string $type = null)
     {
         $query = $request->all();
-        $query['htid'] = $htid;
+        $query['hashtags'] = $htid;
 
         $type = match ($type) {
             'posts' => 'posts',

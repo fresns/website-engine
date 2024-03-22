@@ -217,7 +217,7 @@ class GroupController extends Controller
     public function detail(Request $request, string $gid, ?string $type = null)
     {
         $query = $request->all();
-        $query['gid'] = $gid;
+        $query['groups'] = $gid;
 
         $type = match ($type) {
             'posts' => 'posts',
