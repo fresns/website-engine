@@ -91,9 +91,11 @@ class MeController extends Controller
     {
         $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
 
-        fs_account()->logout();
+        $result = ApiHelper::make()->delete('/api/fresns/v1/account/auth-token');
 
-        ApiHelper::make()->delete('/api/fresns/v1/account/logout');
+        if ($result['code'] == 0) {
+            fs_account()->logout();
+        }
 
         return redirect()->intended($redirectURL);
     }
