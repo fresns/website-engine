@@ -24,6 +24,8 @@ class ExceptionServiceProvider extends ServiceProvider
      */
     protected $dontReport = [
         ErrorException::class,
+        \App\Fresns\Api\Exceptions\ResponseException::class,
+        \Fresns\DTO\Exceptions\ResponseException::class,
     ];
 
     /**

@@ -101,7 +101,7 @@ class ApiHelper
         $data = json_decode($content, true) ?? [];
 
         if (empty($data)) {
-            info('empty response, ApiException: '.var_export($content, true));
+            // info('empty response, ApiException: '.var_export($content, true));
             throw new ErrorException($response?->getReasonPhrase(), $response?->getStatusCode());
         }
 
@@ -125,7 +125,7 @@ class ApiHelper
         }
 
         if (array_key_exists('code', $data) && $data['code'] != 0) {
-            info('error response, ApiException: '.var_export($content, true));
+            // info('error response, ApiException: '.var_export($content, true));
 
             $message = $data['message'] ?? $data['exception'] ?? '';
             if (empty($message)) {
