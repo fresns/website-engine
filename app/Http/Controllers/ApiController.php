@@ -97,7 +97,7 @@ class ApiController extends Controller
         $endpointPath = Str::of($path)->start('/')->toString();
 
         if (in_array($endpointPath, [
-            '/api/fresns/v1/common/file/uploads',
+            '/api/fresns/v1/common/file/upload',
             '/api/fresns/v1/editor/post/publish',
             '/api/fresns/v1/editor/comment/publish',
         ])) {
