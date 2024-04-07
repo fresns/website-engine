@@ -90,7 +90,7 @@ class ThemeFunctionController extends Controller
         // theme lang
         $lang = [];
         if ($functionLang) {
-            $panelLang = Cookie::get('fresns_panel_lang');
+            $panelLang = Cookie::get('fresns_panel_locale');
 
             $lang = $functionLang["{$panelLang}"] ?? head($functionLang);
         }
