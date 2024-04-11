@@ -10,6 +10,8 @@ namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Helpers\ConfigHelper;
 use Browser;
+use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
@@ -47,7 +49,23 @@ class PortalController extends Controller
             return redirect()->intended($redirectURL);
         }
 
-        return view('portal.login');
+        $loginToken = $request->loginToken;
+
+        if ($loginToken) {
+            $result = ApiHelper::make()->post('/api/fresns/v1/account/auth-token', [
+                'json' => [
+                    'loginToken' => $loginToken,
+                ],
+            ]);
+
+            if ($result['code'] == 0) {
+                DataHelper::accountAndUserCookie($result['data']['authToken']);
+
+                return redirect()->intended($redirectURL);
+            }
+        }
+
+        return view('portal.login', compact('redirectURL'));
     }
 
     public function private()
