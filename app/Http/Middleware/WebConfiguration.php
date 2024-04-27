@@ -106,6 +106,7 @@ class WebConfiguration
 
         if (! $languageStatus) {
             App::setLocale($defaultLangTag);
+
             return $defaultLangTag;
         }
 
@@ -117,6 +118,7 @@ class WebConfiguration
 
         if ($switchLang && in_array($switchLang, $supportedLanguages)) {
             $this->setLangTag($switchLang, $cookiePrefix);
+
             return $switchLang;
         }
 
@@ -125,6 +127,7 @@ class WebConfiguration
 
         if ($cookieLangTag) {
             App::setLocale($cookieLangTag, $cookiePrefix);
+
             return $cookieLangTag;
         }
 
@@ -142,12 +145,14 @@ class WebConfiguration
 
         if (! $firstLang) {
             $this->setLangTag($defaultLangTag, $cookiePrefix);
+
             return $defaultLangTag;
         }
 
         // The language tag are identical
         if (in_array($firstLang, $supportedLanguages)) {
             $this->setLangTag($firstLang, $cookiePrefix);
+
             return $firstLang;
         }
 
@@ -160,6 +165,7 @@ class WebConfiguration
 
             if (in_array($newFirstLang, $supportedLanguages)) {
                 $this->setLangTag($newFirstLang, $cookiePrefix);
+
                 return $newFirstLang;
             }
 
@@ -174,6 +180,7 @@ class WebConfiguration
             if ($allIntersect) {
                 $zhLocale = reset($allIntersect);
                 $this->setLangTag($zhLocale, $cookiePrefix);
+
                 return $zhLocale;
             }
         }
@@ -182,6 +189,7 @@ class WebConfiguration
         foreach ($supportedLanguages as $supportedLangTag) {
             if (Str::startsWith($supportedLangTag, $substrLang)) {
                 $this->setLangTag($supportedLangTag, $cookiePrefix);
+
                 return $supportedLangTag;
             }
         }
