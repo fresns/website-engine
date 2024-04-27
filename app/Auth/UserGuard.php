@@ -141,7 +141,7 @@ class UserGuard implements Guard
                     $result = ApiHelper::make()->get("/api/fresns/v1/user/{$uid}/detail");
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-                    CacheHelper::put($result, $cacheKey, $cacheTag, null, $cacheTime);
+                    CacheHelper::put($result, $cacheKey, $cacheTag, $cacheTime);
                 }
 
                 if ($result['code'] != 0) {
