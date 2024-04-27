@@ -7,7 +7,8 @@
     "homepage": "https://fresns.org",
     "support": {
         "issues": "https://github.com/fresns/website-engine/issues",
-        "source": "https://github.com/fresns/website-engine"
+        "source": "https://github.com/fresns/website-engine",
+        "docs": "https://docs.fresns.com/clients/sdk/theme/"
     },
     "authors": [
         {
@@ -17,9 +18,7 @@
             "role": "Creator"
         }
     ],
-    "require": {
-        "mcamara/laravel-localization": "^2.0"
-    },
+    "require": {},
     "require-dev": {},
     "autoload": {
         "psr-4": {
