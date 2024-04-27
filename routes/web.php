@@ -23,19 +23,13 @@ use Fresns\WebsiteEngine\Http\Controllers\TimelineController;
 use Fresns\WebsiteEngine\Http\Controllers\UserController;
 use Fresns\WebsiteEngine\Http\Middleware\AccountAuthorize;
 use Fresns\WebsiteEngine\Http\Middleware\CheckSiteModel;
-use Fresns\WebsiteEngine\Http\Middleware\SetHeaders;
 use Fresns\WebsiteEngine\Http\Middleware\UserAuthorize;
 use Fresns\WebsiteEngine\Http\Middleware\WebConfiguration;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 
-Route::prefix(LaravelLocalization::setLocale())
-    ->middleware([
+Route::middleware([
         'web',
-        SetHeaders::class,
-        LaravelLocalizationRedirectFilter::class,
         WebConfiguration::class,
         AccountAuthorize::class,
         UserAuthorize::class,
@@ -288,7 +282,7 @@ Route::prefix(LaravelLocalization::setLocale())
             Route::get('comment', [EditorController::class, 'comment'])->name('comment');
 
             // edit
-            // fs_route(route('fresns.editor.edit', ['type' => '', 'did' => '']))
+            // route('fresns.editor.edit', ['type' => '', 'did' => ''])
             Route::get('{type}/{did}', [EditorController::class, 'edit'])->name('edit');
         });
     });

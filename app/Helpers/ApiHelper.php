@@ -64,10 +64,11 @@ class ApiHelper
 
     public function getBaseUri(): ?string
     {
-        $localApiHost = config('app.url');
-        $remoteApiHost = ConfigHelper::fresnsConfigByItemKey('website_engine_api_host');
+        $apiHost = config('app.url');
 
-        $apiHost = is_local_api() ? $localApiHost : $remoteApiHost;
+        if (is_remote_api()) {
+            $apiHost = ConfigHelper::fresnsConfigByItemKey('website_engine_api_host');
+        }
 
         return $apiHost;
     }
@@ -188,7 +189,6 @@ class ApiHelper
 
         // headers
         $headers = [
-            'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
             'X-Fresns-Client-Version' => fs_theme('version'),

@@ -14,7 +14,6 @@ use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
@@ -23,7 +22,7 @@ class ApiController extends Controller
     // make access token
     public function makeAccessToken(): JsonResponse
     {
-        $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
+        $headers = ApiHelper::getHeaders();
 
         $accessToken = urlencode(base64_encode(json_encode($headers)));
 
@@ -46,6 +45,9 @@ class ApiController extends Controller
             '/api/fresns/v1/global/status',
             '/api/fresns/v1/global/configs',
             '/api/fresns/v1/global/language-pack',
+            '/api/fresns/v1/global/channels',
+            '/api/fresns/v1/global/post/content-types',
+            '/api/fresns/v1/global/comment/content-types',
             '/api/fresns/v1/global/stickers',
         ])) {
             $data = match ($endpointPath) {
@@ -53,7 +55,10 @@ class ApiController extends Controller
                 '/api/fresns/v1/global/status' => fs_status(),
                 '/api/fresns/v1/global/configs' => fs_config(),
                 '/api/fresns/v1/global/language-pack' => fs_lang(),
-                '/api/fresns/v1/global/stickers' => fs_stickers(),
+                '/api/fresns/v1/global/channels' => fs_channels(),
+                '/api/fresns/v1/global/post/content-types' => fs_content_types('post'),
+                '/api/fresns/v1/global/comment/content-types' => fs_content_types('comment'),
+                '/api/fresns/v1/global/stickers' => fs_editor_stickers(),
             };
 
             return Response::json([
@@ -152,7 +157,7 @@ class ApiController extends Controller
         }
 
         // success
-        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->redirectURL ?? route('fresns.home');
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
@@ -180,7 +185,7 @@ class ApiController extends Controller
         }
 
         // success
-        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->redirectURL ?? route('fresns.home');
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
@@ -208,7 +213,7 @@ class ApiController extends Controller
         }
 
         // success
-        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->redirectURL ?? route('fresns.home');
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }
@@ -236,7 +241,7 @@ class ApiController extends Controller
         }
 
         // success
-        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->redirectURL ?? route('fresns.home');
 
         return redirect()->intended($redirectURL)->with('success', $result['message']);
     }

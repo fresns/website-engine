@@ -89,7 +89,7 @@ class MeController extends Controller
     // logout
     public function logout(Request $request)
     {
-        $redirectURL = $request->get('redirectURL') ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->get('redirectURL') ?? route('fresns.home');
 
         $result = ApiHelper::make()->delete('/api/fresns/v1/account/auth-token');
 

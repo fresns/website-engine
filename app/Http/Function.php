@@ -17,7 +17,6 @@ use Fresns\WebsiteEngine\Helpers\DataHelper;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 // is_local_api
 if (! function_exists('is_local_api')) {
@@ -72,7 +71,7 @@ if (! function_exists('fs_status')) {
                 ];
             }
 
-            CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, now()->addMinutes(10));
+            CacheHelper::put($statusJson, $cacheKey, $cacheTags, 10, 10);
         }
 
         if (empty($key)) {
@@ -80,51 +79,6 @@ if (! function_exists('fs_status')) {
         }
 
         return $statusJson[$key] ?? null;
-    }
-}
-
-// fs_route
-if (! function_exists('fs_route')) {
-    function fs_route(?string $url = null, string|bool $locale = null): string
-    {
-        return LaravelLocalization::localizeUrl($url, $locale);
-    }
-}
-
-// fs_helpers
-if (! function_exists('fs_helpers')) {
-    function fs_helpers(string $helper, string $method, mixed $data = null, ?array $options = []): mixed
-    {
-        $helperData = null;
-
-        $helper = Str::lower($helper);
-        $method = Str::lower($method);
-
-        switch ($helper) {
-            case 'arr':
-                $availableMethod = match ($method) {
-                    'get' => 'get',
-                    'forget' => 'forget',
-                    'pull' => 'pull',
-                    default => null,
-                };
-
-                $key = $options['key'] ?? null;
-                $values = $options['values'] ?? null;
-                $asArray = $options['asArray'] ?? true;
-
-                if (empty($availableMethod) || empty($key) || empty($values)) {
-                    return [];
-                }
-
-                $helperData = ArrUtility::$availableMethod($data, $key, $values, $asArray);
-                break;
-
-            default:
-                $helperData = null;
-        }
-
-        return $helperData;
     }
 }
 
@@ -146,7 +100,7 @@ if (! function_exists('fs_theme')) {
             'version' => $version,
             'assets' => $info ? "/assets/{$themeFskey}/{$info}?v={$version}" : "/assets/{$themeFskey}/",
             'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
-            'login' => urlencode(fs_route(route('fresns.login', ['loginToken' => '{loginToken}', 'redirectURL' => $info]))),
+            'login' => urlencode(route('fresns.login', ['loginToken' => '{loginToken}', 'redirectURL' => $info])),
             default => null,
         };
     }
@@ -169,7 +123,7 @@ if (! function_exists('fs_config')) {
             $configs = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, $cacheTime);
         }
 
         if (empty($itemKey)) {
@@ -197,7 +151,7 @@ if (! function_exists('fs_lang')) {
             $languages = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
-            CacheHelper::put($languages, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($languages, $cacheKey, $cacheTags, $cacheTime);
         }
 
         if (empty($langKey)) {
@@ -235,113 +189,10 @@ if (! function_exists('fs_channels')) {
 
             $channels = data_get($result, 'data');
 
-            CacheHelper::put($channels, $cacheKey, $cacheTag, 5, now()->addMinutes(5));
+            CacheHelper::put($channels, $cacheKey, $cacheTag, 5, 5);
         }
 
         return $channels ?? [];
-    }
-}
-
-// fs_post_editor
-if (! function_exists('fs_post_editor')) {
-    function fs_post_editor(?string $key = null): mixed
-    {
-        if (fs_user()->guest()) {
-            return null;
-        }
-
-        $uid = fs_user('detail.uid');
-        $langTag = fs_theme('lang');
-
-        $cacheKey = "fresns_web_post_editor_configs_{$uid}_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // get cache
-        $configs = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($configs)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/editor/post/configs');
-
-            $configs = data_get($result, 'data');
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
-        }
-
-        if ($key) {
-            return data_get($configs['editor'], $key);
-        }
-
-        return $configs['editor'];
-    }
-}
-
-// fs_comment_editor
-if (! function_exists('fs_comment_editor')) {
-    function fs_comment_editor(?string $key = null): mixed
-    {
-        if (fs_user()->guest()) {
-            return null;
-        }
-
-        $uid = fs_user('detail.uid');
-        $langTag = fs_theme('lang');
-
-        $cacheKey = "fresns_web_comment_editor_configs_{$uid}_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // get cache
-        $configs = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($configs)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/editor/comment/configs');
-
-            $configs = data_get($result, 'data');
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
-        }
-
-        if ($key) {
-            return data_get($configs['editor'], $key);
-        }
-
-        return $configs['editor'];
-    }
-}
-
-// fs_stickers
-if (! function_exists('fs_stickers')) {
-    function fs_stickers(): ?array
-    {
-        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
-            return [];
-        }
-
-        $langTag = fs_theme('lang');
-
-        $cacheKey = "fresns_web_stickers_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // is known to be empty
-        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
-        if ($isKnownEmpty) {
-            return [];
-        }
-
-        // get cache
-        $listArr = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($listArr)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/stickers');
-
-            $listArr = data_get($result, 'data', []);
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($listArr, $cacheKey, $cacheTags, null, $cacheTime);
-        }
-
-        return $listArr ?? [];
     }
 }
 
@@ -443,16 +294,16 @@ if (! function_exists('fs_user')) {
 
 // fs_user_overview
 if (! function_exists('fs_user_overview')) {
-    function fs_user_overview(?string $key = null, mixed $uidOrUsername = null): mixed
+    function fs_user_overview(?string $key = null, int|string|null $uidOrUsername = null): mixed
     {
         if (fs_user()->guest()) {
             return null;
         }
 
         $langTag = fs_theme('lang');
-        $uid = $uidOrUsername ?? fs_user('detail.uid');
+        $id = $uidOrUsername ?: fs_user('detail.uid');
 
-        $cacheKey = "fresns_web_user_overview_{$uid}_{$langTag}";
+        $cacheKey = "fresns_web_user_overview_{$id}_{$langTag}";
         $cacheTag = 'fresnsWeb';
 
         $userOverview = CacheHelper::get($cacheKey, $cacheTag);
@@ -460,13 +311,13 @@ if (! function_exists('fs_user_overview')) {
         if (empty($userOverview)) {
             $result = ApiHelper::make()->get('/api/fresns/v1/user/overview', [
                 'query' => [
-                    'uidOrUsername' => $uid,
+                    'uidOrUsername' => $id,
                 ],
             ]);
 
             $userOverview = data_get($result, 'data');
 
-            CacheHelper::put($userOverview, $cacheKey, $cacheTag, null, now()->addMinutes());
+            CacheHelper::put($userOverview, $cacheKey, $cacheTag, 1);
         }
 
         if ($key) {
@@ -474,5 +325,113 @@ if (! function_exists('fs_user_overview')) {
         }
 
         return $userOverview;
+    }
+}
+
+// fs_editor_post
+if (! function_exists('fs_editor_post')) {
+    function fs_editor_post(?string $key = null): mixed
+    {
+        if (fs_user()->guest()) {
+            return null;
+        }
+
+        $configs = DataHelper::getEditorConfigs('post');
+
+        if ($key) {
+            return data_get($configs['editor'], $key);
+        }
+
+        return $configs['editor'];
+    }
+}
+
+// fs_editor_comment
+if (! function_exists('fs_editor_comment')) {
+    function fs_editor_comment(?string $key = null): mixed
+    {
+        if (fs_user()->guest()) {
+            return null;
+        }
+
+        $configs = DataHelper::getEditorConfigs('comment');
+
+        if ($key) {
+            return data_get($configs['editor'], $key);
+        }
+
+        return $configs['editor'];
+    }
+}
+
+// fs_editor_stickers
+if (! function_exists('fs_editor_stickers')) {
+    function fs_editor_stickers(): ?array
+    {
+        if (fs_config('site_mode') == 'private' && fs_user()->guest()) {
+            return [];
+        }
+
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_editor_stickers_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // is known to be empty
+        $isKnownEmpty = CacheHelper::isKnownEmpty($cacheKey);
+        if ($isKnownEmpty) {
+            return [];
+        }
+
+        // get cache
+        $listArr = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($listArr)) {
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/stickers');
+
+            $listArr = data_get($result, 'data', []);
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($listArr, $cacheKey, $cacheTags, $cacheTime);
+        }
+
+        return $listArr ?? [];
+    }
+}
+
+// fs_helpers
+if (! function_exists('fs_helpers')) {
+    function fs_helpers(string $helper, string $method, mixed $data = null, ?array $options = []): mixed
+    {
+        $helperData = null;
+
+        $helper = Str::lower($helper);
+        $method = Str::lower($method);
+
+        switch ($helper) {
+            case 'arr':
+                $availableMethod = match ($method) {
+                    'get' => 'get',
+                    'forget' => 'forget',
+                    'pull' => 'pull',
+                    default => null,
+                };
+
+                $key = $options['key'] ?? null;
+                $values = $options['values'] ?? null;
+                $asArray = $options['asArray'] ?? true;
+
+                if (empty($availableMethod) || empty($key) || empty($values)) {
+                    return [];
+                }
+
+                $helperData = ArrUtility::$availableMethod($data, $key, $values, $asArray);
+                break;
+
+            default:
+                $helperData = null;
+        }
+
+        return $helperData;
     }
 }

@@ -36,10 +36,10 @@ class EditorController extends Controller
                 return redirect()->to($pluginUrl);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [
+            return redirect()->to(route('fresns.editor.edit', [
                 'type' => 'post',
                 'did' => $did,
-            ])));
+            ]));
         }
 
         // edit published post
@@ -55,10 +55,10 @@ class EditorController extends Controller
                 return redirect()->to($pluginUrl);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [
+            return redirect()->to(route('fresns.editor.edit', [
                 'type' => 'post',
                 'did' => $did,
-            ])));
+            ]));
         }
 
         // drafts
@@ -85,32 +85,16 @@ class EditorController extends Controller
                 return redirect()->to($pluginUrl);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [
+            return redirect()->to(route('fresns.editor.edit', [
                 'type' => 'post',
                 'did' => $did,
-            ])));
+            ]));
         }
 
         $type = 'post';
 
         // editor configs
-        $uid = fs_user('detail.uid');
-        $langTag = fs_theme('lang');
-
-        $cacheKey = "fresns_web_post_editor_configs_{$uid}_{$langTag}";
-        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
-
-        // get cache
-        $configs = CacheHelper::get($cacheKey, $cacheTags);
-
-        if (empty($configs)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/editor/post/configs');
-
-            $configs = data_get($result, 'data');
-
-            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
-        }
+        $configs = DataHelper::getEditorConfigs('post');
 
         return view('editor.index', compact('type', 'configs', 'drafts'));
     }
@@ -133,10 +117,10 @@ class EditorController extends Controller
                 return redirect()->to($pluginUrl);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [
+            return redirect()->to(route('fresns.editor.edit', [
                 'type' => 'comment',
                 'did' => $did,
-            ])));
+            ]));
         }
 
         // edit published comment
@@ -152,10 +136,10 @@ class EditorController extends Controller
                 return redirect()->to($pluginUrl);
             }
 
-            return redirect()->to(fs_route(route('fresns.editor.edit', [
+            return redirect()->to(route('fresns.editor.edit', [
                 'type' => 'comment',
                 'did' => $did,
-            ])));
+            ]));
         }
 
         // new draft
@@ -182,10 +166,10 @@ class EditorController extends Controller
             return redirect()->to($pluginUrl);
         }
 
-        return redirect()->to(fs_route(route('fresns.editor.edit', [
+        return redirect()->to(route('fresns.editor.edit', [
             'type' => 'comment',
             'did' => $did,
-        ])));
+        ]));
     }
 
     // edit
@@ -215,7 +199,7 @@ class EditorController extends Controller
             $configs = data_get($result, 'data');
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
-            CacheHelper::put($configs, $cacheKey, $cacheTags, null, $cacheTime);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, $cacheTime);
         }
 
         // draft

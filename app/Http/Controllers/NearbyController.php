@@ -23,8 +23,8 @@ class NearbyController extends Controller
         $channelType = fs_config('channel_nearby_type');
 
         $redirectURL = match ($channelType) {
-            'posts' => fs_route(route('fresns.nearby.posts')),
-            'comments' => fs_route(route('fresns.nearby.comments')),
+            'posts' => route('fresns.nearby.posts'),
+            'comments' => route('fresns.nearby.comments'),
         };
 
         return redirect()->intended($redirectURL);

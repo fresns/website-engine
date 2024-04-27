@@ -22,8 +22,8 @@ class TimelineController extends Controller
         $channelType = fs_config('channel_timeline_type');
 
         $redirectURL = match ($channelType) {
-            'posts' => fs_route(route('fresns.timeline.posts')),
-            'comments' => fs_route(route('fresns.timeline.comments')),
+            'posts' => route('fresns.timeline.posts'),
+            'comments' => route('fresns.timeline.comments'),
         };
 
         return redirect()->intended($redirectURL);

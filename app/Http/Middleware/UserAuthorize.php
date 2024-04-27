@@ -28,12 +28,12 @@ class UserAuthorize
 
                 $redirectURL = url()->current();
 
-                return redirect()->to(fs_route(route('fresns.login', ['redirectURL' => $redirectURL])))->withErrors($userLoginTip); //FsLang
+                return redirect()->to(route('fresns.login', ['redirectURL' => $redirectURL]))->withErrors($userLoginTip); //FsLang
             }
         } catch (\Exception $exception) {
             $redirectURL = url()->current();
 
-            return redirect()->to(fs_route(route('fresns.login', ['redirectURL' => $redirectURL])))->withErrors($exception->getMessage());
+            return redirect()->to(route('fresns.login', ['redirectURL' => $redirectURL]))->withErrors($exception->getMessage());
         }
     }
 }

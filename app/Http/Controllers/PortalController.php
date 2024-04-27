@@ -43,7 +43,7 @@ class PortalController extends Controller
 
     public function login(Request $request)
     {
-        $redirectURL = $request->redirectURL ?? fs_route(route('fresns.home'));
+        $redirectURL = $request->redirectURL ?? route('fresns.home');
 
         if (fs_user()->check()) {
             return redirect()->intended($redirectURL);
@@ -76,7 +76,7 @@ class PortalController extends Controller
     public function customPage(string $name)
     {
         if ($name == 'index') {
-            return redirect(fs_route(route('fresns.portal')));
+            return redirect(route('fresns.portal'));
         }
 
         if (in_array($name, [
@@ -85,7 +85,7 @@ class PortalController extends Controller
             'login',
             'private',
         ])) {
-            return redirect(fs_route(route("fresns.{$name}")));
+            return redirect(route("fresns.{$name}"));
         }
 
         $viewName = "portal.{$name}";

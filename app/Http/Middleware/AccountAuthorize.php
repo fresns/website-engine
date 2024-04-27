@@ -41,7 +41,7 @@ class AccountAuthorize
         } else {
             $redirectURL = url()->current();
 
-            return redirect(fs_route(route('fresns.login', ['redirectURL' => $redirectURL])))->withErrors($message);
+            return redirect(route('fresns.login', ['redirectURL' => $redirectURL]))->withErrors($message);
         }
     }
 }

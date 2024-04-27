@@ -42,29 +42,7 @@ class DataHelper
         Cookie::queue($cookieNameUid, $uid, $userTokenMinutes);
         Cookie::queue($cookieNameUidToken, $uidToken, $userTokenMinutes);
 
-        DataHelper::cacheForgetAccountAndUser();
-
-        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$aid}", 'fresnsWeb');
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$uid}", 'fresnsWeb');
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_overview_{$uid}", 'fresnsWeb');
-        CacheHelper::forgetFresnsMultilingual("fresns_web_channels_{$uid}", 'fresnsWeb');
-        CacheHelper::forgetFresnsMultilingual("fresns_web_post_editor_configs_{$uid}", ['fresnsWeb', 'fresnsWebConfigs']);
-        CacheHelper::forgetFresnsMultilingual("fresns_web_comment_editor_configs_{$uid}", ['fresnsWeb', 'fresnsWebConfigs']);
-
-        $channelArr = [
-            'user',
-            'group',
-            'hashtag',
-            'geotag',
-            'post',
-            'comment',
-        ];
-
-        foreach ($channelArr as $channel) {
-            // fresns_web_content_{$channel}_{$type}_by_{$uid}_{$langTag}
-            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_home_by_{$uid}", 'fresnsWeb');
-            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_list_by_{$uid}", 'fresnsWeb');
-        }
+        DataHelper::cacheForgetAccountAndUser($aid, $uid);
     }
 
     // get api data
@@ -131,6 +109,30 @@ class DataHelper
         return $pluginUrl;
     }
 
+    // get editor configs
+    public static function getEditorConfigs(string $type): array
+    {
+        $uid = fs_user('detail.uid');
+        $langTag = fs_theme('lang');
+
+        $cacheKey = "fresns_web_editor_{$type}_configs_{$uid}_{$langTag}";
+        $cacheTags = ['fresnsWeb', 'fresnsWebConfigs'];
+
+        // get cache
+        $configs = CacheHelper::get($cacheKey, $cacheTags);
+
+        if (empty($configs)) {
+            $result = ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/configs");
+
+            $configs = data_get($result, 'data');
+
+            $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_IMAGE);
+            CacheHelper::put($configs, $cacheKey, $cacheTags, $cacheTime);
+        }
+
+        return $configs;
+    }
+
     // get fresns content list
     public static function getFresnsContentList(string $channel, string $type): ?array
     {
@@ -187,7 +189,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTag, $cacheTime);
         }
 
         return $listArr ?? [];
@@ -230,7 +232,7 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTag, $cacheTime);
         }
 
         return $listArr ?? [];
@@ -264,21 +266,42 @@ class DataHelper
             $listArr = data_get($result, 'data.list', []);
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 360);
-            CacheHelper::put($listArr, $cacheKey, $cacheTag, null, $cacheTime);
+            CacheHelper::put($listArr, $cacheKey, $cacheTag, $cacheTime);
         }
 
         return $listArr ?? [];
     }
 
     // cache forget account and user
-    public static function cacheForgetAccountAndUser()
+    public static function cacheForgetAccountAndUser(?string $aid = null, ?int $uid = null)
     {
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
-        $aid = Cookie::get("{$cookiePrefix}aid");
-        $uid = Cookie::get("{$cookiePrefix}uid");
+        $currentAid = $aid ?: Cookie::get("{$cookiePrefix}aid");
+        $currentUid = $uid ?: Cookie::get("{$cookiePrefix}uid");
 
-        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$aid}", 'fresnsWeb');
-        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$uid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$currentAid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$currentUid}", 'fresnsWeb');
+        CacheHelper::forgetFresnsMultilingual("fresns_web_user_overview_{$currentUid}", 'fresnsWeb');
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_channels_{$currentUid}", 'fresnsWeb');
+
+        CacheHelper::forgetFresnsMultilingual("fresns_web_editor_post_configs_{$currentUid}", ['fresnsWeb', 'fresnsWebConfigs']);
+        CacheHelper::forgetFresnsMultilingual("fresns_web_editor_comment_configs_{$currentUid}", ['fresnsWeb', 'fresnsWebConfigs']);
+
+        $channelArr = [
+            'user',
+            'group',
+            'hashtag',
+            'geotag',
+            'post',
+            'comment',
+        ];
+
+        foreach ($channelArr as $channel) {
+            // fresns_web_content_{$channel}_{$type}_by_{$uid}_{$langTag}
+            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_home_by_{$currentUid}", 'fresnsWeb');
+            CacheHelper::forgetFresnsMultilingual("fresns_web_content_{$channel}_list_by_{$currentUid}", 'fresnsWeb');
+        }
     }
 }
