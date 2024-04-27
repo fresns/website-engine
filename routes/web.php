@@ -29,12 +29,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 Route::middleware([
-        'web',
-        WebConfiguration::class,
-        AccountAuthorize::class,
-        UserAuthorize::class,
-        CheckSiteModel::class,
-    ])
+    'web',
+    WebConfiguration::class,
+    AccountAuthorize::class,
+    UserAuthorize::class,
+    CheckSiteModel::class,
+])
     ->group(function () {
         $configs = ConfigHelper::fresnsConfigByItemKeys([
             'default_homepage',
