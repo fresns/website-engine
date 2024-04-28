@@ -16,6 +16,7 @@ use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
 // is_local_api
@@ -86,20 +87,19 @@ if (! function_exists('fs_status')) {
 if (! function_exists('fs_theme')) {
     function fs_theme(string $type, ?string $info = null): ?string
     {
-        $converted = Str::lower($type);
-
         $themeFskey = null;
-        if ($converted != 'lang') {
+        if ($type != 'lang') {
             $themeFskey = Browser::isMobile() ? ConfigHelper::fresnsConfigByItemKey('website_engine_view_mobile') : ConfigHelper::fresnsConfigByItemKey('website_engine_view_desktop');
         }
 
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $version = PluginHelper::fresnsPluginVersionByFskey($themeFskey);
 
-        return match ($converted) {
+        return match ($type) {
             'fskey' => $themeFskey,
             'version' => $version,
             'assets' => $info ? "/assets/{$themeFskey}/{$info}?v={$version}" : "/assets/{$themeFskey}/",
-            'lang' => App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
+            'lang' => Cookie::get("{$cookiePrefix}lang_tag") ?? App::getLocale() ?? ConfigHelper::fresnsConfigByItemKey('default_language'),
             'login' => urlencode(route('fresns.login', ['loginToken' => '{loginToken}', 'redirectURL' => $info])),
             default => null,
         };
