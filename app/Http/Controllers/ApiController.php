@@ -8,12 +8,14 @@
 
 namespace Fresns\WebsiteEngine\Http\Controllers;
 
+use App\Helpers\ConfigHelper;
 use App\Utilities\ConfigUtility;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
@@ -22,7 +24,10 @@ class ApiController extends Controller
     // make access token
     public function makeAccessToken(): JsonResponse
     {
+        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
+
         $headers = ApiHelper::getHeaders();
+        $headers['X-Fresns-Client-Lang-Tag'] = Cookie::get("{$cookiePrefix}lang_tag", fs_theme('lang'));
 
         $accessToken = urlencode(base64_encode(json_encode($headers)));
 
