@@ -182,6 +182,8 @@ class ApiHelper
         // cookie key name
         $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
 
+        $cookieNameLangTag = "{$cookiePrefix}lang_tag";
+
         $cookieNameAid = "{$cookiePrefix}aid";
         $cookieNameAidToken = "{$cookiePrefix}aid_token";
         $cookieNameUid = "{$cookiePrefix}uid";
@@ -194,7 +196,7 @@ class ApiHelper
             'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => Cookie::get('fresns_timezone'),
-            'X-Fresns-Client-Lang-Tag' => Cookie::get('fresns_lang_tag'),
+            'X-Fresns-Client-Lang-Tag' => Cookie::get($cookieNameLangTag),
             'X-Fresns-Client-Content-Format' => null,
             'X-Fresns-Aid' => Cookie::get($cookieNameAid),
             'X-Fresns-Aid-Token' => Cookie::get($cookieNameAidToken),
