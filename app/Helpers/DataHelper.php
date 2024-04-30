@@ -33,16 +33,25 @@ class DataHelper
         $aidToken = $authToken['aidToken'];
         $uid = $authToken['uid'];
         $uidToken = $authToken['uidToken'];
-        $expiredHours = $authToken['expiredHours'] ?? 8760;
-
-        $userTokenMinutes = $expiredHours * 60;
-
-        Cookie::queue($cookieNameAid, $aid, $userTokenMinutes);
-        Cookie::queue($cookieNameAidToken, $aidToken, $userTokenMinutes);
-        Cookie::queue($cookieNameUid, $uid, $userTokenMinutes);
-        Cookie::queue($cookieNameUidToken, $uidToken, $userTokenMinutes);
+        $expiredHours = $authToken['expiredHours'];
 
         DataHelper::cacheForgetAccountAndUser($aid, $uid);
+
+        if (empty($expiredHours)) {
+            Cookie::queue(Cookie::forever($cookieNameAid, $aid, '/'));
+            Cookie::queue(Cookie::forever($cookieNameAidToken, $aidToken, '/'));
+            Cookie::queue(Cookie::forever($cookieNameUid, $uid, '/'));
+            Cookie::queue(Cookie::forever($cookieNameUidToken, $uidToken, '/'));
+
+            return;
+        }
+
+        $cookieMinutes = $expiredHours * 60;
+
+        Cookie::queue($cookieNameAid, $aid, $cookieMinutes);
+        Cookie::queue($cookieNameAidToken, $aidToken, $cookieMinutes);
+        Cookie::queue($cookieNameUid, $uid, $cookieMinutes);
+        Cookie::queue($cookieNameUidToken, $uidToken, $cookieMinutes);
     }
 
     // get api data

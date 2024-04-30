@@ -204,7 +204,7 @@ class WebConfiguration
     {
         App::setLocale($langTag);
 
-        Cookie::queue("{$cookiePrefix}lang_tag", $langTag);
+        Cookie::queue(Cookie::forever("{$cookiePrefix}lang_tag", $langTag, '/', null, false, false));
     }
 
     public function setHeaders(Request $request, string $langTag)
