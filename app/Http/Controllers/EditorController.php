@@ -27,8 +27,6 @@ class EditorController extends Controller
 
         // edit draft
         if ($did) {
-            $result = MeInterface::getDraftDetail('post', $did);
-
             // post_editor_service
             if (fs_config('post_editor_service')) {
                 $pluginUrl = DataHelper::getEditorUrl(fs_config('post_editor_service'), 'post', $did, $pid);
@@ -46,7 +44,13 @@ class EditorController extends Controller
         if ($pid) {
             $postResponse = ApiHelper::make()->post("/api/fresns/v1/editor/post/edit/{$pid}");
 
-            $did = $postResponse['data']['detail']['did'];
+            $did = $postResponse['data']['detail']['did'] ?? null;
+
+            if (empty($did)) {
+                $errorMessage = ConfigUtility::getCodeMessage(38100, 'Fresns', fs_theme('lang'));
+
+                throw new ErrorException($errorMessage, 38100);
+            }
 
             // post_editor_service
             if (fs_config('post_editor_service')) {
@@ -76,7 +80,13 @@ class EditorController extends Controller
                 ],
             ]);
 
-            $did = $response['data']['detail']['did'];
+            $did = $response['data']['detail']['did'] ?? null;
+
+            if (empty($did)) {
+                $errorMessage = ConfigUtility::getCodeMessage(38100, 'Fresns', fs_theme('lang'));
+
+                throw new ErrorException($errorMessage, 38100);
+            }
 
             // post_editor_service
             if (fs_config('post_editor_service')) {
@@ -108,8 +118,6 @@ class EditorController extends Controller
 
         // edit draft
         if ($did) {
-            $result = MeInterface::getDraftDetail('comment', $did);
-
             // comment_editor_service
             if (fs_config('comment_editor_service')) {
                 $pluginUrl = DataHelper::getEditorUrl(fs_config('comment_editor_service'), 'comment', $did, $pid);
@@ -127,7 +135,13 @@ class EditorController extends Controller
         if ($cid) {
             $commentResponse = ApiHelper::make()->post("/api/fresns/v1/editor/comment/edit/{$cid}");
 
-            $did = $commentResponse['data']['detail']['did'];
+            $did = $commentResponse['data']['detail']['did'] ?? null;
+
+            if (empty($did)) {
+                $errorMessage = ConfigUtility::getCodeMessage(38100, 'Fresns', fs_theme('lang'));
+
+                throw new ErrorException($errorMessage, 38100);
+            }
 
             // comment_editor_service
             if (fs_config('comment_editor_service')) {
@@ -157,7 +171,13 @@ class EditorController extends Controller
             ],
         ]);
 
-        $did = $response['data']['detail']['did'];
+        $did = $response['data']['detail']['did'] ?? null;
+
+        if (empty($did)) {
+            $errorMessage = ConfigUtility::getCodeMessage(38100, 'Fresns', fs_theme('lang'));
+
+            throw new ErrorException($errorMessage, 38100);
+        }
 
         // comment_editor_service
         if (fs_config('comment_editor_service')) {
@@ -203,9 +223,9 @@ class EditorController extends Controller
         }
 
         // draft
-        $result = MeInterface::getDraftDetail($type, $did);
+        $draftDetail = MeInterface::getDraftDetail($type, $did);
 
-        $draft = $result['data'];
+        $draft = $draftDetail['data'];
 
         return view('editor.edit', compact('type', 'configs', 'draft'));
     }
