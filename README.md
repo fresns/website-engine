@@ -25,5 +25,5 @@ composer require fresns/website-engine
 
 ## Reference
 
-- [https://docs.fresns.com/clients/theme/](https://docs.fresns.com/clients/theme/)
+- [https://docs.fresns.com/clients/sdk/theme/](https://docs.fresns.com/clients/sdk/theme/)
 - [https://github.com/fresns/client-website-themes](https://github.com/fresns/client-website-themes)
