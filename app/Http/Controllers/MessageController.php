@@ -82,10 +82,9 @@ class MessageController extends Controller
     }
 
     // notification
-    public function notifications(Request $request, ?string $types = null)
+    public function notifications(Request $request)
     {
         $query = $request->all();
-        $query['types'] = $types;
 
         $result = MessageInterface::notifications($query);
 
@@ -108,6 +107,6 @@ class MessageController extends Controller
             pagination: $result['data']['pagination'],
         );
 
-        return view('messages.notifications', compact('notifications', 'types'));
+        return view('messages.notifications', compact('notifications'));
     }
 }
