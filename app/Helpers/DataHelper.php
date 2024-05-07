@@ -189,13 +189,21 @@ class DataHelper
                 $queryType = $channel.'_list';
             }
 
-            $queryConfig = QueryHelper::configToQuery($queryType);
+            $channelGroupType = ConfigHelper::fresnsConfigByItemKey('channel_group_type');
 
-            $result = ApiHelper::make()->get("/api/fresns/v1/{$channel}/list", [
-                'query' => $queryConfig,
-            ]);
+            if ($channel == 'group' && $type == 'home' && $channelGroupType == 'tree') {
+                $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
 
-            $listArr = data_get($result, 'data.list', []);
+                $listArr = data_get($result, 'data', []);
+            } else {
+                $queryConfig = QueryHelper::configToQuery($queryType);
+
+                $result = ApiHelper::make()->get("/api/fresns/v1/{$channel}/list", [
+                    'query' => $queryConfig,
+                ]);
+
+                $listArr = data_get($result, 'data.list', []);
+            }
 
             $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL, 60);
             CacheHelper::put($listArr, $cacheKey, $cacheTag, $cacheTime);
