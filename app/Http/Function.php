@@ -144,7 +144,11 @@ if (! function_exists('fs_lang')) {
         $languages = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($languages)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/language-pack');
+            $result = ApiHelper::make()->get('/api/fresns/v1/global/language-pack', [
+                'query' => [
+                    'langTag' => $langTag,
+                ],
+            ]);
 
             $languages = data_get($result, 'data');
 
