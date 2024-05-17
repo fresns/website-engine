@@ -8,6 +8,7 @@
 
 namespace Fresns\WebsiteEngine\Http\Controllers;
 
+use App\Helpers\CacheHelper;
 use App\Utilities\ConfigUtility;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
@@ -198,6 +199,17 @@ class ApiController extends Controller
         $result = ApiHelper::make()->patch($endpointPath, [
             'json' => $request->all(),
         ]);
+
+        // User Cache
+        $uid = fs_user('detail.uid');
+        $username = fs_user('detail.username');
+        if ($result['code'] == 0 && in_array($endpointPath, [
+            '/api/fresns/v1/notification/read-status',
+            "/api/fresns/v1/conversation/{$uid}/read-status",
+            "/api/fresns/v1/conversation/{$username}/read-status",
+        ])) {
+            CacheHelper::forgetFresnsMultilingual("fresns_web_user_overview_{$uid}", 'fresnsWeb');
+        }
 
         // ajax
         if ($request->ajax()) {
