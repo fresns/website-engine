@@ -111,6 +111,10 @@ class ThemeFunctionController extends Controller
         $languageMenus = $langConfigs->where('item_key', 'language_menus')->first()?->item_value ?? [];
         $defaultLanguage = $langConfigs->where('item_key', 'default_language')->first()?->item_value ?? config('app.locale');
 
+        if (! $languageStatus) {
+            $languageMenus = collect($languageMenus)->where('langTag', $defaultLanguage)->all();
+        }
+
         // views
         $title = $themeConfig['name'] ?? '';
         $versionMd5 = AppHelper::VERSION_MD5_16BIT;
