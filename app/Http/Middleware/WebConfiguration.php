@@ -110,23 +110,22 @@ class WebConfiguration
             return $defaultLangTag;
         }
 
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
         $supportedLanguages = ConfigHelper::fresnsConfigLangTags();
 
         // switch language
         $switchLang = $request->language;
 
         if ($switchLang && in_array($switchLang, $supportedLanguages)) {
-            $this->setLangTag($switchLang, $cookiePrefix);
+            $this->setLangTag($switchLang);
 
             return $switchLang;
         }
 
         // cookie locale
-        $cookieLangTag = Cookie::get("{$cookiePrefix}lang_tag");
+        $cookieLangTag = Cookie::get('fresns_lang_tag');
 
         if ($cookieLangTag) {
-            App::setLocale($cookieLangTag, $cookiePrefix);
+            App::setLocale($cookieLangTag);
 
             return $cookieLangTag;
         }
@@ -144,14 +143,14 @@ class WebConfiguration
         }
 
         if (! $firstLang) {
-            $this->setLangTag($defaultLangTag, $cookiePrefix);
+            $this->setLangTag($defaultLangTag);
 
             return $defaultLangTag;
         }
 
         // The language tag are identical
         if (in_array($firstLang, $supportedLanguages)) {
-            $this->setLangTag($firstLang, $cookiePrefix);
+            $this->setLangTag($firstLang);
 
             return $firstLang;
         }
@@ -164,7 +163,7 @@ class WebConfiguration
             $newFirstLang = Str::replace('zh-HK', 'zh-Hant', $newFirstLang);
 
             if (in_array($newFirstLang, $supportedLanguages)) {
-                $this->setLangTag($newFirstLang, $cookiePrefix);
+                $this->setLangTag($newFirstLang);
 
                 return $newFirstLang;
             }
@@ -179,7 +178,7 @@ class WebConfiguration
 
             if ($allIntersect) {
                 $zhLocale = reset($allIntersect);
-                $this->setLangTag($zhLocale, $cookiePrefix);
+                $this->setLangTag($zhLocale);
 
                 return $zhLocale;
             }
@@ -188,23 +187,23 @@ class WebConfiguration
         // Not identical, matches the start of the string
         foreach ($supportedLanguages as $supportedLangTag) {
             if (Str::startsWith($supportedLangTag, $substrLang)) {
-                $this->setLangTag($supportedLangTag, $cookiePrefix);
+                $this->setLangTag($supportedLangTag);
 
                 return $supportedLangTag;
             }
         }
 
         // default locale
-        $this->setLangTag($defaultLangTag, $cookiePrefix);
+        $this->setLangTag($defaultLangTag);
 
         return $defaultLangTag;
     }
 
-    public function setLangTag(string $langTag, string $cookiePrefix)
+    public function setLangTag(string $langTag)
     {
         App::setLocale($langTag);
 
-        Cookie::queue(Cookie::forever("{$cookiePrefix}lang_tag", $langTag, '/', null, false, false));
+        Cookie::queue(Cookie::forever('fresns_lang_tag', $langTag, '/', null, false, false));
     }
 
     public function setHeaders(Request $request, string $langTag)
@@ -219,14 +218,6 @@ class WebConfiguration
             ], 403);
         }
 
-        // cookie key name
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $cookieNameAid = "{$cookiePrefix}aid";
-        $cookieNameAidToken = "{$cookiePrefix}aid_token";
-        $cookieNameUid = "{$cookiePrefix}uid";
-        $cookieNameUidToken = "{$cookiePrefix}uid_token";
-
         $headers = [
             'X-Fresns-App-Id' => $keyInfo->app_id,
             'X-Fresns-Client-Platform-Id' => $keyInfo->platform_id,
@@ -235,10 +226,10 @@ class WebConfiguration
             'X-Fresns-Client-Timezone' => Cookie::get('fresns_timezone'),
             'X-Fresns-Client-Lang-Tag' => $langTag,
             'X-Fresns-Client-Content-Format' => null,
-            'X-Fresns-Aid' => Cookie::get($cookieNameAid),
-            'X-Fresns-Aid-Token' => Cookie::get($cookieNameAidToken),
-            'X-Fresns-Uid' => Cookie::get($cookieNameUid),
-            'X-Fresns-Uid-Token' => Cookie::get($cookieNameUidToken),
+            'X-Fresns-Aid' => Cookie::get('fresns_aid'),
+            'X-Fresns-Aid-Token' => Cookie::get('fresns_aid_token'),
+            'X-Fresns-Uid' => Cookie::get('fresns_uid'),
+            'X-Fresns-Uid-Token' => Cookie::get('fresns_uid_token'),
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => time(),
         ];

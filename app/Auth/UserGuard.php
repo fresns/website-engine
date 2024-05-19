@@ -9,7 +9,6 @@
 namespace Fresns\WebsiteEngine\Auth;
 
 use App\Helpers\CacheHelper;
-use App\Helpers\ConfigHelper;
 use App\Models\File;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
@@ -123,10 +122,8 @@ class UserGuard implements Guard
             return $key ? Arr::get($this->user, $key) : $this->user;
         }
 
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $uid = Cookie::get("{$cookiePrefix}uid");
-        $token = Cookie::get("{$cookiePrefix}uid_token");
+        $uid = Cookie::get('fresns_uid');
+        $token = Cookie::get('fresns_uid_token');
 
         if ($uid && $token) {
             try {
@@ -168,10 +165,8 @@ class UserGuard implements Guard
     {
         DataHelper::cacheForgetAccountAndUser();
 
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        Cookie::queue(Cookie::forget("{$cookiePrefix}uid"));
-        Cookie::queue(Cookie::forget("{$cookiePrefix}uid_token"));
+        Cookie::queue(Cookie::forget('fresns_uid'));
+        Cookie::queue(Cookie::forget('fresns_uid_token'));
 
         $this->user = null;
         $this->loggedOut = true;

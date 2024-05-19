@@ -21,14 +21,6 @@ class DataHelper
     // account and user login
     public static function accountAndUserCookie(array $authToken): void
     {
-        // cookie key name
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $cookieNameAid = "{$cookiePrefix}aid";
-        $cookieNameAidToken = "{$cookiePrefix}aid_token";
-        $cookieNameUid = "{$cookiePrefix}uid";
-        $cookieNameUidToken = "{$cookiePrefix}uid_token";
-
         $aid = $authToken['aid'];
         $aidToken = $authToken['aidToken'];
         $uid = $authToken['uid'];
@@ -38,20 +30,20 @@ class DataHelper
         DataHelper::cacheForgetAccountAndUser($aid, $uid);
 
         if (empty($expiredHours)) {
-            Cookie::queue(Cookie::forever($cookieNameAid, $aid, '/'));
-            Cookie::queue(Cookie::forever($cookieNameAidToken, $aidToken, '/'));
-            Cookie::queue(Cookie::forever($cookieNameUid, $uid, '/'));
-            Cookie::queue(Cookie::forever($cookieNameUidToken, $uidToken, '/'));
+            Cookie::queue(Cookie::forever('fresns_aid', $aid, '/'));
+            Cookie::queue(Cookie::forever('fresns_aid_token', $aidToken, '/'));
+            Cookie::queue(Cookie::forever('fresns_uid', $uid, '/'));
+            Cookie::queue(Cookie::forever('fresns_uid_token', $uidToken, '/'));
 
             return;
         }
 
         $cookieMinutes = $expiredHours * 60;
 
-        Cookie::queue($cookieNameAid, $aid, $cookieMinutes);
-        Cookie::queue($cookieNameAidToken, $aidToken, $cookieMinutes);
-        Cookie::queue($cookieNameUid, $uid, $cookieMinutes);
-        Cookie::queue($cookieNameUidToken, $uidToken, $cookieMinutes);
+        Cookie::queue('fresns_aid', $aid, $cookieMinutes);
+        Cookie::queue('fresns_aid_token', $aidToken, $cookieMinutes);
+        Cookie::queue('fresns_uid', $uid, $cookieMinutes);
+        Cookie::queue('fresns_uid_token', $uidToken, $cookieMinutes);
     }
 
     // get api data
@@ -292,10 +284,8 @@ class DataHelper
     // cache forget account and user
     public static function cacheForgetAccountAndUser(?string $aid = null, ?int $uid = null)
     {
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $currentAid = $aid ?: Cookie::get("{$cookiePrefix}aid");
-        $currentUid = $uid ?: Cookie::get("{$cookiePrefix}uid");
+        $currentAid = $aid ?: Cookie::get('fresns_aid');
+        $currentUid = $uid ?: Cookie::get('fresns_uid');
 
         CacheHelper::forgetFresnsMultilingual("fresns_web_account_{$currentAid}", 'fresnsWeb');
         CacheHelper::forgetFresnsMultilingual("fresns_web_user_{$currentUid}", 'fresnsWeb');

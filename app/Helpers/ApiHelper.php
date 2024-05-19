@@ -179,16 +179,6 @@ class ApiHelper
             CacheHelper::put($keyConfig, $cacheKey, $cacheTags);
         }
 
-        // cookie key name
-        $cookiePrefix = ConfigHelper::fresnsConfigByItemKey('website_cookie_prefix') ?? 'fresns_';
-
-        $cookieNameLangTag = "{$cookiePrefix}lang_tag";
-
-        $cookieNameAid = "{$cookiePrefix}aid";
-        $cookieNameAidToken = "{$cookiePrefix}aid_token";
-        $cookieNameUid = "{$cookiePrefix}uid";
-        $cookieNameUidToken = "{$cookiePrefix}uid_token";
-
         // headers
         $headers = [
             'X-Fresns-App-Id' => $keyConfig['appId'],
@@ -196,12 +186,12 @@ class ApiHelper
             'X-Fresns-Client-Version' => fs_theme('version'),
             'X-Fresns-Client-Device-Info' => base64_encode(json_encode(AppHelper::getDeviceInfo())),
             'X-Fresns-Client-Timezone' => Cookie::get('fresns_timezone'),
-            'X-Fresns-Client-Lang-Tag' => request()->ajax() ? Cookie::get($cookieNameLangTag) : fs_theme('lang'),
+            'X-Fresns-Client-Lang-Tag' => request()->ajax() ? Cookie::get('fresns_lang_tag') : fs_theme('lang'),
             'X-Fresns-Client-Content-Format' => null,
-            'X-Fresns-Aid' => Cookie::get($cookieNameAid),
-            'X-Fresns-Aid-Token' => Cookie::get($cookieNameAidToken),
-            'X-Fresns-Uid' => Cookie::get($cookieNameUid),
-            'X-Fresns-Uid-Token' => Cookie::get($cookieNameUidToken),
+            'X-Fresns-Aid' => Cookie::get('fresns_aid'),
+            'X-Fresns-Aid-Token' => Cookie::get('fresns_aid_token'),
+            'X-Fresns-Uid' => Cookie::get('fresns_uid'),
+            'X-Fresns-Uid-Token' => Cookie::get('fresns_uid_token'),
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => time(),
         ];
