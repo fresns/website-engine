@@ -83,7 +83,11 @@ class MeController extends Controller
     // settings
     public function settings()
     {
-        return view('me.settings');
+        $result = MeInterface::archives('user');
+
+        $archives = $result['data'];
+
+        return view('me.settings', compact('archives'));
     }
 
     // logout

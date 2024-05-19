@@ -227,6 +227,10 @@ class EditorController extends Controller
 
         $draft = $draftDetail['data'];
 
-        return view('editor.edit', compact('type', 'configs', 'draft'));
+        $archiveResult = MeInterface::archives($type);
+
+        $archives = $archiveResult['data'];
+
+        return view('editor.edit', compact('type', 'configs', 'draft', 'archives'));
     }
 }

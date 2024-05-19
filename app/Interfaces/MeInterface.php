@@ -10,6 +10,7 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\AccountController;
 use App\Fresns\Api\Http\Controllers\EditorController;
+use App\Fresns\Api\Http\Controllers\GlobalController;
 use App\Fresns\Api\Http\Controllers\UserController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
@@ -103,6 +104,29 @@ class MeInterface
 
             $apiController = new EditorController();
             $response = $apiController->draftDetail($type, $did, $request);
+
+            $resultContent = $response->getContent();
+            $result = json_decode($resultContent, true);
+        } catch (\Exception $e) {
+            $code = (int) $e->getCode();
+
+            throw new ErrorException($e->getMessage(), $code);
+        }
+
+        return $result;
+    }
+
+    public static function archives(string $type): array
+    {
+        if (is_remote_api()) {
+            return ApiHelper::make()->get("/api/fresns/v1/global/{$type}/archives");
+        }
+
+        try {
+            $request = Request::create("/api/fresns/v1/global/{$type}/archives", 'GET');
+
+            $apiController = new GlobalController();
+            $response = $apiController->archives('user', $request);
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
