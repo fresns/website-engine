@@ -26,14 +26,14 @@ class MeController extends Controller
     {
         $result = MeInterface::extcreditsRecords($request->all());
 
-        $logs = QueryHelper::convertApiDataToPaginate(
+        $records = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
         );
 
         $extcreditsId = (int) $request->extcreditsId;
 
-        return view('me.extcredits', compact('extcreditsId', 'logs'));
+        return view('me.extcredits', compact('extcreditsId', 'records'));
     }
 
     // drafts
@@ -72,12 +72,12 @@ class MeController extends Controller
     {
         $result = MeInterface::walletRecords($request->all());
 
-        $logs = QueryHelper::convertApiDataToPaginate(
+        $records = QueryHelper::convertApiDataToPaginate(
             items: $result['data']['list'],
             pagination: $result['data']['pagination'],
         );
 
-        return view('me.wallet', compact('logs'));
+        return view('me.wallet', compact('records'));
     }
 
     // settings
