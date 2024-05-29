@@ -73,7 +73,6 @@ class EditorController extends Controller
         if (empty($drafts) || $skipDrafts) {
             $response = ApiHelper::make()->post('/api/fresns/v1/editor/post/draft', [
                 'json' => [
-                    'createType' => 2,
                     'gid' => $request->gid,
                     'quotePid' => $request->quotePid,
                     'gtid' => $request->gtid,
@@ -165,7 +164,6 @@ class EditorController extends Controller
 
         $response = ApiHelper::make()->post('/api/fresns/v1/editor/comment/draft', [
             'json' => [
-                'createType' => 2,
                 'commentPid' => $pid,
                 'gtid' => $request->gtid,
             ],
