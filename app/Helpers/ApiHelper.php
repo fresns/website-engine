@@ -181,6 +181,7 @@ class ApiHelper
 
         // headers
         $headers = [
+            'Accept' => 'application/json',
             'X-Fresns-App-Id' => $keyConfig['appId'],
             'X-Fresns-Client-Platform-Id' => $keyConfig['platformId'],
             'X-Fresns-Client-Version' => fs_theme('version'),

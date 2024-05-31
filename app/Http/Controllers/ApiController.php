@@ -15,6 +15,7 @@ use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
@@ -23,7 +24,7 @@ class ApiController extends Controller
     // make access token
     public function makeAccessToken(): JsonResponse
     {
-        $headers = ApiHelper::getHeaders();
+        $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
 
         $accessToken = urlencode(base64_encode(json_encode($headers)));
 
