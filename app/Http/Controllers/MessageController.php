@@ -25,7 +25,7 @@ class MessageController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['conversations']['data']['list'] as $conversation) {
-                $html .= View::make('components.message.conversation', compact('conversation'))->render();
+                $html .= View::make('components.messages.conversation', compact('conversation'))->render();
             }
 
             return response()->json([
@@ -61,7 +61,7 @@ class MessageController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['messages']['data']['list'] as $message) {
-                $html .= View::make('components.message.message', compact('message'))->render();
+                $html .= View::make('components.messages.message', compact('message'))->render();
             }
 
             return response()->json([
@@ -92,7 +92,7 @@ class MessageController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $notification) {
-                $html .= View::make('components.message.notification', compact('notification'))->render();
+                $html .= View::make('components.messages.notification', compact('notification'))->render();
             }
 
             return response()->json([

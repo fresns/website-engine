@@ -64,7 +64,7 @@ class NearbyController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -116,7 +116,7 @@ class NearbyController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([

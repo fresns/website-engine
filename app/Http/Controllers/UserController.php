@@ -31,7 +31,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -64,7 +64,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -93,7 +93,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -122,7 +122,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -151,7 +151,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -180,7 +180,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([

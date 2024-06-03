@@ -32,7 +32,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['posts']['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -70,7 +70,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -120,7 +120,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -170,7 +170,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -220,7 +220,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -270,7 +270,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -307,7 +307,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -348,7 +348,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -385,7 +385,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['groups']['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -422,7 +422,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['hashtags']['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -459,7 +459,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['geotags']['data']['list'] as $geotag) {
-                $html .= View::make('components.geotag.list', compact('geotag'))->render();
+                $html .= View::make('components.geotags.list', compact('geotag'))->render();
             }
 
             return response()->json([
@@ -496,7 +496,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['posts']['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -533,7 +533,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -574,7 +574,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -611,7 +611,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['groups']['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -648,7 +648,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['hashtags']['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -685,7 +685,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['geotags']['data']['list'] as $geotag) {
-                $html .= View::make('components.geotag.list', compact('geotag'))->render();
+                $html .= View::make('components.geotags.list', compact('geotag'))->render();
             }
 
             return response()->json([
@@ -722,7 +722,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['posts']['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -759,7 +759,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -800,7 +800,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -837,7 +837,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['groups']['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -874,7 +874,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['hashtags']['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -911,7 +911,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['geotags']['data']['list'] as $geotag) {
-                $html .= View::make('components.geotag.list', compact('geotag'))->render();
+                $html .= View::make('components.geotags.list', compact('geotag'))->render();
             }
 
             return response()->json([
@@ -948,7 +948,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['posts']['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -985,7 +985,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -1026,7 +1026,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -1063,7 +1063,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['groups']['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -1100,7 +1100,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['hashtags']['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -1137,7 +1137,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['geotags']['data']['list'] as $geotag) {
-                $html .= View::make('components.geotag.list', compact('geotag'))->render();
+                $html .= View::make('components.geotags.list', compact('geotag'))->render();
             }
 
             return response()->json([
@@ -1174,7 +1174,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['posts']['data']['list'] as $post) {
-                $html .= View::make('components.post.list', compact('post'))->render();
+                $html .= View::make('components.posts.list', compact('post'))->render();
             }
 
             return response()->json([
@@ -1211,7 +1211,7 @@ class ProfileController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([

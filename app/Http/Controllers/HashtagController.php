@@ -32,7 +32,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -65,7 +65,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -94,7 +94,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -123,7 +123,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -152,7 +152,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -181,7 +181,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $hashtag) {
-                $html .= View::make('components.hashtag.list', compact('hashtag'))->render();
+                $html .= View::make('components.hashtags.list', compact('hashtag'))->render();
             }
 
             return response()->json([
@@ -220,13 +220,13 @@ class HashtagController extends Controller
             switch ($type) {
                 case 'posts':
                     foreach ($results['posts']['data']['list'] as $post) {
-                        $html .= View::make('components.post.list', compact('post'))->render();
+                        $html .= View::make('components.posts.list', compact('post'))->render();
                     }
                     break;
 
                 case 'comments':
                     foreach ($results['comments']['data']['list'] as $comment) {
-                        $html .= View::make('components.comment.list', compact('comment'))->render();
+                        $html .= View::make('components.comments.list', compact('comment'))->render();
                     }
                     break;
             }
@@ -276,7 +276,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -310,7 +310,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -344,7 +344,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -378,7 +378,7 @@ class HashtagController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([

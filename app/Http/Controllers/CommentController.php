@@ -32,7 +32,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -65,7 +65,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -94,7 +94,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -123,7 +123,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -152,7 +152,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -181,7 +181,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -212,7 +212,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['comments']['data']['list'] as $comment) {
-                $html .= View::make('components.comment.list', compact('comment'))->render();
+                $html .= View::make('components.comments.list', compact('comment'))->render();
             }
 
             return response()->json([
@@ -246,7 +246,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -280,7 +280,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -314,7 +314,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -348,7 +348,7 @@ class CommentController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([

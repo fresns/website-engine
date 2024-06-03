@@ -46,7 +46,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -79,7 +79,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -108,7 +108,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -137,7 +137,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -166,7 +166,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -195,7 +195,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($result['data']['list'] as $group) {
-                $html .= View::make('components.group.list', compact('group'))->render();
+                $html .= View::make('components.groups.list', compact('group'))->render();
             }
 
             return response()->json([
@@ -234,13 +234,13 @@ class GroupController extends Controller
             switch ($type) {
                 case 'posts':
                     foreach ($results['posts']['data']['list'] as $post) {
-                        $html .= View::make('components.post.list', compact('post'))->render();
+                        $html .= View::make('components.posts.list', compact('post'))->render();
                     }
                     break;
 
                 case 'comments':
                     foreach ($results['comments']['data']['list'] as $comment) {
-                        $html .= View::make('components.comment.list', compact('comment'))->render();
+                        $html .= View::make('components.comments.list', compact('comment'))->render();
                     }
                     break;
             }
@@ -290,7 +290,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -324,7 +324,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -358,7 +358,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
@@ -392,7 +392,7 @@ class GroupController extends Controller
         if ($request->ajax()) {
             $html = '';
             foreach ($results['users']['data']['list'] as $user) {
-                $html .= View::make('components.user.list', compact('user'))->render();
+                $html .= View::make('components.users.list', compact('user'))->render();
             }
 
             return response()->json([
