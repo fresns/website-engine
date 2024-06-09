@@ -59,7 +59,7 @@ class ErrorException extends \Exception
 
             $finder->setPaths([resource_path('views')]);
 
-            if (in_array($this->getCode(), [31501, 31502, 31503, 31504, 31505])) {
+            if (in_array($this->getCode(), [31103, 31501, 31502, 31503, 31504, 31505])) {
                 fs_account()->logout();
             }
 
