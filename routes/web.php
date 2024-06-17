@@ -12,6 +12,7 @@ use Fresns\WebsiteEngine\Http\Controllers\EditorController;
 use Fresns\WebsiteEngine\Http\Controllers\GeotagController;
 use Fresns\WebsiteEngine\Http\Controllers\GroupController;
 use Fresns\WebsiteEngine\Http\Controllers\HashtagController;
+use Fresns\WebsiteEngine\Http\Controllers\HomeController;
 use Fresns\WebsiteEngine\Http\Controllers\MeController;
 use Fresns\WebsiteEngine\Http\Controllers\MessageController;
 use Fresns\WebsiteEngine\Http\Controllers\NearbyController;
@@ -37,7 +38,6 @@ Route::middleware([
 ])
     ->group(function () {
         $configs = ConfigHelper::fresnsConfigByItemKeys([
-            'default_homepage',
             'website_portal_path',
             'website_user_path',
             'website_group_path',
@@ -54,11 +54,7 @@ Route::middleware([
         ]);
 
         // homepage
-        try {
-            $defaultHomepage = [sprintf('Fresns\WebsiteEngine\Http\Controllers\%sController', Str::ucfirst($configs['default_homepage'])), 'index'];
-            Route::get('/', $defaultHomepage)->name('home')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
-        } catch (\Throwable $e) {
-        }
+        Route::get('/', [HomeController::class, 'index'])->name('home')->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class]);
 
         // portal
         Route::prefix($configs['website_portal_path'])->withoutMiddleware([AccountAuthorize::class, UserAuthorize::class])->group(function () {
