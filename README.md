@@ -15,6 +15,10 @@ Fresns is a free and open source social network service software, a general-purp
 - Extensions developers should read the [extension documentation](https://docs.fresns.com/open-source/extensions/) and [database structure](https://docs.fresns.com/open-source/database/).
 - For client developers (web or app), please read the [API reference](https://docs.fresns.com/clients/api/) documentation.
 
+## Sponsors
+
+Fresns is an Apache-2.0-licensed open source project with its ongoing development made possible entirely by the support of these awesome backers. If you'd like to join them, please consider [sponsoring Fresns development](https://github.com/sponsors/fresns).
+
 ## Introduction
 
 Fresns website route engine extension package.
