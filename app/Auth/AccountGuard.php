@@ -146,11 +146,23 @@ class AccountGuard implements Guard
                     $this->account = null;
                     $this->loggedOut = true;
 
+                    if (in_array($result['code'], [31103, 31501, 31502, 31503, 31504, 31505])) {
+                        Cookie::queue(Cookie::forget('fresns_aid'));
+                        Cookie::queue(Cookie::forget('fresns_aid_token'));
+                        Cookie::queue(Cookie::forget('fresns_uid'));
+                        Cookie::queue(Cookie::forget('fresns_uid_token'));
+                    }
+
                     return null;
                 }
 
                 $this->account = data_get($result, 'data');
             } catch (\Throwable $e) {
+                Cookie::queue(Cookie::forget('fresns_aid'));
+                Cookie::queue(Cookie::forget('fresns_aid_token'));
+                Cookie::queue(Cookie::forget('fresns_uid'));
+                Cookie::queue(Cookie::forget('fresns_uid_token'));
+
                 throw $e;
             }
         }

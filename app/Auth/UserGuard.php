@@ -145,11 +145,19 @@ class UserGuard implements Guard
                     $this->user = null;
                     $this->loggedOut = true;
 
+                    if (in_array($result['code'], [31601, 31602, 31603])) {
+                        Cookie::queue(Cookie::forget('fresns_uid'));
+                        Cookie::queue(Cookie::forget('fresns_uid_token'));
+                    }
+
                     return null;
                 }
 
                 $this->user = data_get($result, 'data');
             } catch (\Throwable $e) {
+                Cookie::queue(Cookie::forget('fresns_uid'));
+                Cookie::queue(Cookie::forget('fresns_uid_token'));
+
                 throw $e;
             }
         }
