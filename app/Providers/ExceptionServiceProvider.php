@@ -26,6 +26,7 @@ class ExceptionServiceProvider extends ServiceProvider
         ErrorException::class,
         \App\Fresns\Api\Exceptions\ResponseException::class,
         \Fresns\DTO\Exceptions\ResponseException::class,
+        \Fresns\CmdWordManager\Exceptions\ResponseException::class,
     ];
 
     /**
