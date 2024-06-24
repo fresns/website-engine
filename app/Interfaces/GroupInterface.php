@@ -29,6 +29,10 @@ class GroupInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -54,6 +58,10 @@ class GroupInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -105,6 +113,10 @@ class GroupInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
 
             switch ($type) {
                 case 'posts':
@@ -158,6 +170,10 @@ class GroupInterface
                 'group' => json_decode($detailResponse->getContent(), true),
                 'users' => json_decode($usersResponse->getContent(), true),
             ];
+
+            if ($results['group']['code'] != 0) {
+                throw new ErrorException($results['group']['message'], $results['group']['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 

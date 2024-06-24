@@ -93,6 +93,19 @@ class ErrorException extends \Exception
         }
 
         // Other
+        $previousUrl = url()->previous();
+        $currentUrl = url()->current();
+
+        $previousPath = parse_url($previousUrl, PHP_URL_PATH);
+        $currentPath = parse_url($currentUrl, PHP_URL_PATH);
+
+        if ($previousPath == $currentPath) {
+            return redirect()->route('fresns.home')->with([
+                'code' => $this->getCode(),
+                'failure' => $this->getMessage(),
+            ]);
+        }
+
         return back()->with([
             'code' => $this->getCode(),
             'failure' => $this->getMessage(),

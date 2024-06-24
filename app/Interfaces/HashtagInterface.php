@@ -38,6 +38,10 @@ class HashtagInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -99,6 +103,10 @@ class HashtagInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
 
             switch ($type) {
                 case 'posts':
@@ -166,6 +174,10 @@ class HashtagInterface
                 'hashtag' => json_decode($detailResponse->getContent(), true),
                 'users' => json_decode($usersResponse->getContent(), true),
             ];
+
+            if ($results['hashtag']['code'] != 0) {
+                throw new ErrorException($results['hashtag']['message'], $results['hashtag']['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 

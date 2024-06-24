@@ -41,6 +41,10 @@ class TimelineInterface
                 $resultContent = $response->getContent();
                 $result = json_decode($resultContent, true);
             }
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -73,6 +77,10 @@ class TimelineInterface
             } else {
                 $resultContent = $response->getContent();
                 $result = json_decode($resultContent, true);
+            }
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
             }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();

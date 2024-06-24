@@ -36,6 +36,10 @@ class UserInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -65,6 +69,10 @@ class UserInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -249,6 +257,10 @@ class UserInterface
                         $listType => $result,
                     ];
                     break;
+            }
+
+            if ($results['profile']['code'] != 0) {
+                throw new ErrorException($results['profile']['message'], $results['profile']['code']);
             }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();

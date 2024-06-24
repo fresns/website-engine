@@ -40,6 +40,10 @@ class CommentInterface
                 $resultContent = $response->getContent();
                 $result = json_decode($resultContent, true);
             }
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -72,6 +76,10 @@ class CommentInterface
             } else {
                 $resultContent = $response->getContent();
                 $result = json_decode($resultContent, true);
+            }
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
             }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
@@ -119,6 +127,10 @@ class CommentInterface
                 $result = json_decode($resultContent, true);
             }
 
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
+
             $results = [
                 'comment' => $result,
                 'comments' => CommentInterface::list($query),
@@ -160,6 +172,10 @@ class CommentInterface
                 'comment' => json_decode($detailResponse->getContent(), true),
                 'users' => json_decode($usersResponse->getContent(), true),
             ];
+
+            if ($results['comment']['code'] != 0) {
+                throw new ErrorException($results['comment']['message'], $results['comment']['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 

@@ -38,6 +38,10 @@ class GeotagInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -99,6 +103,10 @@ class GeotagInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
 
             switch ($type) {
                 case 'posts':
@@ -166,6 +174,10 @@ class GeotagInterface
                 'geotag' => json_decode($detailResponse->getContent(), true),
                 'users' => json_decode($usersResponse->getContent(), true),
             ];
+
+            if ($results['geotag']['code'] != 0) {
+                throw new ErrorException($results['geotag']['message'], $results['geotag']['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 

@@ -56,6 +56,10 @@ class MessageInterface
                 'conversations' => json_decode($resultContent, true),
                 'pinConversations' => json_decode($pinResultContent, true),
             ];
+
+            if ($results['conversations']['code'] != 0) {
+                throw new ErrorException($results['conversations']['message'], $results['conversations']['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
@@ -89,6 +93,10 @@ class MessageInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
 
             $messagesRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/messages", 'GET', $query);
             $messagesResponse = $apiController->messages($uidOrUsername, $messagesRequest);
@@ -128,6 +136,10 @@ class MessageInterface
 
             $resultContent = $response->getContent();
             $result = json_decode($resultContent, true);
+
+            if ($result['code'] != 0) {
+                throw new ErrorException($result['message'], $result['code']);
+            }
         } catch (\Exception $e) {
             $code = (int) $e->getCode();
 
