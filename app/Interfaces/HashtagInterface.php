@@ -8,9 +8,7 @@
 
 namespace Fresns\WebsiteEngine\Interfaces;
 
-use App\Fresns\Api\Http\Controllers\CommentController;
 use App\Fresns\Api\Http\Controllers\HashtagController;
-use App\Fresns\Api\Http\Controllers\PostController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
