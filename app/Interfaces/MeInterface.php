@@ -32,8 +32,12 @@ class MeInterface
             $apiController = new UserController();
             $response = $apiController->extcreditsRecords($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -61,8 +65,12 @@ class MeInterface
             $apiController = new AccountController();
             $response = $apiController->walletRecords($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -90,8 +98,12 @@ class MeInterface
             $apiController = new EditorController();
             $response = $apiController->draftList($type, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -117,8 +129,12 @@ class MeInterface
             $apiController = new EditorController();
             $response = $apiController->draftDetail($type, $did, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -144,8 +160,12 @@ class MeInterface
             $apiController = new GlobalController();
             $response = $apiController->archives('user', $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);

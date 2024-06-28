@@ -27,8 +27,12 @@ class GroupInterface
             $request = Request::create('/api/fresns/v1/group/tree', 'GET', []);
             $response = $apiController->tree($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -56,8 +60,12 @@ class GroupInterface
             $apiController = new GroupController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -111,8 +119,12 @@ class GroupInterface
             $request = Request::create("/api/fresns/v1/group/{$gid}/detail", 'GET', []);
             $response = $apiController->detail($gid, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -163,13 +175,20 @@ class GroupInterface
             $detailRequest = Request::create("/api/fresns/v1/group/{$gid}/detail", 'GET', []);
             $detailResponse = $apiController->detail($gid, $detailRequest);
 
+            if (is_array($detailResponse)) {
+                $results['group'] = $detailResponse;
+            } else {
+                $results['group'] = json_decode($detailResponse->getContent(), true);
+            }
+
             $usersRequest = Request::create("/api/fresns/v1/group/{$gid}/interaction/{$type}", 'GET', $query);
             $usersResponse = $apiController->interaction($gid, $type, $usersRequest);
 
-            $results = [
-                'group' => json_decode($detailResponse->getContent(), true),
-                'users' => json_decode($usersResponse->getContent(), true),
-            ];
+            if (is_array($usersResponse)) {
+                $results['users'] = $usersResponse;
+            } else {
+                $results['users'] = json_decode($usersResponse->getContent(), true);
+            }
 
             if ($results['group']['code'] != 0) {
                 throw new ErrorException($results['group']['message'], $results['group']['code']);

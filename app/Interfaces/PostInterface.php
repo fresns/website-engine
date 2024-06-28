@@ -176,13 +176,20 @@ class PostInterface
             $detailRequest = Request::create("/api/fresns/v1/post/{$pid}/detail", 'GET', []);
             $detailResponse = $apiController->detail($pid, $detailRequest);
 
+            if (is_array($detailResponse)) {
+                $results['post'] = $detailResponse;
+            } else {
+                $results['post'] = json_decode($detailResponse->getContent(), true);
+            }
+
             $usersRequest = Request::create("/api/fresns/v1/post/{$pid}/interaction/{$type}", 'GET', $query);
             $usersResponse = $apiController->interaction($pid, $type, $usersRequest);
 
-            $results = [
-                'post' => json_decode($detailResponse->getContent(), true),
-                'users' => json_decode($usersResponse->getContent(), true),
-            ];
+            if (is_array($usersResponse)) {
+                $results['users'] = $usersResponse;
+            } else {
+                $results['users'] = json_decode($usersResponse->getContent(), true);
+            }
 
             if ($results['post']['code'] != 0) {
                 throw new ErrorException($results['post']['message'], $results['post']['code']);

@@ -34,8 +34,12 @@ class UserInterface
             $apiController = new UserController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -67,8 +71,12 @@ class UserInterface
             $apiController = new UserController();
             $response = $apiController->markList($uid, $markType, $listType, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -178,15 +186,25 @@ class UserInterface
             $apiController = new UserController();
 
             $responseDetail = $apiController->detail($uidOrUsername, $request);
-            $resultDetailContent = $responseDetail->getContent();
+
+            if (is_array($responseDetail)) {
+                $resultDetailContent = $responseDetail;
+            } else {
+                $resultDetailContent = json_decode($responseDetail->getContent(), true);
+            }
 
             $responseFollowersYouFollow = $apiController->followersYouFollow($uidOrUsername, $followersRequest);
-            $resultFollowersYouFollowContent = $responseFollowersYouFollow->getContent();
+
+            if (is_array($responseFollowersYouFollow)) {
+                $resultFollowersYouFollowContent = $responseFollowersYouFollow;
+            } else {
+                $resultFollowersYouFollowContent = json_decode($responseFollowersYouFollow->getContent(), true);
+            }
 
             if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
                 $results = [
-                    'profile' => json_decode($resultDetailContent, true),
-                    'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                    'profile' => $resultDetailContent,
+                    'followersYouFollow' => $resultFollowersYouFollowContent,
                     'posts' => DataHelper::getApiDataTemplate(),
                     'comments' => DataHelper::getApiDataTemplate(),
                     'users' => DataHelper::getApiDataTemplate(),
@@ -199,16 +217,16 @@ class UserInterface
             switch ($type) {
                 case 'posts':
                     $results = [
-                        'profile' => json_decode($resultDetailContent, true),
-                        'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                        'profile' => $resultDetailContent,
+                        'followersYouFollow' => $resultFollowersYouFollowContent,
                         'posts' => PostInterface::list($query),
                     ];
                     break;
 
                 case 'comments':
                     $results = [
-                        'profile' => json_decode($resultDetailContent, true),
-                        'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                        'profile' => $resultDetailContent,
+                        'followersYouFollow' => $resultFollowersYouFollowContent,
                         'comments' => CommentInterface::list($query),
                     ];
                     break;
@@ -218,12 +236,16 @@ class UserInterface
 
                     $response = $apiController->followersYouFollow($uidOrUsername, $queryRequest);
 
-                    $resultContent = $response->getContent();
-                    $result = json_decode($resultContent, true);
+                    if (is_array($response)) {
+                        $result = $response;
+                    } else {
+                        $resultContent = $response->getContent();
+                        $result = json_decode($resultContent, true);
+                    }
 
                     $results = [
-                        'profile' => json_decode($resultDetailContent, true),
-                        'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                        'profile' => $resultDetailContent,
+                        'followersYouFollow' => $resultFollowersYouFollowContent,
                         'users' => $result,
                     ];
                     break;
@@ -233,12 +255,16 @@ class UserInterface
 
                     $response = $apiController->interaction($uidOrUsername, $listType, $queryRequest);
 
-                    $resultContent = $response->getContent();
-                    $result = json_decode($resultContent, true);
+                    if (is_array($response)) {
+                        $result = $response;
+                    } else {
+                        $resultContent = $response->getContent();
+                        $result = json_decode($resultContent, true);
+                    }
 
                     $results = [
-                        'profile' => json_decode($resultDetailContent, true),
-                        'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                        'profile' => $resultDetailContent,
+                        'followersYouFollow' => $resultFollowersYouFollowContent,
                         'users' => $result,
                     ];
                     break;
@@ -248,12 +274,16 @@ class UserInterface
 
                     $response = $apiController->markList($uidOrUsername, $type, $listType, $queryRequest);
 
-                    $resultContent = $response->getContent();
-                    $result = json_decode($resultContent, true);
+                    if (is_array($response)) {
+                        $result = $response;
+                    } else {
+                        $resultContent = $response->getContent();
+                        $result = json_decode($resultContent, true);
+                    }
 
                     $results = [
-                        'profile' => json_decode($resultDetailContent, true),
-                        'followersYouFollow' => json_decode($resultFollowersYouFollowContent, true),
+                        'profile' => $resultDetailContent,
+                        'followersYouFollow' => $resultFollowersYouFollowContent,
                         $listType => $result,
                     ];
                     break;

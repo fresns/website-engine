@@ -165,13 +165,20 @@ class CommentInterface
             $detailRequest = Request::create("/api/fresns/v1/comment/{$cid}/detail", 'GET', []);
             $detailResponse = $apiController->detail($cid, $detailRequest);
 
+            if (is_array($detailResponse)) {
+                $results['comment'] = $detailResponse;
+            } else {
+                $results['comment'] = json_decode($detailResponse->getContent(), true);
+            }
+
             $usersRequest = Request::create("/api/fresns/v1/comment/{$cid}/interaction/{$type}", 'GET', $query);
             $usersResponse = $apiController->interaction($cid, $type, $usersRequest);
 
-            $results = [
-                'comment' => json_decode($detailResponse->getContent(), true),
-                'users' => json_decode($usersResponse->getContent(), true),
-            ];
+            if (is_array($usersResponse)) {
+                $results['users'] = $usersResponse;
+            } else {
+                $results['users'] = json_decode($usersResponse->getContent(), true);
+            }
 
             if ($results['comment']['code'] != 0) {
                 throw new ErrorException($results['comment']['message'], $results['comment']['code']);

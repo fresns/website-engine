@@ -36,8 +36,12 @@ class HashtagInterface
             $apiController = new HashtagController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -62,7 +66,7 @@ class HashtagInterface
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
                 'hashtag' => DataHelper::getApiDataTemplate('detail'),
-                'posts' => CommentInterface::list($query),
+                'posts' => PostInterface::list($query),
                 'comments' => CommentInterface::list($query),
             ];
 
@@ -101,8 +105,12 @@ class HashtagInterface
             $request = Request::create("/api/fresns/v1/hashtag/{$htid}/detail", 'GET', []);
             $response = $apiController->detail($htid, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -110,30 +118,16 @@ class HashtagInterface
 
             switch ($type) {
                 case 'posts':
-                    $postRequest = Request::create('/api/fresns/v1/post/list', 'GET', $query);
-                    $apiPostController = new PostController();
-
-                    $response = $apiPostController->list($postRequest);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'hashtag' => $result,
-                        'posts' => json_decode($resultContent, true),
+                        'posts' => PostInterface::list($query),
                     ];
                     break;
 
                 case 'comments':
-                    $commentRequest = Request::create('/api/fresns/v1/comment/list', 'GET', $query);
-                    $apiCommentController = new CommentController();
-
-                    $response = $apiCommentController->list($commentRequest);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'hashtag' => $result,
-                        'comments' => json_decode($resultContent, true),
+                        'comments' => CommentInterface::list($query),
                     ];
                     break;
             }
@@ -167,13 +161,20 @@ class HashtagInterface
             $detailRequest = Request::create("/api/fresns/v1/hashtag/{$htid}/detail", 'GET', []);
             $detailResponse = $apiController->detail($htid, $detailRequest);
 
+            if (is_array($detailResponse)) {
+                $results['hashtag'] = $detailResponse;
+            } else {
+                $results['hashtag'] = json_decode($detailResponse->getContent(), true);
+            }
+
             $usersRequest = Request::create("/api/fresns/v1/hashtag/{$htid}/interaction/{$type}", 'GET', $query);
             $usersResponse = $apiController->interaction($htid, $type, $usersRequest);
 
-            $results = [
-                'hashtag' => json_decode($detailResponse->getContent(), true),
-                'users' => json_decode($usersResponse->getContent(), true),
-            ];
+            if (is_array($usersResponse)) {
+                $results['users'] = $usersResponse;
+            } else {
+                $results['users'] = json_decode($usersResponse->getContent(), true);
+            }
 
             if ($results['hashtag']['code'] != 0) {
                 throw new ErrorException($results['hashtag']['message'], $results['hashtag']['code']);

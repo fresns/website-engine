@@ -46,15 +46,26 @@ class MessageInterface
             ]);
 
             $apiController = new ConversationController();
+
             $response = $apiController->list($request);
+
+            if (is_array($response)) {
+                $resultContent = $response;
+            } else {
+                $resultContent = json_decode($response->getContent(), true);
+            }
+
             $pinResponse = $apiController->list($pinRequest);
 
-            $resultContent = $response->getContent();
-            $pinResultContent = $pinResponse->getContent();
+            if (is_array($pinResponse)) {
+                $pinResultContent = $pinResponse;
+            } else {
+                $pinResultContent = json_decode($pinResponse->getContent(), true);
+            }
 
             $results = [
-                'conversations' => json_decode($resultContent, true),
-                'pinConversations' => json_decode($pinResultContent, true),
+                'conversations' => $resultContent,
+                'pinConversations' => $pinResultContent,
             ];
 
             if ($results['conversations']['code'] != 0) {
@@ -91,8 +102,12 @@ class MessageInterface
             $detailRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/detail", 'GET', []);
             $response = $apiController->detail($uidOrUsername, $detailRequest);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -101,8 +116,12 @@ class MessageInterface
             $messagesRequest = Request::create("/api/fresns/v1/conversation/{$uidOrUsername}/messages", 'GET', $query);
             $messagesResponse = $apiController->messages($uidOrUsername, $messagesRequest);
 
-            $messagesResultContent = $messagesResponse->getContent();
-            $messagesResult = json_decode($messagesResultContent, true);
+            if (is_array($messagesResponse)) {
+                $messagesResult = $messagesResponse;
+            } else {
+                $messagesResultContent = $messagesResponse->getContent();
+                $messagesResult = json_decode($messagesResultContent, true);
+            }
 
             $results = [
                 'conversation' => $result,
@@ -134,8 +153,12 @@ class MessageInterface
             $apiController = new NotificationController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);

@@ -36,8 +36,12 @@ class GeotagInterface
             $apiController = new GeotagController();
             $response = $apiController->list($request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -62,7 +66,7 @@ class GeotagInterface
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
             $results = [
                 'geotag' => DataHelper::getApiDataTemplate('detail'),
-                'posts' => CommentInterface::list($query),
+                'posts' => PostInterface::list($query),
                 'comments' => CommentInterface::list($query),
             ];
 
@@ -101,8 +105,12 @@ class GeotagInterface
             $request = Request::create("/api/fresns/v1/geotag/{$gtid}/detail", 'GET', []);
             $response = $apiController->detail($gtid, $request);
 
-            $resultContent = $response->getContent();
-            $result = json_decode($resultContent, true);
+            if (is_array($response)) {
+                $result = $response;
+            } else {
+                $resultContent = $response->getContent();
+                $result = json_decode($resultContent, true);
+            }
 
             if ($result['code'] != 0) {
                 throw new ErrorException($result['message'], $result['code']);
@@ -110,30 +118,16 @@ class GeotagInterface
 
             switch ($type) {
                 case 'posts':
-                    $postRequest = Request::create('/api/fresns/v1/post/list', 'GET', $query);
-                    $apiPostController = new PostController();
-
-                    $response = $apiPostController->list($postRequest);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'geotag' => $result,
-                        'posts' => json_decode($resultContent, true),
+                        'posts' => PostInterface::list($query),
                     ];
                     break;
 
                 case 'comments':
-                    $commentRequest = Request::create('/api/fresns/v1/comment/list', 'GET', $query);
-                    $apiCommentController = new CommentController();
-
-                    $response = $apiCommentController->list($commentRequest);
-
-                    $resultContent = $response->getContent();
-
                     $results = [
                         'geotag' => $result,
-                        'comments' => json_decode($resultContent, true),
+                        'comments' => CommentInterface::list($query),
                     ];
                     break;
             }
@@ -167,13 +161,20 @@ class GeotagInterface
             $detailRequest = Request::create("/api/fresns/v1/geotag/{$gtid}/detail", 'GET', []);
             $detailResponse = $apiController->detail($gtid, $detailRequest);
 
+            if (is_array($detailResponse)) {
+                $results['geotag'] = $detailResponse;
+            } else {
+                $results['geotag'] = json_decode($detailResponse->getContent(), true);
+            }
+
             $usersRequest = Request::create("/api/fresns/v1/geotag/{$gtid}/interaction/{$type}", 'GET', $query);
             $usersResponse = $apiController->interaction($gtid, $type, $usersRequest);
 
-            $results = [
-                'geotag' => json_decode($detailResponse->getContent(), true),
-                'users' => json_decode($usersResponse->getContent(), true),
-            ];
+            if (is_array($usersResponse)) {
+                $results['users'] = $usersResponse;
+            } else {
+                $results['users'] = json_decode($usersResponse->getContent(), true);
+            }
 
             if ($results['geotag']['code'] != 0) {
                 throw new ErrorException($results['geotag']['message'], $results['geotag']['code']);
