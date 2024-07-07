@@ -148,6 +148,9 @@ class UserGuard implements Guard
                     if (in_array($result['code'], [31601, 31602, 31603])) {
                         Cookie::queue(Cookie::forget('fresns_uid'));
                         Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+                        Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+                        Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
                     }
 
                     return null;
@@ -157,6 +160,9 @@ class UserGuard implements Guard
             } catch (\Throwable $e) {
                 Cookie::queue(Cookie::forget('fresns_uid'));
                 Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+                Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+                Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
 
                 throw $e;
             }
@@ -175,6 +181,9 @@ class UserGuard implements Guard
 
         Cookie::queue(Cookie::forget('fresns_uid'));
         Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+        Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+        Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
 
         $this->user = null;
         $this->loggedOut = true;

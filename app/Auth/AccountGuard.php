@@ -151,6 +151,11 @@ class AccountGuard implements Guard
                         Cookie::queue(Cookie::forget('fresns_aid_token'));
                         Cookie::queue(Cookie::forget('fresns_uid'));
                         Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+                        Cookie::queue(Cookie::forget('fresns_account_center_aid'));
+                        Cookie::queue(Cookie::forget('fresns_account_center_aid_token'));
+                        Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+                        Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
                     }
 
                     return null;
@@ -162,6 +167,11 @@ class AccountGuard implements Guard
                 Cookie::queue(Cookie::forget('fresns_aid_token'));
                 Cookie::queue(Cookie::forget('fresns_uid'));
                 Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+                Cookie::queue(Cookie::forget('fresns_account_center_aid'));
+                Cookie::queue(Cookie::forget('fresns_account_center_aid_token'));
+                Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+                Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
 
                 throw $e;
             }
@@ -185,6 +195,11 @@ class AccountGuard implements Guard
         Cookie::queue(Cookie::forget('fresns_aid_token'));
         Cookie::queue(Cookie::forget('fresns_uid'));
         Cookie::queue(Cookie::forget('fresns_uid_token'));
+
+        Cookie::queue(Cookie::forget('fresns_account_center_aid'));
+        Cookie::queue(Cookie::forget('fresns_account_center_aid_token'));
+        Cookie::queue(Cookie::forget('fresns_account_center_uid'));
+        Cookie::queue(Cookie::forget('fresns_account_center_uid_token'));
 
         $this->account = null;
         $this->loggedOut = true;

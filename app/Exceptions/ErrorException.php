@@ -35,7 +35,7 @@ class ErrorException extends \Exception
 
         // 404 Not Found
         if (in_array($this->getCode(), [
-            37100, 37200, 37300, 37302, 37400, 37402, 37500, 37502, 38100,
+            31602, 37100, 37200, 37300, 37302, 37400, 37402, 37500, 37502, 38100,
         ])) {
             return Response::view('error', [
                 'code' => $this->getCode(),
@@ -51,7 +51,7 @@ class ErrorException extends \Exception
             31301, 31302, 31303, 31304,
             31401, 31402,
             31501, 31502, 31503, 31504, 31505,
-            31601, 31602, 31603,
+            31601, 31603,
             31701, 31702, 31703,
         ])) {
             $finder = app('view')->getFinder();
@@ -63,7 +63,7 @@ class ErrorException extends \Exception
                 fs_account()->logout();
             }
 
-            if (in_array($this->getCode(), [31601, 31602, 31603])) {
+            if (in_array($this->getCode(), [31601, 31603])) {
                 fs_user()->logout();
             }
 
