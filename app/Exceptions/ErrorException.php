@@ -9,12 +9,27 @@
 namespace Fresns\WebsiteEngine\Exceptions;
 
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class ErrorException extends \Exception
 {
     public function render()
     {
         // dd($this->getCode(), $this->getMessage());
+
+        // set view
+        $themeFskey = fs_theme('fskey');
+        if ($themeFskey) {
+            View::addLocation(base_path("themes/{$themeFskey}"));
+
+            $currentPaths = View::getFinder()->getPaths();
+
+            $currentPaths = array_unique($currentPaths);
+
+            array_unshift($currentPaths, base_path("themes/{$themeFskey}"));
+
+            View::getFinder()->setPaths($currentPaths);
+        }
 
         if (\request()->wantsJson()) {
             return \response()->json([

@@ -89,7 +89,18 @@ class WebConfiguration
         }
 
         // set view
-        View::addLocation(base_path("themes/{$themeFskey}"));
+        $themeFskey = fs_theme('fskey');
+        if ($themeFskey) {
+            View::addLocation(base_path("themes/{$themeFskey}"));
+
+            $currentPaths = View::getFinder()->getPaths();
+
+            $currentPaths = array_unique($currentPaths);
+
+            array_unshift($currentPaths, base_path("themes/{$themeFskey}"));
+
+            View::getFinder()->setPaths($currentPaths);
+        }
 
         // set headers
         if (is_local_api()) {
