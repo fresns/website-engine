@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\GeotagController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class GeotagInterface
@@ -19,9 +19,7 @@ class GeotagInterface
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/geotag/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/geotag/list', $query);
         }
 
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
@@ -72,25 +70,41 @@ class GeotagInterface
         }
 
         if (is_remote_api()) {
-            $client = ApiHelper::make();
-
             switch ($type) {
                 case 'posts':
-                    $results = $client->unwrapRequests([
-                        'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
-                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'geotag',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/geotag/{$gtid}/detail",
+                        ],
+                        [
+                            'name' => 'posts',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/post/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
 
                 case 'comments':
-                    $results = $client->unwrapRequests([
-                        'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
-                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'geotag',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/geotag/{$gtid}/detail",
+                        ],
+                        [
+                            'name' => 'comments',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/comment/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
             }
 
@@ -141,14 +155,21 @@ class GeotagInterface
     public static function interaction(string $gtid, string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'geotag',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/geotag/{$gtid}/detail",
+                ],
+                [
+                    'name' => 'users',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/geotag/{$gtid}/interaction/{$type}",
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'geotag' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/detail"),
-                'users' => $client->getAsync("/api/fresns/v1/geotag/{$gtid}/interaction/{$type}", [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }

@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Auth;
 
 use App\Helpers\CacheHelper;
 use App\Models\File;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -136,7 +136,7 @@ class AccountGuard implements Guard
                 $result = CacheHelper::get($cacheKey, $cacheTag);
 
                 if (empty($result)) {
-                    $result = ApiHelper::make()->get('/api/fresns/v1/account/detail');
+                    $result = HttpHelper::get('/api/fresns/v1/account/detail');
 
                     $cacheTime = CacheHelper::fresnsCacheTimeByFileType(File::TYPE_ALL);
                     CacheHelper::put($result, $cacheKey, $cacheTag, $cacheTime);

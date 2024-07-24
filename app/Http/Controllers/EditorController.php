@@ -12,8 +12,8 @@ use App\Helpers\CacheHelper;
 use App\Models\File;
 use App\Utilities\ConfigUtility;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Fresns\WebsiteEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
 
@@ -42,7 +42,7 @@ class EditorController extends Controller
 
         // edit published post
         if ($pid) {
-            $postResponse = ApiHelper::make()->post("/api/fresns/v1/editor/post/edit/{$pid}");
+            $postResponse = HttpHelper::post("/api/fresns/v1/editor/post/edit/{$pid}");
 
             $did = $postResponse['data']['detail']['did'] ?? null;
 
@@ -71,12 +71,10 @@ class EditorController extends Controller
         $skipDrafts = $request->skipDrafts;
 
         if (empty($drafts) || $skipDrafts) {
-            $response = ApiHelper::make()->post('/api/fresns/v1/editor/post/draft', [
-                'json' => [
-                    'gid' => $request->gid,
-                    'quotePid' => $request->quotePid,
-                    'gtid' => $request->gtid,
-                ],
+            $response = HttpHelper::post('/api/fresns/v1/editor/post/draft', [
+                'gid' => $request->gid,
+                'quotePid' => $request->quotePid,
+                'gtid' => $request->gtid,
             ]);
 
             $did = $response['data']['detail']['did'] ?? null;
@@ -132,7 +130,7 @@ class EditorController extends Controller
 
         // edit published comment
         if ($cid) {
-            $commentResponse = ApiHelper::make()->post("/api/fresns/v1/editor/comment/edit/{$cid}");
+            $commentResponse = HttpHelper::post("/api/fresns/v1/editor/comment/edit/{$cid}");
 
             $did = $commentResponse['data']['detail']['did'] ?? null;
 
@@ -162,11 +160,9 @@ class EditorController extends Controller
             throw new ErrorException($errorMessage, 30001);
         }
 
-        $response = ApiHelper::make()->post('/api/fresns/v1/editor/comment/draft', [
-            'json' => [
-                'commentPid' => $pid,
-                'gtid' => $request->gtid,
-            ],
+        $response = HttpHelper::post('/api/fresns/v1/editor/comment/draft', [
+            'commentPid' => $pid,
+            'gtid' => $request->gtid,
         ]);
 
         $did = $response['data']['detail']['did'] ?? null;
@@ -212,7 +208,7 @@ class EditorController extends Controller
         $configs = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($configs)) {
-            $result = ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/configs");
+            $result = HttpHelper::get("/api/fresns/v1/editor/{$type}/configs");
 
             $configs = data_get($result, 'data');
 

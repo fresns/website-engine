@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\UserController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class UserInterface
@@ -23,9 +23,7 @@ class UserInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/user/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/user/list', $query);
         }
 
         try {
@@ -60,9 +58,7 @@ class UserInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/user/{$uid}/mark/{$markType}/{$listType}", [
-                'query' => $query,
-            ]);
+            return HttpHelper::get("/api/fresns/v1/user/{$uid}/mark/{$markType}/{$listType}", $query);
         }
 
         try {
@@ -93,84 +89,71 @@ class UserInterface
     public static function detail(int|string $uidOrUsername, string $type, string $listType, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'profile',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/user/{$uidOrUsername}/detail",
+                ],
+                [
+                    'name' => 'followersYouFollow',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow",
+                    'params' => [
+                        'pageSize' => 3,
+                        'page' => 1,
+                    ],
+                ],
+            ];
 
             switch ($type) {
                 case 'posts':
-                    $results = $client->unwrapRequests([
-                        'profile' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/detail"),
-                        'followersYouFollow' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => [
-                                'pageSize' => 3,
-                                'page' => 1,
-                            ],
-                        ]),
-                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests[] = [
+                        'name' => 'posts',
+                        'method' => 'GET',
+                        'path' => '/api/fresns/v1/post/list',
+                        'params' => $query,
+                    ];
                     break;
 
                 case 'comments':
-                    $results = $client->unwrapRequests([
-                        'profile' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/detail"),
-                        'followersYouFollow' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => [
-                                'pageSize' => 3,
-                                'page' => 1,
-                            ],
-                        ]),
-                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests[] = [
+                        'name' => 'comments',
+                        'method' => 'GET',
+                        'path' => '/api/fresns/v1/comment/list',
+                        'params' => $query,
+                    ];
                     break;
 
                 case 'followersYouFollow':
-                    $results = $client->unwrapRequests([
-                        'profile' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/detail"),
-                        'followersYouFollow' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => [
-                                'pageSize' => 3,
-                                'page' => 1,
-                            ],
-                        ]),
-                        'users' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests[] = [
+                        'name' => 'users',
+                        'method' => 'GET',
+                        'path' => "/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow",
+                        'params' => $query,
+                    ];
                     break;
 
                 case 'interaction':
-                    $results = $client->unwrapRequests([
-                        'profile' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/detail"),
-                        'followersYouFollow' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => [
-                                'pageSize' => 3,
-                                'page' => 1,
-                            ],
-                        ]),
-                        'users' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/interaction/{$listType}", [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests[] = [
+                        'name' => 'users',
+                        'method' => 'GET',
+                        'path' => "/api/fresns/v1/user/{$uidOrUsername}/interaction/{$listType}",
+                        'params' => $query,
+                    ];
                     break;
 
                 default:
-                    $results = $client->unwrapRequests([
-                        'profile' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/detail"),
-                        'followersYouFollow' => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/followers-you-follow", [
-                            'query' => [
-                                'pageSize' => 3,
-                                'page' => 1,
-                            ],
-                        ]),
-                        $listType => $client->getAsync("/api/fresns/v1/user/{$uidOrUsername}/mark/{$type}/{$listType}", [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests[] = [
+                        'name' => $listType,
+                        'method' => 'GET',
+                        'path' => "/api/fresns/v1/user/{$uidOrUsername}/mark/{$type}/{$listType}",
+                        'params' => $query,
+                    ];
                     break;
             }
+
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }

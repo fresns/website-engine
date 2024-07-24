@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\CommentController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class CommentInterface
@@ -23,9 +23,7 @@ class CommentInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/comment/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/comment/list', $query);
         }
 
         try {
@@ -60,9 +58,7 @@ class CommentInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/comment/nearby', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/comment/nearby', $query);
         }
 
         try {
@@ -102,14 +98,21 @@ class CommentInterface
         }
 
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'comment',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/comment/{$cid}/detail",
+                ],
+                [
+                    'name' => 'comments',
+                    'method' => 'GET',
+                    'path' => '/api/fresns/v1/comment/list',
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'comment' => $client->getAsync("/api/fresns/v1/comment/{$cid}/detail"),
-                'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }
@@ -147,14 +150,21 @@ class CommentInterface
     public static function interaction(string $cid, string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'comment',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/comment/{$cid}/detail",
+                ],
+                [
+                    'name' => 'users',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/comment/{$cid}/interaction/{$type}",
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'comment' => $client->getAsync("/api/fresns/v1/comment/{$cid}/detail"),
-                'users' => $client->getAsync("/api/fresns/v1/comment/{$cid}/interaction/{$type}", [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }

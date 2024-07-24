@@ -15,7 +15,12 @@ class ErrorException extends \Exception
 {
     public function render()
     {
-        // dd($this->getCode(), $this->getMessage());
+        if (request()->wantsJson()) {
+            return \response()->json([
+                'code' => $this->getCode(),
+                'message' => $this->getMessage(),
+            ]);
+        }
 
         // set view
         $themeFskey = fs_theme('fskey');
@@ -29,13 +34,6 @@ class ErrorException extends \Exception
             array_unshift($currentPaths, base_path("themes/{$themeFskey}"));
 
             View::getFinder()->setPaths($currentPaths);
-        }
-
-        if (\request()->wantsJson()) {
-            return \response()->json([
-                'code' => $this->getCode(),
-                'message' => $this->getMessage(),
-            ]);
         }
 
         // 403 Forbidden

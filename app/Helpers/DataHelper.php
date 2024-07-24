@@ -79,7 +79,7 @@ class DataHelper
     // get editor url
     public static function getEditorUrl(string $url, string $type, ?string $did = null, ?string $fsid = null): string
     {
-        $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
+        $headers = Arr::except(HttpHelper::getHeaders(), ['Accept']);
 
         $accessToken = urlencode(base64_encode(json_encode($headers)));
 
@@ -123,7 +123,7 @@ class DataHelper
         $configs = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($configs)) {
-            $result = ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/configs");
+            $result = HttpHelper::get("/api/fresns/v1/editor/{$type}/configs");
 
             $configs = data_get($result, 'data');
 
@@ -184,15 +184,13 @@ class DataHelper
             $channelGroupType = ConfigHelper::fresnsConfigByItemKey('channel_group_type');
 
             if ($channel == 'group' && $type == 'home' && $channelGroupType == 'tree') {
-                $result = ApiHelper::make()->get('/api/fresns/v1/group/tree');
+                $result = HttpHelper::get('/api/fresns/v1/group/tree');
 
                 $listArr = data_get($result, 'data', []);
             } else {
                 $queryConfig = QueryHelper::configToQuery($queryType);
 
-                $result = ApiHelper::make()->get("/api/fresns/v1/{$channel}/list", [
-                    'query' => $queryConfig,
-                ]);
+                $result = HttpHelper::get("/api/fresns/v1/{$channel}/list", $queryConfig);
 
                 $listArr = data_get($result, 'data.list', []);
             }
@@ -234,9 +232,7 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/post/list', [
-                'query' => $query,
-            ]);
+            $result = HttpHelper::get('/api/fresns/v1/post/list', $query);
 
             $listArr = data_get($result, 'data.list', []);
 
@@ -265,11 +261,9 @@ class DataHelper
         $listArr = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($listArr)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/comment/list', [
-                'query' => [
-                    'pid' => $pid,
-                    'sticky' => 1,
-                ],
+            $result = HttpHelper::get('/api/fresns/v1/comment/list', [
+                'pid' => $pid,
+                'sticky' => 1,
             ]);
 
             $listArr = data_get($result, 'data.list', []);

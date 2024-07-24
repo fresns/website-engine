@@ -8,7 +8,7 @@
 
 namespace Fresns\WebsiteEngine\Http\Controllers;
 
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Fresns\WebsiteEngine\Helpers\QueryHelper;
 use Fresns\WebsiteEngine\Interfaces\MeInterface;
 use Illuminate\Http\Request;
@@ -95,7 +95,7 @@ class MeController extends Controller
     {
         $redirectURL = $request->get('redirectURL') ?? route('fresns.home');
 
-        $result = ApiHelper::make()->delete('/api/fresns/v1/account/auth-token');
+        $result = HttpHelper::delete('/api/fresns/v1/account/auth-token');
 
         if ($result['code'] == 0) {
             fs_account()->logout();

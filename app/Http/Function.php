@@ -12,8 +12,8 @@ use App\Helpers\PluginHelper;
 use App\Models\File;
 use App\Utilities\ArrUtility;
 use Fresns\WebsiteEngine\Auth\UserGuard;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -116,7 +116,7 @@ if (! function_exists('fs_config')) {
         $configs = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($configs)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/configs');
+            $result = HttpHelper::get('/api/fresns/v1/global/configs');
 
             $configs = data_get($result, 'data');
 
@@ -144,10 +144,8 @@ if (! function_exists('fs_lang')) {
         $languages = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($languages)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/language-pack', [
-                'query' => [
-                    'langTag' => $langTag,
-                ],
+            $result = HttpHelper::get('/api/fresns/v1/global/language-pack', [
+                'langTag' => $langTag,
             ]);
 
             $languages = data_get($result, 'data');
@@ -187,7 +185,7 @@ if (! function_exists('fs_channels')) {
         $channels = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($channels)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/channels');
+            $result = HttpHelper::get('/api/fresns/v1/global/channels');
 
             $channels = data_get($result, 'data');
 
@@ -217,7 +215,7 @@ if (! function_exists('fs_content_types')) {
         $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
-            $result = ApiHelper::make()->get("/api/fresns/v1/global/{$type}/content-types");
+            $result = HttpHelper::get("/api/fresns/v1/global/{$type}/content-types");
 
             $listArr = data_get($result, 'data', []);
 
@@ -311,10 +309,8 @@ if (! function_exists('fs_user_overview')) {
         $userOverview = CacheHelper::get($cacheKey, $cacheTag);
 
         if (empty($userOverview)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/user/overview', [
-                'query' => [
-                    'uidOrUsername' => $id,
-                ],
+            $result = HttpHelper::get('/api/fresns/v1/user/overview', [
+                'uidOrUsername' => $id,
             ]);
 
             $userOverview = data_get($result, 'data');
@@ -389,7 +385,7 @@ if (! function_exists('fs_editor_stickers')) {
         $listArr = CacheHelper::get($cacheKey, $cacheTags);
 
         if (empty($listArr)) {
-            $result = ApiHelper::make()->get('/api/fresns/v1/global/stickers');
+            $result = HttpHelper::get('/api/fresns/v1/global/stickers');
 
             $listArr = data_get($result, 'data', []);
 

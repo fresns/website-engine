@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Helpers\ConfigHelper;
 use Browser;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
@@ -52,10 +52,8 @@ class PortalController extends Controller
         $loginToken = $request->loginToken;
 
         if ($loginToken) {
-            $result = ApiHelper::make()->post('/api/fresns/v1/account/auth-token', [
-                'json' => [
-                    'loginToken' => $loginToken,
-                ],
+            $result = HttpHelper::post('/api/fresns/v1/account/auth-token', [
+                'loginToken' => $loginToken,
             ]);
 
             if ($result['code'] == 0) {

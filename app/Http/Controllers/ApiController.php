@@ -10,12 +10,14 @@ namespace Fresns\WebsiteEngine\Http\Controllers;
 
 use App\Helpers\CacheHelper;
 use App\Utilities\ConfigUtility;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
@@ -24,7 +26,7 @@ class ApiController extends Controller
     // make access token
     public function makeAccessToken(): JsonResponse
     {
-        $headers = Arr::except(ApiHelper::getHeaders(), ['Accept']);
+        $headers = Arr::except(HttpHelper::getHeaders(), ['Accept']);
 
         $accessToken = urlencode(base64_encode(json_encode($headers)));
 
@@ -91,11 +93,7 @@ class ApiController extends Controller
             ]);
         }
 
-        $result = ApiHelper::make()->get($endpointPath, [
-            'query' => $request->all(),
-        ]);
-
-        return Response::json($result);
+        return HttpHelper::get($endpointPath, $request->all());
     }
 
     // api post
@@ -103,39 +101,34 @@ class ApiController extends Controller
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
-        if (in_array($endpointPath, [
-            '/api/fresns/v1/common/file/upload',
-            '/api/fresns/v1/editor/post/publish',
-            '/api/fresns/v1/editor/comment/publish',
-        ])) {
-            $multipart = [];
-            foreach ($request->all() as $name => $contents) {
-                if ($request->hasFile($name)) {
-                    $file = $request->file($name);
+        $baseUrl = HttpHelper::getBaseUrl();
+        $headers = HttpHelper::getHeaders();
 
-                    $multipart[] = [
-                        'name' => $name,
-                        'contents' => fopen($file->getPathname(), 'r'),
-                        'filename' => $file->getClientOriginalName(),
-                        'headers' => [
-                            'Content-Type' => $file->getMimeType(),
-                        ],
-                    ];
+        $apiUrl = $baseUrl.$endpointPath;
 
-                    continue;
-                }
+        $file = $request->file('file') ?? $request->file('image');
 
-                $multipart[] = compact('name', 'contents');
-            }
+        if ($file) {
+            $paramKeyName = $endpointPath == '/api/fresns/v1/common/file/upload' ? 'file' : 'image';
+            $filteredData = $request->except(['file', 'image']);
 
-            $result = ApiHelper::make()->post($endpointPath, [
-                'multipart' => $multipart,
-            ]);
+            $response = Http::withHeaders($headers)->attach(
+                $paramKeyName,
+                fopen($file->getPathname(), 'r'),
+                $file->getClientOriginalName(),
+                [
+                    'Content-Type' => $file->getMimeType(),
+                ],
+            )->post($apiUrl, $filteredData);
         } else {
-            $result = ApiHelper::make()->post($endpointPath, [
-                'json' => $request->all(),
-            ]);
+            $response = Http::withHeaders($headers)->post($apiUrl, $request->all());
         }
+
+        if (! $response->ok()) {
+            throw new ErrorException('Operation failed, please try again', 30008);
+        }
+
+        $result = $response->json();
 
         // Account and User Login
         if ($result['code'] == 0 && in_array($endpointPath, [
@@ -169,9 +162,7 @@ class ApiController extends Controller
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
-        $result = ApiHelper::make()->put($endpointPath, [
-            'json' => $request->all(),
-        ]);
+        $result = HttpHelper::put($endpointPath, $request->all());
 
         // ajax
         if ($request->ajax()) {
@@ -197,9 +188,7 @@ class ApiController extends Controller
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
-        $result = ApiHelper::make()->patch($endpointPath, [
-            'json' => $request->all(),
-        ]);
+        $result = HttpHelper::patch($endpointPath, $request->all());
 
         // User Cache
         $uid = fs_user('detail.uid');
@@ -236,9 +225,7 @@ class ApiController extends Controller
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
-        $result = ApiHelper::make()->delete($endpointPath, [
-            'json' => $request->all(),
-        ]);
+        $result = HttpHelper::delete($endpointPath, $request->all());
 
         // ajax
         if ($request->ajax()) {

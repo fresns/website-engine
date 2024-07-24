@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\SearchController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class SearchInterface
@@ -23,9 +23,7 @@ class SearchInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/search/{$type}", [
-                'query' => $query,
-            ]);
+            return HttpHelper::get("/api/fresns/v1/search/{$type}", $query);
         }
 
         try {

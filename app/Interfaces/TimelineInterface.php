@@ -11,8 +11,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 use App\Fresns\Api\Http\Controllers\CommentController;
 use App\Fresns\Api\Http\Controllers\PostController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class TimelineInterface
@@ -24,9 +24,7 @@ class TimelineInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/post/timelines', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/post/timelines', $query);
         }
 
         try {
@@ -61,9 +59,7 @@ class TimelineInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/comment/timelines', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/comment/timelines', $query);
         }
 
         try {

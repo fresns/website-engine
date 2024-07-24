@@ -13,7 +13,7 @@ use App\Fresns\Api\Http\Controllers\EditorController;
 use App\Fresns\Api\Http\Controllers\GlobalController;
 use App\Fresns\Api\Http\Controllers\UserController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class MeInterface
@@ -21,9 +21,7 @@ class MeInterface
     public static function extcreditsRecords(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/user/extcredits-records', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/user/extcredits-records', $query);
         }
 
         try {
@@ -54,9 +52,7 @@ class MeInterface
     public static function walletRecords(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/account/wallet-records', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/account/wallet-records', $query);
         }
 
         try {
@@ -87,9 +83,7 @@ class MeInterface
     public static function drafts(string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/drafts", [
-                'query' => $query,
-            ]);
+            return HttpHelper::get("/api/fresns/v1/editor/{$type}/drafts", $query);
         }
 
         try {
@@ -120,7 +114,7 @@ class MeInterface
     public static function getDraftDetail(string $type, string $did): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/editor/{$type}/draft/{$did}");
+            return HttpHelper::get("/api/fresns/v1/editor/{$type}/draft/{$did}");
         }
 
         try {
@@ -151,7 +145,7 @@ class MeInterface
     public static function archives(string $type): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get("/api/fresns/v1/global/{$type}/archives");
+            return HttpHelper::get("/api/fresns/v1/global/{$type}/archives");
         }
 
         try {

@@ -11,7 +11,7 @@ namespace Fresns\WebsiteEngine\Interfaces;
 use App\Fresns\Api\Http\Controllers\ConversationController;
 use App\Fresns\Api\Http\Controllers\NotificationController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class MessageInterface
@@ -19,20 +19,26 @@ class MessageInterface
     public static function list(): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
-
-            $results = $client->unwrapRequests([
-                'conversations' => $client->getAsync('/api/fresns/v1/conversation/list', [
-                    'query' => [
+            $requests = [
+                [
+                    'name' => 'conversations',
+                    'method' => 'GET',
+                    'path' => '/api/fresns/v1/conversation/list',
+                    'params' => [
                         'isPin' => false,
                     ],
-                ]),
-                'pinConversations' => $client->getAsync('/api/fresns/v1/conversation/list', [
-                    'query' => [
+                ],
+                [
+                    'name' => 'pinConversations',
+                    'method' => 'GET',
+                    'path' => '/api/fresns/v1/conversation/list',
+                    'params' => [
                         'isPin' => true,
                     ],
-                ]),
-            ]);
+                ],
+            ];
+
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }
@@ -83,15 +89,26 @@ class MessageInterface
     public static function conversation(int|string $uidOrUsername, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'conversation',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/conversation/{$uidOrUsername}/detail",
+                ],
+                [
+                    'name' => 'messages',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/conversation/{$uidOrUsername}/messages",
+                    'params' => $query,
+                ],
+                [
+                    'name' => 'markAllAsRead',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/conversation/{$uidOrUsername}/read-status",
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'conversation' => $client->getAsync("/api/fresns/v1/conversation/{$uidOrUsername}/detail"),
-                'messages' => $client->getAsync("/api/fresns/v1/conversation/{$uidOrUsername}/messages", [
-                    'query' => $query,
-                ]),
-                'markAllAsRead' => $client->patchAsync("/api/fresns/v1/conversation/{$uidOrUsername}/read-status"),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }
@@ -142,9 +159,7 @@ class MessageInterface
     public static function notifications(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/notification/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/notification/list', $query);
         }
 
         try {

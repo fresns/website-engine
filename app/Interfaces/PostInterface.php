@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\PostController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class PostInterface
@@ -23,9 +23,7 @@ class PostInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/post/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/post/list', $query);
         }
 
         try {
@@ -60,9 +58,7 @@ class PostInterface
         }
 
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/post/nearby', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/post/nearby', $query);
         }
 
         try {
@@ -103,20 +99,30 @@ class PostInterface
         }
 
         if (is_remote_api()) {
-            $client = ApiHelper::make();
-
-            $results = $client->unwrapRequests([
-                'post' => $client->getAsync("/api/fresns/v1/post/{$pid}/detail"),
-                'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                    'query' => $query,
-                ]),
-                'stickies' => $client->getAsync('/api/fresns/v1/comment/list', [
-                    'query' => [
+            $requests = [
+                [
+                    'name' => 'post',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/post/{$pid}/detail",
+                ],
+                [
+                    'name' => 'comments',
+                    'method' => 'GET',
+                    'path' => '/api/fresns/v1/comment/list',
+                    'params' => $query,
+                ],
+                [
+                    'name' => 'stickies',
+                    'method' => 'GET',
+                    'path' => '/api/fresns/v1/comment/list',
+                    'params' => [
                         'pid' => $pid,
                         'sticky' => true,
                     ],
-                ]),
-            ]);
+                ],
+            ];
+
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }
@@ -158,14 +164,21 @@ class PostInterface
     public static function interaction(string $pid, string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'post',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/post/{$pid}/detail",
+                ],
+                [
+                    'name' => 'users',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/post/{$pid}/interaction/{$type}",
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'post' => $client->getAsync("/api/fresns/v1/post/{$pid}/detail"),
-                'users' => $client->getAsync("/api/fresns/v1/post/{$pid}/interaction/{$type}", [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }

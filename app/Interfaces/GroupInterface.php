@@ -10,7 +10,7 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\GroupController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class GroupInterface
@@ -18,7 +18,7 @@ class GroupInterface
     public static function tree(): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/group/tree');
+            return HttpHelper::get('/api/fresns/v1/group/tree');
         }
 
         try {
@@ -49,9 +49,7 @@ class GroupInterface
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/group/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/group/list', $query);
         }
 
         try {
@@ -88,25 +86,41 @@ class GroupInterface
         };
 
         if (is_remote_api()) {
-            $client = ApiHelper::make();
-
             switch ($type) {
                 case 'posts':
-                    $results = $client->unwrapRequests([
-                        'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
-                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'group',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/group/{$gid}/detail",
+                        ],
+                        [
+                            'name' => 'posts',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/post/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
 
                 case 'comments':
-                    $results = $client->unwrapRequests([
-                        'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
-                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'group',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/group/{$gid}/detail",
+                        ],
+                        [
+                            'name' => 'comments',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/comment/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
             }
 
@@ -157,14 +171,21 @@ class GroupInterface
     public static function interaction(string $gid, string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'group',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/group/{$gid}/detail",
+                ],
+                [
+                    'name' => 'users',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/group/{$gid}/interaction/{$type}",
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'group' => $client->getAsync("/api/fresns/v1/group/{$gid}/detail"),
-                'users' => $client->getAsync("/api/fresns/v1/group/{$gid}/interaction/{$type}", [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }

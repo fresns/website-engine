@@ -10,8 +10,8 @@ namespace Fresns\WebsiteEngine\Interfaces;
 
 use App\Fresns\Api\Http\Controllers\HashtagController;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
-use Fresns\WebsiteEngine\Helpers\ApiHelper;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
+use Fresns\WebsiteEngine\Helpers\HttpHelper;
 use Illuminate\Http\Request;
 
 class HashtagInterface
@@ -19,9 +19,7 @@ class HashtagInterface
     public static function list(?array $query = []): array
     {
         if (is_remote_api()) {
-            return ApiHelper::make()->get('/api/fresns/v1/hashtag/list', [
-                'query' => $query,
-            ]);
+            return HttpHelper::get('/api/fresns/v1/hashtag/list', $query);
         }
 
         if (fs_config('site_mode') == 'private' && fs_config('site_private_end_after') == 1 && fs_user('detail.expired')) {
@@ -72,25 +70,41 @@ class HashtagInterface
         }
 
         if (is_remote_api()) {
-            $client = ApiHelper::make();
-
             switch ($type) {
                 case 'posts':
-                    $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
-                        'posts' => $client->getAsync('/api/fresns/v1/post/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'hashtag',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/hashtag/{$htid}/detail",
+                        ],
+                        [
+                            'name' => 'posts',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/post/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
 
                 case 'comments':
-                    $results = $client->unwrapRequests([
-                        'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
-                        'comments' => $client->getAsync('/api/fresns/v1/comment/list', [
-                            'query' => $query,
-                        ]),
-                    ]);
+                    $requests = [
+                        [
+                            'name' => 'hashtag',
+                            'method' => 'GET',
+                            'path' => "/api/fresns/v1/hashtag/{$htid}/detail",
+                        ],
+                        [
+                            'name' => 'comments',
+                            'method' => 'GET',
+                            'path' => '/api/fresns/v1/comment/list',
+                            'params' => $query,
+                        ],
+                    ];
+
+                    $results = HttpHelper::concurrentRequests($requests);
                     break;
             }
 
@@ -141,14 +155,21 @@ class HashtagInterface
     public static function interaction(string $htid, string $type, ?array $query = []): array
     {
         if (is_remote_api()) {
-            $client = ApiHelper::make();
+            $requests = [
+                [
+                    'name' => 'hashtag',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/hashtag/{$htid}/detail",
+                ],
+                [
+                    'name' => 'users',
+                    'method' => 'GET',
+                    'path' => "/api/fresns/v1/hashtag/{$htid}/interaction/{$type}",
+                    'params' => $query,
+                ],
+            ];
 
-            $results = $client->unwrapRequests([
-                'hashtag' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/detail"),
-                'users' => $client->getAsync("/api/fresns/v1/hashtag/{$htid}/interaction/{$type}", [
-                    'query' => $query,
-                ]),
-            ]);
+            $results = HttpHelper::concurrentRequests($requests);
 
             return $results;
         }
