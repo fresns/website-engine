@@ -12,7 +12,6 @@ use App\Helpers\AppHelper;
 use App\Helpers\CacheHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\PrimaryHelper;
-use App\Helpers\SignHelper;
 use Closure;
 use hisorange\BrowserDetect\Parser as Browser;
 use Illuminate\Http\Request;
@@ -244,7 +243,6 @@ class WebConfiguration
             'X-Fresns-Signature' => null,
             'X-Fresns-Signature-Timestamp' => time(),
         ];
-        $headers['X-Fresns-Signature'] = SignHelper::makeSign($headers, $keyInfo->app_key);
 
         $request->headers->set('X-Fresns-App-Id', $headers['X-Fresns-App-Id']);
         $request->headers->set('X-Fresns-Client-Platform-Id', $headers['X-Fresns-Client-Platform-Id']);
