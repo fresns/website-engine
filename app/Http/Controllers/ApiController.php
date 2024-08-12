@@ -13,8 +13,6 @@ use App\Utilities\ConfigUtility;
 use Fresns\WebsiteEngine\Exceptions\ErrorException;
 use Fresns\WebsiteEngine\Helpers\DataHelper;
 use Fresns\WebsiteEngine\Helpers\HttpHelper;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -24,7 +22,7 @@ use Illuminate\Support\Str;
 class ApiController extends Controller
 {
     // make access token
-    public function makeAccessToken(): JsonResponse
+    public function makeAccessToken()
     {
         $headers = Arr::except(HttpHelper::getHeaders(), ['Accept']);
 
@@ -40,7 +38,7 @@ class ApiController extends Controller
     }
 
     // api get
-    public function apiGet(Request $request, string $path): JsonResponse
+    public function apiGet(Request $request, string $path)
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
@@ -97,7 +95,7 @@ class ApiController extends Controller
     }
 
     // api post
-    public function apiPost(Request $request, string $path): JsonResponse|RedirectResponse
+    public function apiPost(Request $request, string $path)
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
@@ -158,7 +156,7 @@ class ApiController extends Controller
     }
 
     // api put
-    public function apiPut(Request $request, string $path): JsonResponse|RedirectResponse
+    public function apiPut(Request $request, string $path)
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
@@ -184,7 +182,7 @@ class ApiController extends Controller
     }
 
     // api patch
-    public function apiPatch(Request $request, string $path): JsonResponse|RedirectResponse
+    public function apiPatch(Request $request, string $path)
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
@@ -221,7 +219,7 @@ class ApiController extends Controller
     }
 
     // api delete
-    public function apiDelete(Request $request, string $path): JsonResponse|RedirectResponse
+    public function apiDelete(Request $request, string $path)
     {
         $endpointPath = Str::of($path)->start('/')->toString();
 
