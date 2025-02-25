@@ -117,7 +117,7 @@ class ThemeFunctionController extends Controller
 
         // views
         $title = $themeConfig['name'] ?? '';
-        $versionMd5 = AppHelper::VERSION_MD5_16BIT;
+        $versionMd5 = md5(AppHelper::VERSION);
 
         return view('functions', compact('params', 'fileUrls', 'lang', 'apps', 'languageStatus', 'languageMenus', 'defaultLanguage', 'title', 'versionMd5'));
     }
